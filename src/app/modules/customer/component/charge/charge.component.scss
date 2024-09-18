@@ -1,0 +1,13 @@
+.charge__modal {
+  --height: 314px;
+}
+
+@media screen and (max-width: 840px) {
+  .charge__modal {
+    --height: 100% !important;
+  }
+}
+.financial-activities-alert{
+  font-size: 12px;
+  color: gray;
+}

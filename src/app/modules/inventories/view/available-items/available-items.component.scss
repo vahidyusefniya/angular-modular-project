@@ -1,0 +1,30 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+.upload-icon {
+  cursor: pointer;
+  color: var(--ion-color-primary);
+}
+.currency {
+  color: gray;
+  font-size: 12px;
+}
+
+@media screen and (min-width: 840px) {
+  .align-right-amount .amount_row {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+}
+
+.row-table {
+  height: 55px;
+}
+
+.region-label {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 2px 6px 2px 6px;
+  background-color: rgb(193 173 23) !important;
+  color: var(--card-header-row);
+  font-weight: 700;
+}

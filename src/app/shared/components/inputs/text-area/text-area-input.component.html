@@ -1,0 +1,16 @@
+<ion-textarea
+  (ionFocus)="onFocusEvent($event)"
+  [id]="id"
+  [(ngModel)]="value"
+  (ngModelChange)="handleChange($event)"
+  [disabled]="disabled"
+  [required]="required"
+  [maxlength]="maxlength"
+  [minlength]="minlength"
+  [readonly]="readonly"
+  [placeholder]="placeholder"
+  [label]="Label"
+  labelPlacement="floating"
+  fill="outline"
+  mode="md"
+/>

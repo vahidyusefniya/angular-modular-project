@@ -1,0 +1,202 @@
+<!--suppress JSUnresolvedReference -->
+<ion-card
+  *ngIf="type === 'category'"
+  class="ion-no-margin cursor category"
+  [id]="id"
+>
+  <img
+    class="img"
+    [lazyLoad]="data.imageUrl ? data.imageUrl : localImageSRC"
+    ngSrc="{{
+      categoryLevel === 'one' ? localImageSRC : localCategoryLevelTowImageSRC
+    }}"
+    width="100"
+    height="100"
+    alt="category-image"
+  />
+  <ion-card-content>
+    {{ data.categoryName }}
+  </ion-card-content>
+</ion-card>
+<ion-card
+  *ngIf="type === 'product' && width > 500; else smCard"
+  class="ion-no-margin product"
+  [id]="id"
+>
+  <div class="product-img">
+    <img
+      class="img"
+      [lazyLoad]="data.imageUrl ? data.imageUrl : localImageSRC"
+      ngSrc="{{ localImageSRC }}"
+      width="100"
+      height="100"
+      alt="product-image"
+    />
+  </div>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" class="product-name">
+          {{ data.productName }}
+        </ion-col>
+        <ion-col *ngIf="data.faceValue" size="12">
+          {{ data.currency.symbol }}
+          {{ data.faceValue.start | truncateDecimalsPipe }}
+          <span *ngIf="data.faceValue.end">
+            -
+            {{ data.currency.symbol }}
+            {{
+              coreService$.isUnlimitedNumber(data.faceValue.end)
+                ? "ထ"
+                : (data.faceValue.end | truncateDecimalsPipe)
+            }}
+          </span>
+        </ion-col>
+        <ion-col size="12" *ngIf="data.faceValue && data.faceValue.end">
+          {{ dictionary.Price }}:
+          <span>
+            {{ data.currency.symbol }}
+            {{ getCalcStartValue(data.faceValue) | truncateDecimalsPipe }} -
+            {{ data.currency.symbol }}
+            {{ getCalcEndValue(data.faceValue) | truncateDecimalsPipe }}
+          </span>
+        </ion-col>
+        <ion-col size="12" *ngIf="data.faceValue && !data.faceValue.end">
+          <ion-label color="success">
+            {{ dictionary.Discount }}:
+            <span>
+              {{ getCalcDiscountValue(data.faceValue) | truncateDecimalsPipe }}%
+            </span>
+          </ion-label>
+        </ion-col>
+        <ion-col size="12" class="footer d-flex flex-column" [class]="data.faceValue.consumerFee > 0 ? 'justify-content-between' : 'justify-content-end'">
+          <div *ngIf="data.faceValue && !data.faceValue.end && data.faceValue.consumerFee > 0" class="consumer-fee">
+            {{ data.currency.symbol }}{{ data.faceValue.consumerFee | truncateDecimalsPipe }} activation fee included 
+          </div>
+          <div *ngIf="data.faceValue && data.faceValue.end && data.faceValue.consumerFee > 0" class="consumer-fee">
+            An activation fee of {{ data.currency.symbol }}{{ data.faceValue.consumerFee | truncateDecimalsPipe }} per card will apply
+          </div>
+          <div class="d-flex justify-content-center align-items-center mt-2">
+            <i
+              (click)="favorite = !favorite"
+              [style.color]="favorite ? '#EF3B51' : ''"
+              class="material-icons cursor"
+            >
+              {{ favorite ? "favorite" : "favorite_outline" }}
+            </i>
+            <ion-button
+              (click)="onBuyClick()"
+              [disabled]="!data.faceValue"
+              color="info"
+              size="small"
+              fill="outline"
+              class="px-1"
+              [id]="'buy-btn-' + data.productId"
+            >
+              <i class="material-icons"> shopping_cart </i>
+              {{ dictionary.Buy }}
+            </ion-button>
+            <ion-icon
+              (click)="onDescriptionClick()"
+              class="cursor information-circle-size"
+              name="information-circle"
+              color="primary"
+              *ngIf="data.hasDescription"
+            ></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<ng-template #smCard>
+  <ion-card
+    *ngIf="type === 'product'"
+    class="ion-no-margin phone cursor light__color"
+    (click)="onBuyClick()"
+    [id]="id"
+  >
+    <ion-card-content class="ion-no-padding ion-no-margin">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex">
+          <img
+            height="80"
+            width="122"
+            [lazyLoad]="data.imageUrl ? data.imageUrl : localImageSRC"
+            ngSrc="{{ localImageSRC }}"
+            alt="product-img"
+          />
+          <div class="product__name mx-2 w-100">
+            <div class="row">
+              <div class="col-12">
+                {{ data.productName }}
+                <ion-label>
+                  {{ data.currency.symbol }}
+                  {{ data.faceValue.start | truncateDecimalsPipe }}
+                  <span *ngIf="data.faceValue.end !== null"
+                    >- {{ data.currency.symbol }}
+                    {{ data.faceValue.end | truncateDecimalsPipe }}
+                  </span>
+                </ion-label>
+              </div>
+              <div class="col-12">
+                <ion-label *ngIf="data.faceValue && data.faceValue.end">
+                  {{ dictionary.Price }}:
+                  <span>
+                    {{ data.currency.symbol }}
+                    {{
+                      getCalcStartValue(data.faceValue) | truncateDecimalsPipe
+                    }}
+                    -
+                    {{ data.currency.symbol }}
+                    {{ getCalcEndValue(data.faceValue) | truncateDecimalsPipe }}
+                  </span>
+                </ion-label>
+                <ion-label
+                  color="success"
+                  *ngIf="data.faceValue && !data.faceValue.end"
+                >
+                  {{ dictionary.Discount }}:
+                  <span>
+                    {{
+                      getCalcDiscountValue(data.faceValue)
+                        | truncateDecimalsPipe
+                    }}%
+                  </span>
+                </ion-label>
+                <div *ngIf="data.faceValue && !data.faceValue.end && data.faceValue.consumerFee > 0" class="consumer-fee">
+                  {{ data.currency.symbol }}{{ data.faceValue.consumerFee | truncateDecimalsPipe }} activation fee included 
+                </div>
+                <div *ngIf="data.faceValue && data.faceValue.end && data.faceValue.consumerFee > 0" class="consumer-fee">
+                  An activation fee of {{ data.currency.symbol }}{{ data.faceValue.consumerFee | truncateDecimalsPipe }} per card will apply
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <ion-button
+            color="light"
+            fill="clear"
+            (click)="onFavoriteClick($event)"
+          >
+            <i [style.color]="favorite ? 'red' : ''" class="material-icons">
+              bookmark
+            </i>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            color="primary"
+            (click)="onDescriptionClick($event)"
+          >
+            <ion-icon
+              slot="icon-only"
+              name="information-circle"
+              *ngIf="data.hasDescription"
+            />
+          </ion-button>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ng-template>

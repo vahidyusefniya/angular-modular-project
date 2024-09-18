@@ -1,0 +1,102 @@
+ion-content {
+  --background: var(--ion-card-background);
+  --overflow: auto;
+
+  .main {
+    width: 100%;
+    overflow: auto;
+    background-color: transparent;
+  }
+
+  .separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+
+  .separator::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--ion-text-color);
+  }
+
+  .separator:not(:empty)::before {
+    margin-right: 0.25em;
+  }
+
+  .separator:not(:empty)::after {
+    margin-left: 0.25em;
+  }
+
+  .badge {
+    position: absolute;
+    right: 2px;
+    font-size: 10px;
+  }
+}
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+  background-color: var(--ion-card-background);
+}
+
+.loading__content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img__content {
+  width: 30px;
+  height: 22px;
+  cursor: pointer;
+
+  img {
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+  }
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.card__height {
+  height: calc(100% - 130px);
+}
+
+.product-container-with-cat {
+  height: calc(100% - 170px);
+  overflow: auto;
+}
+
+.product-container-without-cat {
+  height: calc(100% - 125px);
+  overflow: auto;
+}
+
+::ng-deep .alert-sub-title {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.buyPriceMismatchException__alert {
+  --max-width: 90vw !important;
+  --width: 500px !important;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+.searchbar-section {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+}

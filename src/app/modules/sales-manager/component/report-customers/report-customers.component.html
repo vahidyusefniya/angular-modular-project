@@ -1,0 +1,71 @@
+<div class="content" appPermission inputAppPermission="SaleManagerRead">
+  <ion-grid>
+    <ion-row
+      class="d-flex justify-content-between flex-row-reverse border-bottom py-2 my-2"
+    >
+      <!-- <ion-button (click)="onFilterClick()" [strong]="true" color="primary">
+        <app-icon type="filter_alt"></app-icon>
+        <b>{{ dictionary.Filter }}</b></ion-button
+      > -->
+      <ion-col size="12" size-lg="4">
+        <app-combobox
+          name="dateTime"
+          [Label]="customLabel || dictionary.DateRange"
+          [data]="dateTimeCmbData"
+          [filterable]="false"
+          [valueField]="'name'"
+          [textField]="'name'"
+          [(ngModel)]="dateTime"
+          (selectionChange)="dateTimeSelectionChange()"
+          [hasClear]="false"
+          class="w-100"
+        />
+      </ion-col>
+      <app-table-filter-tag [tagList]="tagList"></app-table-filter-tag>
+    </ion-row>
+    <div *ngIf="!loading">
+      <ion-row *ngIf="currencyList.length !== 0; else empty_content">
+        <ion-card class="report-card" *ngFor="let currencyItem of currencyList">
+          <ion-card-header>
+            <ion-card-title>{{ currencyItem.currencyName }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content class="card-content">
+            <p>
+              {{ dictionary.Sales }}:
+              <b>{{ currencyItem.saleAmount | truncateDecimalsPipe }}</b>
+            </p>
+            <p>
+              {{ dictionary.Profit }}:
+              <b>{{ currencyItem.profit | truncateDecimalsPipe }}</b>
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+      <ng-template #empty_content>
+        <span class="empty_content">No records found</span>
+      </ng-template>
+    </div>
+    <ion-row *ngIf="loading">
+      <ion-col
+        size="12"
+        sizeLg="3"
+        *ngFor="let number of [0, 1, 2, 3]"
+        class="py-0 px-2"
+      >
+        <ion-skeleton-text
+          style="height: 90px; width: 100%"
+          [animated]="true"
+        ></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
+
+<app-reports-filter
+  *ngIf="openReportFilter"
+  [isOpen]="openReportFilter"
+  (dismiss)="dismissModal($event)"
+  (reportFilterClick)="saveReportFilter($event)"
+  [data]="reportFilter"
+/>

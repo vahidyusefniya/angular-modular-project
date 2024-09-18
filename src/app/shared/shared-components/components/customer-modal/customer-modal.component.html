@@ -1,0 +1,57 @@
+<ion-modal
+  #customerModal
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  [handle]="false"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Customer }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <app-text
+        [autofocus]="true"
+        id="branchName"
+        [Label]="dictionary.Customer"
+        [(ngModel)]="customerName"
+        (inputChange)="searchName($event)"
+        name="branchName"
+      />
+      <div *ngIf="customersList.length !== 0; else empty_content">
+        <ion-radio-group
+          allow-empty-selection="true"
+          (ionChange)="handleChange($event)"
+          [value]="customerChoosed"
+        >
+          <ion-item class="mt-2" *ngFor="let customer of customersList">
+            <ion-radio [value]="customer" justify="space-between">
+              {{ customer.merchantName }}
+            </ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+
+      <!-- <div *ngIf="customersList.length !== 0; else empty_content">
+        <div *ngFor="let customer of customersList" class="mt-2">
+          <ion-item>
+            <ion-label>{{ customer.merchantName }}</ion-label>
+            <ion-checkbox
+              (ionChange)="handleChange(customer)"
+              slot="end"
+            ></ion-checkbox>
+          </ion-item>
+        </div>
+      </div> -->
+      <ng-template #empty_content>
+        <span class="empty_content">No customer can be assigned.</span>
+      </ng-template>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,39 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" class="charge__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.PaymentInformation }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #form="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <div class="d-flex py-3">
+                <ion-card class="payment-method-card my-0">
+                  <ion-card-content>
+                    <app-icon type="BankTransfer"></app-icon>
+                  </ion-card-content>
+                </ion-card>
+
+                <div class="d-flex flex-column">
+                  <span class="fw-bold">Bank transfer</span>
+                  <span
+                    >Contact your sales representative to obtain our banking
+                    information.</span
+                  >
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

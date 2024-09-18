@@ -1,0 +1,127 @@
+<ion-modal
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <!-- <ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" [class]="posOrder?.paymentOrderId !== null && posOrder?.paymentMethod !== 'Wallet' ? '' : 'shipping-modal'"> -->
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.OrderDetail }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card class="ion-padding ion-no-margin">
+              <h5 class="fw-bold">{{ dictionary.Shipping }}</h5>
+              <hr class="mt-0" />
+              <ion-label color="dark">
+                {{ dictionary.Address }}:
+                <span class="gray-color"
+                  >{{ physicalCardOrder?.shipping?.address?.country }} /
+                </span>
+                <span class="gray-color"
+                  >{{ physicalCardOrder?.shipping?.address?.state }} /
+                </span>
+                <span class="gray-color"
+                  >{{ physicalCardOrder?.shipping?.address?.city }} -
+                </span>
+                <span class="gray-color">{{
+                  physicalCardOrder?.shipping?.address?.rawAddress
+                }}</span>
+              </ion-label>
+              <br />
+              <ion-label color="dark">
+                {{ dictionary.ZIPPostalCode }}:
+                <span class="gray-color">{{
+                  physicalCardOrder?.shipping?.address?.zipCode
+                }}</span>
+              </ion-label>
+            </ion-card>
+          </ion-col>
+         
+          <ion-col size="12">
+            <app-page-list
+              [cols]="cols"
+              [data]="physicalCardOrder?.physicalCardOrderDetails!"
+              [label]="dictionary.Products"
+              [showPagination]="false"
+              [hasLocalPagination]="false"
+              [hasSearch]="false"
+              [showPagination]="false"
+              [hasRefresh]="false"
+              [hasExport]="false"
+              [hasAdvancedFilter]="false"
+              [showActionSheet]="false"
+              [hasNewButton]="false"
+              class="order-detail-page-list"
+              [hasCustomTableContent]="true"
+              [initialTemplate]="orderDetailTable"
+            />
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ng-template #orderDetailTable>
+        <p-table
+          [value]="physicalCardOrder?.physicalCardOrderDetails!"
+          [columns]="cols"
+          responsiveLayout="stack"
+          styleClass="p-datatable-gridlines"
+          breakpoint="840px"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns">
+                {{ col.header }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowIndex="rowIndex"
+            let-rowData
+            let-columns="columns"
+          >
+            <tr>
+              <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+                <div
+                  class="table__row"
+                  [class]="{ amount_row: col.field === 'availableCount' }"
+                  [ngSwitch]="col.field"
+                >
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <div class="p-1 py-2">
+                    <span *ngSwitchCase="'item'">
+                      {{ rowData["product"].productName }}
+                      {{ rowData["product"].currency.symbol }}
+                      {{ rowData["productPrice"] | truncateDecimalsPipe }}
+                    </span>
+                    <span *ngSwitchCase="'quantity'">
+                      {{ rowData["quantity"] | truncateDecimalsPipe }}
+                    </span>
+                    <span *ngSwitchCase="'bundleSize'">
+                      10
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center" [attr.colspan]="cols.length">
+                {{ dictionary.NoRecordsFound }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+    </ion-content>
+  </ng-template>
+</ion-modal>

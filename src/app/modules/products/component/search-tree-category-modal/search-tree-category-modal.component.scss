@@ -1,0 +1,11 @@
+.categories__modal {
+  // --max-height: 700px;
+  --height: 95vh;
+}
+
+@media screen and (max-width: 840px) {
+  .categories__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

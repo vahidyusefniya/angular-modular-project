@@ -1,0 +1,20 @@
+.container {
+  margin: 120px 0;
+}
+
+ion-card {
+  max-width: 400px;
+  --background: #1e1e1e;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  --color: #eee;
+}
+.link-row {
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 16px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

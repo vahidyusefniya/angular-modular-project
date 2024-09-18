@@ -1,0 +1,72 @@
+<!--suppress JSUnresolvedReference -->
+<app-page-list
+  [label]="dictionary.CustomerPriceList"
+  [newButtonLabel]="dictionary.NewPriceList"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [showPagination]="false"
+  [hasRefresh]="false"
+  [hasExport]="false"
+  (newButtonClick)="openCreatePriceList = true"
+  [newButtonPermission]="'PriceListWrite'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  [exportPermission]="'PriceListRead'"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="priceTable"
+  class="price-list-table"
+/>
+<ng-template #priceTable>
+  <p-treeTable
+    appPermission
+    inputAppPermission="PriceListRead"
+    [value]="priceTreeList"
+    [columns]="cols"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr [ttRow]="cols">
+        <th class="column-color" *ngFor="let col of columns" class="row-head">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-rowNode
+      let-rowData="rowData"
+      let-columns="columns"
+    >
+      <tr>
+        <td class="column-color" *ngFor="let col of columns; let i = index">
+          <p-treeTableToggler
+            id="treeTableToggler"
+            [rowNode]="rowNode"
+            *ngIf="i === 0"
+          ></p-treeTableToggler>
+          <a
+            [routerLink]="priceRouterLink"
+            [queryParams]="{ id: rowData.priceListId }"
+            class="link-row"
+          >
+            {{ rowData[col.field] }}
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td class="text-center column-color" [attr.colspan]="columns.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-treeTable>
+</ng-template>
+
+<app-price-list-create
+  *ngIf="openCreatePriceList"
+  [isOpen]="openCreatePriceList"
+  (dismiss)="openCreatePriceList = false"
+  (newPriceList)="newPriceList($event)"
+/>

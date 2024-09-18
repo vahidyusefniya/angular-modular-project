@@ -1,0 +1,46 @@
+<app-phone-header-layout
+  [showFlagButton]="true"
+  (flagClick)="openRegionModal = true"
+  [showSearchBar]="true"
+  [showHeaderLogo]="true"
+  [flagImage]="regionImage"
+  [searchValue]="searchValue"
+  (search)="onInputSearch($event)"
+/>
+<ion-content [fullscreen]="true">
+  <div *ngIf="!loading">
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let category of categories; let id = index" size="4">
+          <category-card
+            [id]="id"
+            [category]="category"
+            (click)="onCategoryClick(category)"
+          ></category-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <ion-list *ngIf="loading">
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          *ngFor="let number of coreService.getSkeletonNumbers(20)"
+          size="4"
+        >
+          <ion-skeleton-text
+            style="height: 90px; width: 100%"
+            [animated]="true"
+          ></ion-skeleton-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list>
+</ion-content>
+<app-region
+  *ngIf="openRegionModal"
+  [isOpen]="openRegionModal"
+  (dismiss)="openRegionModal = false"
+  [selectedRegion]="selectedRegion"
+  (chooseRegion)="chooseRegion($event)"
+/>

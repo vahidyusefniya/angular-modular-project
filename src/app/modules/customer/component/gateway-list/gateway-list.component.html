@@ -1,0 +1,134 @@
+<div *ngIf="!isSmallMode">
+  <ion-item
+    appResize
+    *ngIf="!gatewayLoading; else gatewayLoadingTemp"
+    lines="none"
+  >
+    <div *ngIf="gatewayList.length > 0" class="d-flex align-items-center">
+      <ion-label>
+        {{ dictionary.GateWayList }}:
+        <span class="value-label">
+          {{ assignedGatewayListName }}
+        </span>
+      </ion-label>
+      <ion-button
+        appPermission
+        inputAppPermission="AssignGatewayListToMerchant"
+        fill="clear"
+        (click)="onAssignGatewayListClick()"
+        class="edit__btn"
+        id="edit"
+      >
+        <i class="material-icons">edit</i>
+      </ion-button>
+      <ion-button
+        *ngIf="assignedGatewayListId"
+        appPermission
+        inputAppPermission="AssignGatewayListToMerchant"
+        (click)="isOpen = true"
+      >
+        {{ dictionary.UnassignGatewayList }}
+      </ion-button>
+    </div>
+  </ion-item>
+</div>
+<div *ngIf="isSmallMode">
+  <ion-item
+    appResize
+    *ngIf="!gatewayLoading; else gatewayLoadingTemp"
+    lines="none"
+  >
+    <div *ngIf="gatewayList.length > 0" class="header__md__mode">
+      <ion-label>
+        {{ dictionary.GateWayList }}:
+        <span class="value-label">
+          {{ assignedGatewayListName }}
+        </span>
+      </ion-label>
+      <ion-button fill="clear" class="edit__btn" (click)="presentActionSheet()">
+        <i class="material-icons">more_vert</i>
+      </ion-button>
+    </div>
+  </ion-item>
+</div>
+<ng-template #gatewayLoadingTemp>
+  <ion-skeleton-text
+    style="height: 40px; width: 100%"
+    [animated]="true"
+  ></ion-skeleton-text>
+</ng-template>
+<app-page-list
+  [cols]="cols"
+  [data]="paymentProfiles"
+  [label]="dictionary.Provider"
+  [listPermission]="'PaymentProfileRead'"
+  [exportPermission]="'PaymentProfileRead'"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [hasRefresh]="true"
+  (refreshClick)="refreshClick()"
+  [hasNewButton]="false"
+  [showActionSheet]="false"
+  (exportClick)="onExcelExportClick()"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="gatewayListTable"
+/>
+<ng-template #gatewayListTable>
+  <p-table
+    appPermission
+    inputAppPermission="PaymentProfileRead"
+    [value]="paymentProfiles"
+    [columns]="cols"
+    [loading]="loading"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div class="table__row" [ngSwitch]="col.field">
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'name'">{{ rowData.name }}</span>
+              <span *ngSwitchCase="'providerIcon'">
+                <img [src]="rowData.providerIcon" />
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+<app-assign-gateway-list
+  *ngIf="openAssignGatewayListModal"
+  [isOpen]="openAssignGatewayListModal"
+  [title]="assignGatewayListModalTitle"
+  (dismiss)="openAssignGatewayListModal = false"
+  [gatewayList]="gatewayList"
+  [selectedGatewayListId]="assignedGatewayListId"
+  (assignGatewayList)="assignGatewayList($event)"
+/>
+<ion-alert
+  [isOpen]="isOpen"
+  [header]="dictionary.UnassignGatewayList"
+  message="Are you sure about unassign gateway list?"
+  [buttons]="alertButtons"
+/>

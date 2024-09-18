@@ -1,0 +1,19 @@
+ion-content {
+  --background: var(--eGift-background-color) !important;
+}
+
+ion-list {
+  height: 100%;
+  width: 100%;
+
+  ion-item {
+    width: 50px;
+    height: 40px;
+    margin: 1rem;
+  }
+}
+
+ion-content {
+  --offset-top: 0px !important;
+  --offset-bottom: 0px !important;
+}

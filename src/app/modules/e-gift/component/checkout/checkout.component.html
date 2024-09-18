@@ -1,0 +1,165 @@
+<ion-modal
+  class="card__modal"
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  [handle]="false"
+>
+  <ng-template>
+    <ion-header mode="ios">
+      <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Card }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="openProductBarcodeModal = true">
+            <ion-icon name="barcode-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-card *ngIf="data.product">
+        <ion-card-content class="ion-no-padding ion-no-margin">
+          <ion-grid class="ion-no-padding ion-no-margin">
+            <ion-row class="m-2">
+              <ion-col class="image-card" size="5">
+                <img
+                  height="80"
+                  width="123"
+                  [lazyLoad]="
+                    data.product.imageUrl
+                      ? data.product.imageUrl
+                      : localImageSRC
+                  "
+                  ngSrc="{{ localImageSRC }}"
+                  alt="product-img"
+                />
+              </ion-col>
+              <ion-col class="mid__content__row" size="7">
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="product__name"
+                      >{{ data.product.productName! }}
+                    </ion-label>
+                    <br />
+                    <ion-label class="second__amount p-0">
+                      {{ data.product.currency.symbol }}
+                      {{ data.faceValuePrice | truncateDecimalsPipe }}
+                    </ion-label>
+                  </ion-col>
+                  <ion-col class="d-flex align-items-center p-0" size="11">
+                    <span class="mx-1">{{ dictionary.Price }}:</span>
+                    {{ data.product.currency.symbol }}
+                    {{ data.unitPrice | truncateDecimalsPipe }}
+                  </ion-col>
+                  <ion-col class="d-flex align-items-center" size="1">
+                    <ion-label>{{ data.quantity }} </ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+      <div class="w__90 hr mt-5 m-auto"></div>
+      <div class="w__90 m-auto total">
+        <span>{{ dictionary.Total }}</span>
+        <span
+          >{{ data.unitPrice * data.quantity | truncateDecimalsPipe }}
+          <span class="currency">
+            ({{ data.product.currency.currencyName }})
+          </span></span
+        >
+      </div>
+    </ion-content>
+    <ion-footer class="p-1">
+      <ion-button
+        (click)="onReceiveClick('download')"
+        class="receive__button"
+        expand="block"
+      >
+        <app-icon class="icon__button" [type]="'download'" />
+        {{ dictionary.ReceiveByDownload }}
+      </ion-button>
+
+      <!-- <ion-button
+        *ngIf="posMode"
+        [disabled]="data.quantity > 5"
+        (click)="onPrintClick()"
+        class="receive__button"
+        expand="block"
+      >
+        <app-icon class="icon__button" [type]="'print'" />
+        {{ dictionary.Print }}
+      </ion-button> -->
+      <ion-button
+        (click)="onReceiveClick('WhatsApp')"
+        class="receive__button"
+        expand="block"
+      >
+        <app-icon class="icon__button" [type]="'whatsApp'"></app-icon>
+        {{ dictionary.ReceiveByWatsApp }}
+      </ion-button>
+      <ion-button
+        (click)="onReceiveClick('Sms')"
+        class="receive__button"
+        id="receive__button"
+        expand="block"
+      >
+        <app-icon class="icon__button" [type]="'sms'" />
+        {{ dictionary.ReceiveBySMS }}
+      </ion-button>
+      <ion-button
+        (click)="onReceiveClick('Email')"
+        class="receive__button"
+        expand="block"
+      >
+        <app-icon class="icon__button" [type]="'alternate_email'" />
+        {{ dictionary.ReceiveByEmail }}
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
+<app-receive
+  *ngIf="openReceiveModal"
+  [isOpen]="openReceiveModal"
+  (dismiss)="openReceiveModal = false"
+  [type]="receiveType"
+  [productId]="data.product.productId!"
+  [productName]="data.product.productName"
+  [total]="data.unitPrice"
+  [modalHeight]="receiveModalHeight"
+  [quantity]="data.quantity"
+  [productPrice]="data.faceValuePrice"
+  [currencyId]="data.product.currency.currencyId"
+  [currencyName]="data.product.currency.currencyName"
+  [unitPrice]="data.unitPrice"
+/>
+<app-product-barcode-modal
+  *ngIf="openProductBarcodeModal"
+  [isOpen]="openProductBarcodeModal"
+  (dismiss)="openProductBarcodeModal = false"
+  [productName]="data.product.productName"
+  [price]="data.unitPrice * data.quantity"
+/>
+<app-set-pin-modal
+  *ngIf="openSetPinModal"
+  [isOpen]="openSetPinModal"
+  (dismiss)="openSetPinModal = false"
+  (setPin)="onSetPin($event)"
+/>
+<ion-alert
+  [isOpen]="showInsufficientErrorAlert"
+  [subHeader]="textInsufficientErrorAlert"
+  [buttons]="errorAlertButtons"
+/>
+<ion-alert
+  [isOpen]="showBuyPriceMismatchExceptionAlert"
+  [subHeader]="textBuyPriceMismatchExceptionAlert"
+  [buttons]="buyPriceMismatchExceptionButtons"
+/>

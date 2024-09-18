@@ -1,0 +1,39 @@
+@import "../../../../assets/scss/primeng.scss";
+
+ion-content {
+  --overflow: hidden;
+
+  .order__items {
+    --overflow: auto;
+
+    .currency {
+      color: gray;
+      font-size: 12px;
+    }
+
+    .infinite-scroll-content {
+      text-align: center;
+      padding: 0 0 50px 0;
+    }
+  }
+
+  .loading__content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-spinner {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.height {
+  height: calc(100% - 10px);
+}
+
+.height__after__filter {
+  height: calc(100% - 70px);
+}

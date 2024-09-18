@@ -1,0 +1,113 @@
+<app-phone-header-layout [showBackButton]="true" />
+<ion-content *ngIf="!openScanner">
+  <form #activeForm="ngForm">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12">
+          <ion-row size="6">
+            <ion-col size="12">
+              <ion-label class="my-3 menu-label input-label"
+                >VAN16 (Barcode)</ion-label
+              >
+            </ion-col>
+            <ion-col size="12">
+              <ion-input
+                name="activateCode"
+                id="activateCode"
+                [autofocus]="true"
+                [label]="dictionary.Code"
+                labelPlacement="floating"
+                fill="outline"
+                [(ngModel)]="activateCode"
+                [required]="true"
+                [minlength]="30"
+                [autocorrect]="false"
+                mode="md"
+                [clearInput]="true"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <p class="sub-title-input">
+                * Enter starting batch number. All cards within the batch must
+                be consecutive with the same denomination.
+              </p>
+            </ion-col>
+            <hr class="divider" />
+          </ion-row>
+        </ion-col>
+        <ion-col size="12">
+          <ion-button
+            color="primary"
+            expand="block"
+            [disabled]="activeForm.form.invalid"
+            (click)="onActivateClick()"
+          >
+            {{ dictionary.Activate }}
+          </ion-button>
+        </ion-col>
+        <div class="separator">
+          <div class="border"></div>
+          <span class="mx-2">OR</span>
+          <div class="border"></div>
+        </div>
+        <ion-col class="mt-2" size="12">
+          <ion-button
+            *ngIf="!isIosMode"
+            size="large"
+            expand="block"
+            (click)="openScanner = true"
+          >
+            <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+            {{ dictionary.QrcodeScan }}
+          </ion-button>
+          <ion-button
+            *ngIf="isIosMode"
+            size="large"
+            expand="block"
+            (click)="startScan()"
+          >
+            <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+            {{ dictionary.QrcodeScan }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
+
+<ion-content *ngIf="openScanner">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="openScanner = false" color="primary">
+          {{ dictionary.Close }}
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <zxing-scanner
+    [device]="deviceCurrent"
+    (deviceChange)="onDeviceChange($event)"
+    (scanSuccess)="onCodeResult($event)"
+    [formats]="formatsEnabled"
+    [tryHarder]="tryHarder"
+    (permissionResponse)="onHasPermission($event)"
+    (camerasFound)="onCamerasFound($event)"
+  ></zxing-scanner>
+</ion-content>
+<app-activation-code-modal
+  *ngIf="openActivationCodeModal"
+  [isOpen]="openActivationCodeModal"
+  [product]="product"
+  [physicalCardActivation]="physicalCardActivation"
+  [cardNumber]="activateCode"
+  (cancel)="cancelActivationModal()"
+  (activate)="onActivationCode($event)"
+/>
+<ion-alert
+  [isOpen]="isOpenAlert"
+  [header]="header"
+  [message]="message"
+  [buttons]="alertButtons"
+/>
+<ion-loading [isOpen]="loading" [message]="dictionary.Loading" />

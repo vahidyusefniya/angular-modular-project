@@ -1,0 +1,21 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+ion-item {
+  --background-color: transparent;
+  --background: transparent;
+
+  .value-label {
+    color: gray;
+  }
+
+  .header__md__mode {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.edit__btn {
+  --color: var(--table-btn-color);
+}

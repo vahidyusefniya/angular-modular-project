@@ -1,0 +1,76 @@
+<ion-content
+  appPermission
+  inputAppPermission="WalletTransactionRead"
+  class="ion-no-padding"
+  [fullscreen]="true"
+>
+  <ion-grid class="h-100 ion-no-padding">
+    <ion-row *ngIf="loading">
+      <ion-col
+        size="12"
+        sizeLg="2"
+        *ngFor="let number of [0, 1, 2, 3, 4, 5]"
+        class="py-0 px-2"
+      >
+        <ion-skeleton-text
+          style="height: 114px; width: 100%"
+          [animated]="true"
+        ></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+
+    <ion-row
+      *ngIf="!loading && creditAndWalletList.length > 0"
+      class="gap-2 mb-2 flex-nowrap overflow-x-auto pt-2"
+    >
+      <div class="credit-card" *ngFor="let creditWallet of creditAndWalletList">
+        <ion-card
+          class="ion-no-margin"
+          [id]="'wallet-credit-card-' + creditWallet.currencyId"
+        >
+          <ion-card-content>
+            <div
+              class="d-flex justify-content-between align-items-center border-bottom"
+            >
+              <h5 class="key-lable">{{ creditWallet.currencyName }} 
+                <span *ngIf="creditWallet?.isForTest">(Test)</span>
+              </h5>
+            </div>
+            <div
+              class="d-flex justify-content-between align-items-center pt-2"
+            >
+              <div>
+                <span class="key-lable"> {{ dictionary.Wallet }}: </span>
+                <span>
+                  {{ creditWallet.balanceWallet | truncateDecimalsPipe }}
+                </span>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="key-lable"> {{ dictionary.Credit }}: </span>
+                <span>
+                  {{ creditWallet.balanceCredit | truncateDecimalsPipe }}
+                </span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-row>
+    <div class="my-wallet-transactions h-100">
+      <app-wallet-transaction
+        appPermission
+        inputAppPermission="WalletTransactionRead"
+        class="h-100"
+        (refresh)="initPage()"
+      />
+    </div>
+  </ion-grid>
+</ion-content>
+
+<app-charge
+  [isOpen]="showChargeModal"
+  (dismiss)="showChargeModal = false"
+  (submit)="submit()"
+/>

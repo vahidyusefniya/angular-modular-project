@@ -1,0 +1,69 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" class="charge__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.FinancialActivityDetail }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div class="d-flex flex-column">
+        <ion-label
+          *ngIf="branch.merchant?.financialActivitiesTwoPhaseVerification"
+          >{{ dictionary.FirstVerifierUserEmail }}:
+          <span
+            class="gray-color"
+            *ngIf="financialActivity?.firstVerifierUserEmail; else elseBlock"
+          >
+            {{ financialActivity?.firstVerifierUserEmail }}
+          </span>
+          <ng-template #elseBlock>
+            <span class="gray-color">-</span>
+          </ng-template>
+        </ion-label>
+        <ion-label
+          *ngIf="branch.merchant?.financialActivitiesTwoPhaseVerification"
+          >{{ dictionary.SecondVerifierUserEmail }}:
+          <span
+            class="gray-color"
+            *ngIf="financialActivity?.secondVerifierUserEmail; else elseBlock"
+          >
+            {{ financialActivity?.secondVerifierUserEmail }}
+          </span>
+          <ng-template #elseBlock>
+            <span class="gray-color">-</span>
+          </ng-template>
+        </ion-label>
+        <ion-label
+          *ngIf="
+            branch.merchant?.financialActivitiesTwoPhaseVerification &&
+            financialActivity?.rejecterUserEmail
+          "
+          >{{ dictionary.RejecterUserEmail }}:
+          <span class="gray-color" *ngIf="financialActivity?.rejecterUserEmail">
+            {{ financialActivity?.rejecterUserEmail }}
+          </span>
+          <ng-template #elseBlock>
+            <span class="gray-color">-</span>
+          </ng-template>
+        </ion-label>
+        <ion-label
+          >{{ dictionary.Description }}:
+          <span
+            class="gray-color"
+            *ngIf="financialActivity?.description; else elseBlock"
+          >
+            {{ financialActivity?.description }}
+          </span>
+          <ng-template #elseBlock>
+            <span class="gray-color">-</span>
+          </ng-template>
+        </ion-label>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,22 @@
+ion-modal {
+  --height: 640px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}
+.quantity{
+  width: 100%;
+  position: relative;
+}
+.total-price{
+  position: absolute;
+  top: 17px;
+  right: 16px;
+  color: gray;
+}
+.balance{
+  font-size: 14px;
+}

@@ -1,0 +1,39 @@
+::ng-deep ion-toolbar {
+  .content__header {
+    display: flex;
+    align-items: center;
+
+    .back__btn__label {
+      position: relative;
+      font-size: 1rem;
+      right: 17px;
+    }
+
+    .back__btn__icon {
+      font-size: 2.2rem;
+    }
+
+    .region__image {
+      height: 30px;
+      width: 40px;
+      border-radius: 5px;
+    }
+
+    .logo__image {
+      height: 30px;
+    }
+
+    ion-icon {
+      font-size: 30px;
+      cursor: pointer;
+    }
+  }
+
+  ion-searchbar {
+    padding: 0 !important;
+
+    .searchbar-cancel-button {
+      color: var(--table-btn-color) !important;
+    }
+  }
+}

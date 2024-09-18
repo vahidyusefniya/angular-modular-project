@@ -1,0 +1,38 @@
+<app-page-list
+  [cols]="cols"
+  [data]="regions"
+  [loading]="loading"
+  [label]="dictionary.Regions"
+  [newButtonLabel]="dictionary.NewRegion"
+  [newButtonPermission]="'CurrencyWrite'"
+  [listPermission]="'CurrencyRead'"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [hasExport]="true"
+  [hasLocalPagination]="true"
+  (newButtonClick)="showNewRegionForm()"
+  (linkRowClick)="onEditRegionClick($event)"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  [page]="page"
+  [pageSize]="pageSize"
+  class="table-list"
+/>
+
+<app-add-region
+  (dismiss)="showRegionForm = false"
+  (submit)="submitCreate($event)"
+  [isOpen]="showRegionForm"
+  [model]="regionForm"
+  *ngIf="showRegionForm"
+>
+</app-add-region>
+
+<app-edit-region
+  (dismiss)="showEditRegionForm = false"
+  (submit)="submitUpdate($event)"
+  [isOpen]="showEditRegionForm"
+  [model]="regionForm"
+  *ngIf="showEditRegionForm"
+>
+</app-edit-region>

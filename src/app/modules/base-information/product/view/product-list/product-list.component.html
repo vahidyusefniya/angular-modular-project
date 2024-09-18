@@ -1,0 +1,134 @@
+<app-page-list
+  [cols]="cols"
+  [data]="products"
+  [listPermission]="'ProductRead'"
+  [loading]="loading"
+  [label]="dictionary.Products"
+  [hasSearch]="true"
+  [hasLocalPagination]="hasLocalPagination"
+  (linkRowClick)="onEditProductClick($event)"
+  [page]="page"
+  [pageSize]="pageSize"
+  (pageChanged)="pageChanged($event)"
+  [showPagination]="true"
+  (inputSearch)="onInputSearch($event)"
+  [hasCustomTableHeader]="true"
+  [initialHeaderTemplate]="productHeader"
+  class="table-list"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="productsTable"
+/>
+<ng-template #productHeader>
+  <ion-button
+    appPermission
+    inputAppPermission="SetBuyPrice"
+    class="mx-1 lg__mode"
+    (click)="onOpenSetByPriceModalClick()"
+    id="set-buying-price"
+  >
+    {{ dictionary.SetBuyingPrice }}
+  </ion-button>
+  <ion-button
+    appPermission
+    inputAppPermission="ProductWrite"
+    class="mx-1 lg__mode"
+    (click)="openCreateProduct = true"
+    id="new-product"
+  >
+    <i class="material-icons">add</i>
+    {{ dictionary.NewProduct }}
+  </ion-button>
+  <ion-button class="mx-1 table__btn sm__mode" (click)="presentActionSheet()">
+    <i class="material-icons">more_vert</i>
+  </ion-button>
+  <ion-button
+    class="mx-1 table__btn lg__mode"
+    (click)="onRefreshClick()"
+    id="refresh-button"
+  >
+    <i class="material-icons">refresh</i>
+  </ion-button>
+  <ion-button
+    appPermission
+    inputAppPermission="ProductRead"
+    class="mx-1 table__btn lg__mode"
+    (click)="onExcelExportClick()"
+  >
+    <i class="material-icons">download</i>
+  </ion-button>
+</ng-template>
+
+<ng-template #productsTable>
+  <p-table
+    [value]="products"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    dataKey="productId"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" [class]="'row-' + col.field">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-rowData
+      let-columns="columns"
+      let-expanded="expanded"
+    >
+      <tr class="row-table">
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div class="table__row" [ngSwitch]="col.field">
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 row-item">
+              <span *ngSwitchCase="'productName'">
+                {{ rowData.productName }}
+                {{ rowData }}
+                <label
+                  class="product-type-lable mx-1"
+                  [style.background]="'#0daeed'"
+                  *ngIf="rowData.product"
+                  >{{ rowData.isPhysical ? "P" : "D" }}</label
+                >
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-product-create
+  *ngIf="openCreateProduct"
+  [isOpen]="openCreateProduct"
+  (dismiss)="openCreateProduct = false"
+  (newProduct)="newProduct($event)"
+/>
+<app-product-edit
+  *ngIf="openEditProductModal"
+  [selectedProduct]="selectedProduct"
+  [isOpen]="openEditProductModal"
+  (dismiss)="openEditProductModal = false"
+  [categoryName]="selectedCategoryName"
+  [regionName]="selectedRegionName"
+  (editProduct)="editProduct($event)"
+/>
+<app-set-buying-price-modal
+  *ngIf="setByPriceModal"
+  [isOpen]="setByPriceModal"
+  [id]="systemRootPriceList.priceListId"
+  [branchId]="systemRootPriceList.branchId"
+  (dismiss)="setByPriceModal = false"
+/>

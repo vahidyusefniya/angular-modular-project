@@ -1,0 +1,214 @@
+<ion-split-pane contentId="main-content">
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-content>
+      <ion-header mode="ios">
+        <ion-toolbar mode="ios">
+          <ion-item
+            (click)="branches.length > 1 ? (openChooseBranchModal = true) : ''"
+            lines="none"
+            *ngIf="!selectedBranchName?.includes('undefined')"
+          >
+            <h6 slot="start" class="text-white pt-2 branch-selection">
+              {{ selectedBranchName }}
+            </h6>
+            <ion-button
+              *ngIf="branches.length > 1"
+              (click)="openChooseBranchModal = true"
+              fill="clear"
+              id="choose-branch-button"
+              slot="end"
+            >
+              <ion-icon
+                class="gray__color"
+                name="chevron-down-outline"
+              ></ion-icon>
+            </ion-button>
+          </ion-item>
+          <p class="ps-3 salemanager-name" *ngIf="saleManagerName">
+            ({{ dictionary.SaleManager }}: {{ saleManagerName }})
+          </p>
+        </ion-toolbar>
+      </ion-header>
+      <div class="side__image">
+        <img
+          ngSrc="../../../../assets/img/ezpin.png"
+          height="256"
+          width="400"
+          alt="logo"
+          style="width: 90px; height: 50px"
+        />
+      </div>
+      <ion-list id="inbox-list">
+        <app-menu-list-item
+          *ngFor="let navItem of navItems"
+          [item]="navItem"
+          (click)="onMenuItemClick(navItem)"
+        />
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <div id="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <app-breadcrumb class="d-none d-lg-block" slot="start" />
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            appPermission
+            inputAppPermission="WalletTransactionRead"
+            fill="outline"
+            *ngIf="selectedBranch?.parentBranchId && showReturnButton"
+            (click)="onReturnToClick(selectedBranch)"
+          >
+            {{ dictionary.ReturnTo }}
+            {{ selectedBranch.merchant?.merchantName }}
+          </ion-button>
+        </ion-buttons>
+
+        <ion-buttons slot="end">
+          <a
+            class="d-sm-flex align-items-center d-none mx-2 header-buttons"
+            href="#"
+            appPermission
+            inputAppPermission="PaymentOrderRead"
+            [routerLink]="'/branches/' + branchId + '/payment'"
+            *ngIf="selectedBranch!.canCreatePaymentOrder!"
+          >
+            <ion-icon name="add" />
+            {{ dictionary.Payment }}
+          </a>
+
+          <a
+            href="#"
+            appPermission
+            inputAppPermission="WalletTransactionRead"
+            id="my-wallet-button"
+            [routerLink]="'/branches/' + branchId + '/my-wallet'"
+            class="mx-2 header-buttons"
+            *ngIf="!(selectedBranch.branchName !== 'root')"
+          >
+            <app-icon *ngIf="isMobileSize" type="wallet" />
+            <span *ngIf="!isMobileSize">{{ dictionary.MyWallet }}</span>
+          </a>
+
+          <a
+            href="#"
+            appPermission
+            [pTooltip]="'Dashboard'"
+            [tooltipPosition]="'bottom'"
+            inputAppPermission="Dashboard"
+            [pTooltip]="dictionary.Dashboard"
+            [routerLink]="'/branches/' + branchId + '/dashboard'"
+            class="mx-2 header-buttons"
+          >
+            <app-icon type="query_stats" />
+          </a>
+
+          <ion-button
+            (click)="openProfilePopop($event)"
+            shape="round"
+            class="mx-2"
+          >
+            <ion-avatar class="avatar-shape">
+              <img
+                height="40"
+                width="40"
+                [lazyLoad]="
+                  clientProfile.pictureUrl
+                    ? clientProfile.pictureUrl
+                    : localProfileImageSRC
+                "
+                ngSrc="{{ localProfileImageSRC }}"
+              />
+            </ion-avatar>
+          </ion-button>
+          <ion-popover
+            mode="md"
+            #popover
+            class="popop-profile"
+            [isOpen]="isOpen"
+            (didDismiss)="isOpen = false"
+            [showBackdrop]="false"
+          >
+            <ng-template>
+              <div class="popop-modal">
+                <div class="popop-header"></div>
+                <div class="popop-content">
+                  <div class="popop-container">
+                    <p class="mb-1">
+                      {{ clientProfile.firstName }}
+                    </p>
+                    <div *ngIf="!clientProfile.firstName" class="mt-4"></div>
+                    <ion-avatar class="mx-auto user-avatar">
+                      <img
+                        height="40"
+                        width="40"
+                        [lazyLoad]="
+                          clientProfile.pictureUrl
+                            ? clientProfile.pictureUrl
+                            : localProfileImageSRC
+                        "
+                        ngSrc="{{ localProfileImageSRC }}"
+                      />
+                    </ion-avatar>
+                    <h6 class="my-2 user-name">{{ clientProfile.name }}</h6>
+                    <div class="user-email">
+                      {{ clientProfile.email }}
+                    </div>
+                    <ion-button
+                      fill="clear"
+                      class="profile-btn"
+                      [routerLink]="'/branches/' + branchId + '/profile'"
+                      (click)="isOpen = false"
+                    >
+                      {{ dictionary.Profile }}
+                    </ion-button>
+                    <ion-toggle
+                      [className]="'toggle'"
+                      (ionChange)="changeDeviceModeMode()"
+                      [checked]="deviceModeContext(deviceMode)"
+                      slot="end"
+                      class="w-100"
+                    >
+                      {{ dictionary.PosMode }}
+                    </ion-toggle>
+                  </div>
+                  <div class="ion-text-center py-2 signout-btn">
+                    <ion-button
+                      color="medium"
+                      fill="outline"
+                      (click)="onLogoutClick()"
+                    >
+                      {{ dictionary.SignOut }}
+                    </ion-button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ion-popover>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div class="main">
+        <router-outlet></router-outlet>
+      </div>
+    </ion-content>
+  </div>
+</ion-split-pane>
+<app-choose-branch
+  *ngIf="openChooseBranchModal"
+  [isOpen]="openChooseBranchModal"
+  (dismiss)="openChooseBranchModal = false"
+  (branchSelectionChange)="branchSelectionChange($event)"
+  [branches]="branches"
+  [selectedBranch]="selectedBranch"
+  [state]="'change'"
+/>
+<app-basket-items 
+[isOpen]="showBasketDrawer"
+*ngIf="showBasketItemsTag"
+/>

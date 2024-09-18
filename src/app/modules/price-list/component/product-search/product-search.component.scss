@@ -1,0 +1,14 @@
+ion-modal {
+  --height: 700px;
+
+  cdk-virtual-scroll-viewport {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100%;
+  }
+}

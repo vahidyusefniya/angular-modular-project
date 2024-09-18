@@ -1,0 +1,141 @@
+<div class="customer-list-table">
+  <app-page-list
+    [data]="customers"
+    [label]="dictionary.Customers"
+    [listPermission]="'CustomerRead'"
+    [advancedFilterPermission]="'CustomerRead'"
+    [exportPermission]="'CustomerRead'"
+    [hasAdvancedFilter]="true"
+    [hasSearch]="true"
+    [hasNewButton]="true"
+    (advancedFilterClick)="openCustomerFilterModal = true"
+    (newButtonClick)="redirectToCreatePage()"
+    (refreshClick)="onRefreshClick()"
+    (exportClick)="onExcelExportClick()"
+    [showActionSheet]="true"
+    (inputSearch)="onInputSearch($event)"
+    (pageChanged)="fillLocalCustomers($event)"
+    [page]="page"
+    [pageSize]="pageSize"
+    [newButtonLabel]="dictionary.NewCustomer"
+    [newButtonPermission]="'MerchantWrite'"
+    [hasCustomTableContent]="true"
+    [initialTemplate]="customersTable"
+    [tagList]="tagList"
+    [lastPageNumber]="lastPageNumber"
+    [showPageSizeSelect]="true"
+    (pageSizeChange)="pageSizeChange($event)"
+  />
+  <ng-template #customersTable>
+    <p-table
+      appPermission
+      inputAppPermission="CustomerRead"
+      [value]="customers"
+      [columns]="cols"
+      responsiveLayout="stack"
+      styleClass="p-datatable-gridlines"
+      breakpoint="840px"
+      [loading]="loading"
+      [reorderableColumns]="true"
+      (sortFunction)="sort($event)"
+      [customSort]="true"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th
+            *ngFor="let col of columns"
+            pReorderableColumn
+            [pSortableColumn]="col.field"
+          >
+            <div class="header__content">
+              {{ col.header }}
+              <p-sortIcon
+                *ngIf="col.field !== 'merchantId'"
+                [field]="col.field"
+              ></p-sortIcon>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-rowData
+        let-columns="columns"
+        let-index="rowIndex"
+      >
+        <tr>
+          <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+            <div class="table__row" [ngSwitch]="col.field">
+              <span class="table__label__row me-2">{{ col.header }}</span>
+              <div class="p-1 py-2">
+                <span
+                  (click)="onLinkRowClickClick(rowData)"
+                  *ngSwitchCase="'merchantId'"
+                  ><ion-text
+                    color="primary"
+                    class="hyper-link"
+                    [id]="rowData.merchantId"
+                    style="cursor: pointer"
+                  >
+                    {{ rowData.merchantId }}
+                  </ion-text>
+                </span>
+                <span *ngSwitchCase="'merchantName'">
+                  {{ rowData.merchantName }}
+                </span>
+                <span *ngSwitchCase="'gatewayList'">
+                  {{
+                    rowData.merchant?.assignedGatewayList?.name
+                      ? rowData.merchant.assignedGatewayList.name
+                      : "-"
+                  }}
+                </span>
+                <span *ngSwitchCase="'priceList'">
+                  {{
+                    rowData.assignedPriceList &&
+                    rowData.assignedPriceList.priceListName
+                      ? rowData.assignedPriceList.priceListName
+                      : "-"
+                  }}
+                </span>
+                <span *ngSwitchCase="'saleManager'">
+                  {{ rowData?.merchant?.saleManager?.name || "-" }}
+                </span>
+                <span *ngSwitchCase="'isActive'">
+                  <ion-text
+                    [color]="
+                      mapIsActiveStatus(rowData['merchant']['isActive']) ===
+                      'Deactive'
+                        ? 'danger'
+                        : 'success'
+                    "
+                  >
+                    {{ mapIsActiveStatus(rowData["merchant"]["isActive"]) }}
+                  </ion-text>
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="text-center" [attr.colspan]="cols.length">
+            {{ dictionary.NoRecordsFound }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+</div>
+
+<app-customer-filter
+  *ngIf="openCustomerFilterModal"
+  [isOpen]="openCustomerFilterModal"
+  [priceLists]="priceLists"
+  (dismiss)="openCustomerFilterModal = false"
+  (filterCustomer)="saveFilterCustomer($event)"
+  [data]="filterCustomer"
+  [gatewayLists]="gatewayLists"
+  [saleManagers]="saleManagers"
+/>

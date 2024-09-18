@@ -1,0 +1,72 @@
+<ion-modal
+  class="assign__price__list__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.NewCategory }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!categoryForm.form.valid || loading"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #categoryForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-text
+                [Label]="dictionary.Name"
+                [(ngModel)]="model.categoryName"
+                name="categoryName"
+                [required]="true"
+                (keydown.enter)="categoryForm.form.valid ? submitForm() : ''"
+              ></app-text>
+            </ion-col>
+            <ion-col size="12">
+              <p-fileUpload
+                name="image"
+                [url]="uploadImageUrl"
+                (onUpload)="onUpload($event)"
+                [multiple]="false"
+                [auto]="true"
+                accept="image/*"
+                [maxFileSize]="1000000"
+                (onBeforeUpload)="onBeforeUpload()"
+              >
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">
+                      <div class="content">
+                        <img
+                          alt="upload-image"
+                          width="50"
+                          height="30"
+                          ngSrc="{{ imageUrl }}"
+                        />
+                        <ion-label class="mx-2">{{ file.name }}</ion-label>
+                      </div>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

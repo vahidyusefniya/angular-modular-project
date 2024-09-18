@@ -1,0 +1,169 @@
+<ion-modal
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  #receiveModal
+  [initialBreakpoint]="0.99"
+  [breakpoints]="[0, 0.99]"
+  class="sendEmail__modal"
+  [handle]="false"
+>
+  <ng-template>
+    <ion-header mode="ios">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form>
+        <ion-grid [fixed]="true">
+          <ion-row>
+            <ion-col size="12">
+              <ion-radio-group
+                [value]="branch?.branchId"
+                *ngIf="
+                  order?.buyOrderDelivery?.deliveryTypeValue !== null &&
+                  branch?.merchant?.phoneNumber !== null &&
+                  order?.buyOrderDelivery?.deliveryTypeValue === branch?.merchant?.phoneNumber &&
+                  deliveryType === 'Sms'
+                "
+              >
+                <ion-item (click)="onEmailClick(myEmail)" class="mt-2">
+                  <ion-radio [value]="myEmail" justify="space-between">
+                    {{ myLabel }} ({{ myEmail }})
+                  </ion-radio>
+                </ion-item>
+                <ion-item
+                  (click)="
+                    onEmailClick(order?.buyOrderDelivery?.deliveryTypeValue!)
+                  "
+                  class="mt-2"
+                >
+                  <ion-radio
+                    [value]="order?.buyOrderDelivery?.deliveryTypeValue"
+                    justify="space-between"
+                  >
+                    {{ order?.buyOrderDelivery?.deliveryTypeValue }}
+                  </ion-radio>
+                </ion-item>
+              </ion-radio-group>
+              <ion-radio-group
+                [value]="branch?.branchId"
+                *ngIf="
+                  order?.buyOrderDelivery?.deliveryTypeValue !== null &&
+                  branch?.merchant?.whatsappNumber !== null &&
+                  order?.buyOrderDelivery?.deliveryTypeValue === branch?.merchant?.whatsappNumber &&
+                  deliveryType === 'WhatsApp'
+                "
+                >
+                <ion-item (click)="onEmailClick(myEmail)" class="mt-2">
+                  <ion-radio [value]="myEmail" justify="space-between">
+                    {{ myLabel }} ({{ myEmail }})
+                  </ion-radio>
+                </ion-item>
+                <ion-item
+                  (click)="
+                    onEmailClick(order?.buyOrderDelivery?.deliveryTypeValue!)
+                  "
+                  class="mt-2"
+                >
+                  <ion-radio
+                    [value]="order?.buyOrderDelivery?.deliveryTypeValue"
+                    justify="space-between"
+                  >
+                    {{ order?.buyOrderDelivery?.deliveryTypeValue }}
+                  </ion-radio>
+                </ion-item>
+              </ion-radio-group>
+              <ion-radio-group
+                [value]="branch?.branchId"
+                *ngIf="
+                  order?.buyOrderDelivery?.deliveryTypeValue !== null &&
+                  branch?.merchant?.email !== null &&
+                  order?.buyOrderDelivery?.deliveryTypeValue != myEmail &&
+                  deliveryType === 'Email'
+                "
+              >
+                <ion-item (click)="onEmailClick(myEmail)" class="mt-2">
+                  <ion-radio [value]="myEmail" justify="space-between">
+                    {{ myLabel }} ({{ myEmail }})
+                  </ion-radio>
+                </ion-item>
+                <ion-item
+                  (click)="
+                    onEmailClick(order?.buyOrderDelivery?.deliveryTypeValue!)
+                  "
+                  class="mt-2"
+                >
+                  <ion-radio
+                    [value]="order?.buyOrderDelivery?.deliveryTypeValue"
+                    justify="space-between"
+                  >
+                    {{ order?.buyOrderDelivery?.deliveryTypeValue }}
+                  </ion-radio>
+                </ion-item>
+              </ion-radio-group>
+              <span
+                *ngIf="
+                  (
+                    order?.buyOrderDelivery?.deliveryTypeValue === null ||
+                    branch?.merchant?.email === null ||
+                    order?.buyOrderDelivery?.deliveryTypeValue === branch?.merchant?.email
+                  ) &&
+                  deliveryType === 'Email'
+                "
+                class="my-email-message"
+              >
+                Are you sure resend email to
+                <span class="fw-bold">{{ myEmail }}</span
+                >?
+              </span>
+              <span
+                *ngIf="
+                  (
+                    order?.buyOrderDelivery?.deliveryTypeValue === null ||
+                    branch?.merchant?.phoneNumber === null ||
+                    order?.buyOrderDelivery?.deliveryTypeValue !== branch?.merchant?.phoneNumber
+                  ) &&
+                  deliveryType === 'Sms'"
+                class="my-email-message"
+              >
+                Are you sure resend Sms to
+                <span class="fw-bold">+{{ myEmail }}</span
+                >?
+              </span>
+              <span
+                *ngIf="
+                  (
+                    order?.buyOrderDelivery?.deliveryTypeValue === null ||
+                    branch?.merchant?.whatsappNumber === null ||
+                    order?.buyOrderDelivery?.deliveryTypeValue !== branch?.merchant?.whatsappNumber
+                  ) &&
+                  deliveryType === 'WhatsApp'
+                "
+                class="my-email-message"
+              >
+                Are you sure resend WhatsApp to
+                <span class="fw-bold">+{{ myEmail }}</span
+                >?
+              </span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+    <ion-footer class="p-1">
+      <ion-button
+        [disabled]="email === ''"
+        class="submit"
+        expand="block"
+        (click)="onSubmitClick()"
+      >
+        {{ dictionary.Confirm }}
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>

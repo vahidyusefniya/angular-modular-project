@@ -1,0 +1,24 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+ion-modal {
+  --width: 900px;
+}
+
+.order__detail__modal {
+  --height: 250px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --width: 100% !important;
+  }
+  .order__detail__modal {
+    --height: 100%;
+  }
+}
+.hyper-link{
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}

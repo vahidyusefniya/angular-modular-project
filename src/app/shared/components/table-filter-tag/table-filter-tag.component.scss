@@ -1,0 +1,24 @@
+.tag__list {
+  height: 50px;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-top: 5px;
+
+  .tag__value {
+    font-weight: 900;
+  }
+
+  .tag__key {
+    color: var(--navy);
+  }
+  .tag-item {
+    background: #c2c6ca;
+  }
+  ion-icon {
+    color: #303d4f !important;
+  }
+  ion-label {
+    color: #303d4f !important;
+  }
+}

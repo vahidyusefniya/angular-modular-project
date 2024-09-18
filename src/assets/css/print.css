@@ -1,0 +1,40 @@
+
+@media print {
+  ion-menu, ion-toolbar, ion-header, .button{
+    display: none;
+  }
+
+  body {
+    margin: 0;
+    color: red;
+    background-color: #fff;
+  }
+
+  #content {
+    width: 100%;
+    height: 450px;
+    box-sizing: border-box;
+    .title{
+      color: #F2672A;
+      font-size: 36pt;
+    }
+    .fs-6{
+      font-size: 10pt !important;
+    }
+    .invoice-detail-title{
+      font-size: 20pt;
+    }
+    @media print and (-webkit-min-device-pixel-ratio:0) {
+      .text-secondary{
+        color: rgba(0,0,0,0.5);
+        -webkit-print-color-adjust: exact;
+      }
+    }
+    .total{
+      font-size: 20pt;
+    }
+
+  }
+  @page { size: auto;  margin: 0mm; }
+}
+

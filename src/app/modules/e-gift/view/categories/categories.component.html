@@ -1,0 +1,21 @@
+<app-phone-header-layout
+  [title]="title"
+  [showSearchBar]="true"
+  [showBackButton]="true"
+  (search)="onInputSearch($event)"
+  [searchbarId]="'category__searchbar'"
+/>
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let category of categories; let id = index" size="4">
+        <category-card
+          (click)="onCategoryClick(category)"
+          [id]="id"
+          [category]="category"
+          [categoryLevel]="'tow'"
+        ></category-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

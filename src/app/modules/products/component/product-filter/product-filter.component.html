@@ -1,0 +1,49 @@
+<ion-modal
+  class="assign__price__list__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Filter }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="primary" (click)="onFilterProductClick()">
+            {{ dictionary.Done }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #branchForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-category-modal
+                [id]="'categoryName'"
+                [label]="dictionary.Category"
+                [categoryId]="filter.categoryId"
+                (chooseCategory)="chooseCategory($event)"
+                (removeCat)="removeCategory()"
+              />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-currency-combobox
+                id="currencyId"
+                [(ngModel)]="filter.currencyId"
+                name="currencyId"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,146 @@
+<ion-content
+  appPermission
+  inputAppPermission="RootCategory"
+  *ngIf="!loading"
+  class="ion-no-padding"
+  [fullscreen]="true"
+>
+  <ion-header>
+    <ion-toolbar>
+      <ion-grid>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="searchbar-section">
+            <ion-searchbar
+              show-cancel-button="never"
+              placeholder="Search item"
+              [debounce]="1000"
+              (ionInput)="onInputSearch($event.target.value!)"
+              [autocomplete]="true"
+              class="ps-0 py-0 p-sm-2 w-100"
+              id="searchbar"
+            ></ion-searchbar>
+          </div>
+          <div class="d-flex align-items-center">
+            <img
+              class="img__content"
+              (click)="openRegionModal = true"
+              ngSrc="{{ regionImage ? regionImage : localImageSRC }}"
+              width="30"
+              height="22"
+              alt="region-image"
+              [slot]="width > 400 ? 'end' : ''"
+            />
+            <ion-label slot="end" class="mx-2 d-none d-md-block">
+              {{ selectedRegion?.name ? selectedRegion?.name : regionName }}
+            </ion-label>
+          </div>
+        </div>
+        <div class="w-100">
+          <ion-button
+            *ngIf="shopState.previous.length > 0"
+            color="dark"
+            fill="clear"
+            (click)="onBackButtonClick()"
+          >
+            <ion-icon name="chevron-back-outline"></ion-icon>
+            {{ previousCategoryName }}
+          </ion-button>
+        </div>
+      </ion-grid>
+    </ion-toolbar>
+  </ion-header>
+  <div
+    [ngClass]="
+      shopState.previous.length > 0
+        ? 'product-container-with-cat'
+        : 'product-container-without-cat'
+    "
+  >
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          *ngIf="searchValue?.length === 0 || shopState.previous.length === 0"
+          size="12"
+        >
+        </ion-col>
+        <ion-col
+          *ngFor="let data of shopState.current; let id = index"
+          [size]="
+            shopState.shopCardType === 'category'
+              ? 4
+              : shopState.shopCardType === 'product' && width > 500
+              ? 6
+              : 12
+          "
+          size-md="4"
+          size-lg="3"
+          size-xl="2"
+        >
+          <app-shop-card
+            [id]="id"
+            [data]="data"
+            [categoryLevel]="shopState.previous.length === 0 ? 'one' : 'tow'"
+            [type]="shopState.shopCardType"
+            (click)="onShopCardClick(shopState, data, shopState.shopCardType)"
+            (descriptionClick)="onOpenDescriptionModalClick($event)"
+            (buyClick)="onOpenBuyModalClick($event)"
+          />
+        </ion-col>
+        <ion-col
+          size="12"
+          class="d-flex justify-content-center"
+          *ngIf="shopState.current && shopState.current.length === 0"
+        >
+          {{ dictionary.NoRecordsFound }}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+<div *ngIf="loading" class="loading__content">
+  <ion-spinner color="dark" />
+</div>
+<app-region
+  *ngIf="openRegionModal"
+  [isOpen]="openRegionModal"
+  (dismiss)="openRegionModal = false"
+  [selectedRegion]="selectedRegion"
+  (chooseRegion)="chooseRegion($event)"
+/>
+<app-product-desktop-description-modal
+  *ngIf="openDescriptionModal"
+  [isOpen]="openDescriptionModal"
+  (dismiss)="openDescriptionModal = false"
+  [description]="description"
+/>
+<app-buy
+  *ngIf="openBuyModal"
+  [isOpen]="openBuyModal"
+  [product]="selectedProduct"
+  (dismiss)="openBuyModal = false"
+  (continueClick)="onOpenVerifyModal($event)"
+/>
+<app-verify
+  *ngIf="openVerifyModal"
+  [isOpen]="openVerifyModal"
+  [product]="selectedProduct"
+  (dismiss)="openVerifyModal = false"
+  [faceValuePrice]="faceValuePrice"
+  [unitPrice]="unitPrice"
+  [quantity]="quantity"
+  [totalPrice]="totalPrice"
+  [deliveryType]="deliveryType"
+  [deliveryTypeValue]="deliveryTypeValue"
+  (verify)="onVerifyClick($event)"
+/>
+<ion-alert
+  [isOpen]="showInsufficientErrorAlert"
+  [subHeader]="textInsufficientErrorAlert"
+  [buttons]="errorAlertButtons"
+/>
+<ion-alert
+  [isOpen]="showBuyPriceMismatchExceptionAlert"
+  [subHeader]="textBuyPriceMismatchExceptionAlert"
+  [buttons]="buyPriceMismatchExceptionButtons"
+  class="buyPriceMismatchException__alert"
+/>

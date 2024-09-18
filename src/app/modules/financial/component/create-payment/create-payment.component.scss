@@ -1,0 +1,14 @@
+.charge__modal {
+  --height: 200px;
+}
+
+@media screen and (max-width: 840px) {
+  .charge__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}
+
+.active-button {
+  background-color: rgba(85, 83, 83, 0.2);
+}

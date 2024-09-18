@@ -1,0 +1,7 @@
+{
+  "name": "Ezpin-Portal",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

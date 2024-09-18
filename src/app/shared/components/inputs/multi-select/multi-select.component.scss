@@ -1,0 +1,9 @@
+ion-select {
+  min-height: 56px !important;
+}
+
+ion-select {
+  &::part(text) {
+    max-width: 210px;
+  }
+}

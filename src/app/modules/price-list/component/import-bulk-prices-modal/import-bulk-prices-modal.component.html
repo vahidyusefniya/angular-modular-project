@@ -1,0 +1,299 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.ImportBulkPrices }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="rules.length === 0"
+            (click)="onSaveRulesClick()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <p-fileUpload
+                name="upload"
+                accept=".xlsx"
+                (onSelect)="onSelectFile($event)"
+                (onRemove)="onRemoveFile()"
+                [showUploadButton]="false"
+                [showCancelButton]="false"
+              >
+                <ng-template pTemplate="toolbar">
+                  <ng-container *ngIf="showCodeCount && hasFile">
+                    <div
+                      class="pt-2"
+                      *ngIf="rules.length > 0; else loadingText"
+                    >
+                      <div
+                        *ngIf="countInvalid !== 0; else withoutErrorText"
+                      >
+                        There are errors in
+                        <span class="danger-alert-btn">{{
+                          countInvalid
+                        }}</span>
+                        out of {{ rules.length }} records
+                        <span class="danger-alert-btn">(highlighted)</span>. Fix
+                        them and re-upload the file.
+                      </div>
+                      <ng-template #withoutErrorText>
+                        <div>
+                          {{ rules.length }} records have been uploaded. This
+                          process changes the pricing of products. Save if you
+                          are sure.
+                        </div>
+                      </ng-template>
+                    </div>
+                    <ng-template #loadingText>
+                      <ion-skeleton-text
+                        [animated]="true"
+                        style="width: 100%"
+                      ></ion-skeleton-text>
+                    </ng-template>
+                  </ng-container>
+                </ng-template>
+                <ng-template pTemplate="content">
+                  <h6 class="sample-excel">
+                    Please download price list and edit, then upload. download
+                    by
+                    <span class="dl-excel" (click)="onSampleExcelClick()"
+                      >click here</span
+                    >
+                  </h6>
+                </ng-template>
+              </p-fileUpload>
+            </ion-col>
+            <ng-container *ngIf="hasFile">
+              <ion-col size="12" *ngIf="rules.length > 0; else loadingSection">
+                <app-page-list
+                  [label]="dictionary.Rules"
+                  [data]="rules"
+                  [hasNewButton]="false"
+                  [hasAdvancedFilter]="false"
+                  [hasSearch]="false"
+                  [showPagination]="false"
+                  [hasExport]="true"
+                  [hasRefresh]="false"
+                  class="upload-rules-list"
+                  [hasCustomTableContent]="true"
+                  [initialTemplate]="ruleTable"
+                  (exportClick)="onExcelExportClick()"
+                />
+                <ng-template #ruleTable>
+                  <p-table
+                    [value]="rules"
+                    [columns]="cols"
+                    responsiveLayout="stack"
+                    styleClass="p-datatable-gridlines"
+                    breakpoint="840px"
+                  >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th *ngFor="let col of cols">
+                          {{ col.header }}
+                        </th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData>
+                      <tr>
+                        <td
+                          class="my-0 py-2"
+                          *ngFor="let col of cols; let i = index"
+                        >
+                          <div class="table__row" [ngSwitch]="col.field">
+                            <span class="table__label__row me-2">
+                              {{ col.header }}
+                            </span>
+                            <div class="p-1">
+                              <span *ngSwitchCase="'rowNumber'">
+                                {{ rowData[col.field] }}
+                              </span>
+                              <span *ngSwitchCase="'productId'">
+                                <ion-label
+                                  [color]="
+                                    !isValidProductName(rowData) ? 'danger' : ''
+                                  "
+                                >
+                                  {{ rowData[col.field] }}
+                                </ion-label>
+                              </span>
+                              <span *ngSwitchCase="'productName'">
+                                <span>
+                                  {{ rowData[col.field] }}
+                                </span>
+                              </span>
+                              <span *ngSwitchCase="'priceRange'">
+                                <ng-container
+                                  *ngIf="
+                                    getPriceRange(
+                                      rowData.productId
+                                    ) as priceRange
+                                  "
+                                >
+                                  <ion-label
+                                    [color]="
+                                      validateMinPrice(rowData, priceRange)
+                                        .color
+                                    "
+                                  >
+                                    {{
+                                      isNumber(
+                                        validateMinPrice(rowData, priceRange)
+                                          .value
+                                      )
+                                        ? (+validateMinPrice(
+                                            rowData,
+                                            priceRange
+                                          ).value | truncateDecimalsPipe)
+                                        : validateMinPrice(rowData, priceRange)
+                                            .value
+                                    }}
+                                  </ion-label>
+                                  <ng-container
+                                    *ngIf="
+                                      validateMaxPrice(rowData, priceRange)
+                                        .value
+                                    "
+                                  >
+                                    <span>-</span>
+                                    <ion-label
+                                      [color]="
+                                        validateMaxPrice(rowData, priceRange)
+                                          .color
+                                      "
+                                    >
+                                      {{
+                                        isNumber(
+                                          validateMaxPrice(rowData, priceRange)
+                                            .value
+                                        )
+                                          ? (+validateMaxPrice(
+                                              rowData,
+                                              priceRange
+                                            ).value | truncateDecimalsPipe)
+                                          : validateMaxPrice(
+                                              rowData,
+                                              priceRange
+                                            ).value
+                                      }}
+                                    </ion-label>
+                                  </ng-container>
+                                </ng-container>
+                                <span class="currency">
+                                  ({{ rowData.currencyName }})
+                                </span>
+                              </span>
+                              <span *ngSwitchCase="'sellingMargin'">
+                                <ion-label
+                                  *ngIf="
+                                    rowData[col.field] !== undefined &&
+                                    rowData[col.field] !== dictionary.invalid
+                                  "
+                                  [color]="
+                                    !isValidSellMarginValue(rowData)
+                                      ? 'danger'
+                                      : ''
+                                  "
+                                  >{{
+                                    rowData[col.field] | truncateDecimalsPipe
+                                  }}%</ion-label
+                                >
+                                <ion-label
+                                  *ngIf="
+                                    rowData[col.field] === dictionary.invalid
+                                  "
+                                  color="danger"
+                                  >{{ dictionary.invalid }}</ion-label
+                                >
+
+                                <ion-label
+                                  *ngIf="rowData[col.field] === undefined"
+                                  >-</ion-label
+                                >
+                              </span>
+                              <span *ngSwitchCase="'isActive'">
+                                <ion-label *ngIf="rowData[col.field] === false">
+                                  {{ dictionary.Deactive }}
+                                </ion-label>
+                                <ion-label *ngIf="rowData[col.field] === true">
+                                  {{ dictionary.Active }}
+                                </ion-label>
+
+                                <ion-label
+                                  color="danger"
+                                  *ngIf="
+                                    rowData[col.field] === dictionary.invalid
+                                  "
+                                >
+                                  {{ dictionary.invalid }}
+                                </ion-label>
+                                <ion-label
+                                  *ngIf="
+                                    rowData[col.field] === null ||
+                                    rowData[col.field] === dictionary.Inherit
+                                  "
+                                >
+                                  {{ dictionary.Inherit }}
+                                </ion-label>
+                              </span>
+                              <span *ngSwitchCase="'errorMessage'">
+                                <ion-label
+                                  color="warning"
+                                  *ngIf="rowData[col.field]; else noError"
+                                >
+                                  {{ rowData[col.field] }}
+                                </ion-label>
+                                <ng-template #noError>
+                                  <span>-</span>
+                                </ng-template>
+                              </span>
+                              <span *ngSwitchDefault>
+                                {{ rowData[col.field] }}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                      <tr>
+                        <td class="text-center" [attr.colspan]="cols.length">
+                          {{ dictionary.NoRecordsFound }}
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </ng-template>
+              </ion-col>
+              <ng-template #loadingSection>
+                <ion-col class="d-flex justify-content-center mt-5">
+                  <ion-spinner name="lines-sharp"></ion-spinner>
+                </ion-col>
+              </ng-template>
+            </ng-container>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-alert
+  [isOpen]="showAlertImport"
+  [subHeader]="'Upload any way'"
+  [buttons]="importAlert"
+  [message]="alertMessage"
+/>

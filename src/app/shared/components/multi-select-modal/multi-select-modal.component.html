@@ -1,0 +1,60 @@
+<ion-modal
+  [backdropDismiss]="false"
+  [isOpen]="isOpen"
+  (didDismiss)="didDismiss()"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" color="primary" (click)="didDismiss()">
+            {{ cancelBtnText }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ title }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            class="modal_btn"
+            color="primary"
+            (click)="onConfirmClick()"
+            [strong]="true"
+            ><b>{{ confirmBtnText }}</b>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="hasSearch">
+        <ion-searchbar (ionInput)="onSearchInput($event)"></ion-searchbar>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item class="my-2" *ngIf="showAllOption && hasAllOption">
+        <ion-checkbox
+          (ionChange)="onChangeAll($event)"
+          [value]="null"
+          [checked]="allCheckedProp"
+          justify="space-between"
+        >
+          {{ dictionary.All }}
+        </ion-checkbox>
+      </ion-item>
+      <ion-item class="my-2" *ngFor="let item of filteredItems">
+        <ion-checkbox
+          [id]="item.value"
+          [name]="item.value"
+          (ionChange)="onChangeItem($event)"
+          [checked]="item.checked"
+          justify="space-between"
+          [value]="item.value"
+          [disabled]="values === null"
+        >
+          <div class="d-flex align-items-center gap-2">
+            <div class="icon-item" *ngIf="item.icon">
+              <app-icon [type]="item.icon"></app-icon>
+            </div>
+            {{ item.text }}
+          </div>
+        </ion-checkbox>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>

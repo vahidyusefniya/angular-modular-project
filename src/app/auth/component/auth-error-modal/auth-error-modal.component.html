@@ -1,0 +1,24 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+          <ion-title> Google signin error </ion-title>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ol>
+        <ion-label>
+          To enable Google login, please adjust your Safari settings
+        </ion-label>
+        <li>Open <strong>Settings</strong>.</li>
+        <li>Scroll down and tap <strong>Safari</strong>.</li>
+        <li>Turn off <strong>Block Pop-ups</strong>.</li>
+      </ol>
+    </ion-content>
+  </ng-template>
+</ion-modal>

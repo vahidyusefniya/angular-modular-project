@@ -1,0 +1,20 @@
+.error-input {
+  --border-color: var(--highlight-color-invalid) !important;
+  --highlight-color: var(--highlight-color-invalid) !important;
+}
+
+.amount-range-label {
+  color: var(--ion-color-step-550, #737373) !important;
+  font-size: 0.75rem !important;
+  padding-left: 10px;
+}
+.amount-input {
+  position: relative;
+
+  ion-button {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    z-index: 9;
+  }
+}

@@ -1,0 +1,19 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+.infinite-scroll-content {
+  text-align: center;
+  padding: 0 0 50px 0;
+}
+
+.loading__content {
+  width: 100%;
+  height: calc(100% - 10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+  }
+}

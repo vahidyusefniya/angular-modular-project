@@ -1,0 +1,103 @@
+<!--suppress JSUnresolvedReference -->
+<ion-card
+  *ngIf="width > 500; else smCard"
+  class="ion-no-margin product"
+  [id]="id"
+>
+  <div class="product-img">
+    <img
+      class="img"
+      [lazyLoad]="pos?.imageUri ? pos?.imageUri! : localImageSRC"
+      ngSrc="{{ localImageSRC }}"
+      width="100"
+      height="100"
+      alt="product-image"
+    />
+  </div>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" class="product-name">
+          {{ pos?.name }}
+        </ion-col>
+        <ion-col size="12" class="product-price">
+          {{ dictionary.Price }}:
+          <span *ngIf="!pos?.isSubscriptive;else elseBlock">{{ pos?.currency?.symbol }}{{ pos?.price | truncateDecimalsPipe }}</span>
+          <ng-template #elseBlock>
+            {{ pos?.currency?.symbol }}{{ (pos?.price! / pos?.installmentCount!) | truncateDecimalsPipe }}
+          </ng-template>
+        </ion-col>
+        <ion-col size="12" class="footer">
+          <ion-button
+            color="info"
+            size="small"
+            fill="outline"
+            class="px-1"
+            [id]="'buy-btn-' + pos?.posId"
+            (click)="onShowProductDetail()"
+            appPermission
+            inputAppPermission="PosOrderWrite"
+          >
+            <i class="material-icons"> shopping_cart </i>
+            {{ dictionary.Buy }}
+          </ion-button>
+          <ion-icon
+            class="cursor information-circle-size"
+            name="information-circle"
+            color="primary"
+            (click)="showDescription()"
+          ></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<ng-template #smCard>
+  <ion-card
+    class="ion-no-margin phone cursor light__color"
+    [id]="id"
+    
+  >
+    <ion-card-content class="ion-no-padding ion-no-margin">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex">
+          <img
+            height="80"
+            width="122"
+            [lazyLoad]="pos?.imageUri ? pos?.imageUri! : localImageSRC"
+            ngSrc="{{ localImageSRC }}"
+            alt="product-img"
+            (click)="onShowProductDetail()"
+          />
+          <ion-label class="product__name mx-2" (click)="onShowProductDetail()">
+            {{ pos?.name }}
+            <span *ngIf="!pos?.isSubscriptive;else elseBlock">{{ pos?.currency?.symbol }} {{ pos?.price | truncateDecimalsPipe }}</span>
+            <ng-template #elseBlock>
+              {{ (pos?.price! / pos?.installmentCount!) | truncateDecimalsPipe }}
+            </ng-template>
+          </ion-label>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          
+          <ion-button
+            fill="clear"
+            color="primary"
+            (click)="showDescription()"
+          >
+            <ion-icon
+              slot="icon-only"
+              name="information-circle"
+            />
+          </ion-button>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ng-template>
+
+<app-order-description 
+[isOpen]="showDescriptionModal"
+(dismiss)="showDescriptionModal = false"
+*ngIf="showDescriptionModal"
+[description]="pos?.description!"
+/>

@@ -1,0 +1,560 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+
+@import "~material-icons/iconfont/material-icons.css";
+@import "material-symbols/outlined.css";
+@import "./assets/font/style.scss";
+@import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
+
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+ion-button {
+  text-transform: none;
+}
+
+::ng-deep .alert-message {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+* {
+  font-family: MyriadPro, serif;
+}
+
+.info-alert-btn {
+  color: var(--ion-color-medium) !important;
+}
+
+.main {
+  width: 100%;
+  height: 95%;
+  overflow-y: auto;
+  // padding-bottom: 220px;
+}
+
+.order-detail-page-list div#table {
+  height: auto;
+}
+
+.price-list-tab {
+  .main {
+    overflow-y: hidden;
+  }
+}
+
+.danger-alert-btn {
+  color: var(--ion-color-danger) !important;
+}
+
+.deletePrice__alert {
+  --max-width: 90vw !important;
+  --width: 700px !important;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.assignToBranch__alert {
+  --max-width: 90vw !important;
+  --width: 700px !important;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.currency {
+  color: gray;
+  font-size: 0.7rem;
+}
+
+.gray-color {
+  color: gray;
+}
+
+.p-column-title {
+  background-color: var(--ion-color-step-150) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  padding: 0.7rem 1rem !important;
+  border-bottom: 1px solid var(--ion-color-step-250) !important;
+  background-color: var(--ion-color-step-100) !important;
+  color: var(--ion-color-dark) !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  font-weight: 600;
+  color: var(--ion-text-color);
+  background-color: var(--ion-color-step-150);
+  border: 1px solid var(--ion-color-step-250);
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.7rem 1rem;
+  border: none !important;
+}
+
+.duplicateCode__alert {
+  --max-width: 90vw !important;
+  --width: 700px !important;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.download-link {
+  color: var(--ion-color-primary, #3880ff) !important;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.select-option {
+  color: var(--select-option-color) !important;
+}
+
+.ios .action-sheet-button {
+  color: var(--select-option-color) !important;
+  border-bottom: 1px solid var(--action-sheet-border-color) !important;
+  font-weight: 400 !important;
+}
+
+.action-sheet-button {
+  color: var(--select-option-color-ios) !important;
+}
+
+// .action-sheet-button:not(:last-child) {
+//   border-bottom: 1px solid var(--ion-color-step-250) !important;
+// }
+
+.sc-ion-action-sheet-md {
+  color: var(--select-option-color) !important;
+}
+
+.sc-ion-action-sheet-ios {
+  color: var(--select-option-color-ios) !important;
+}
+
+.p-tabview-panels {
+  padding: 0 !important;
+}
+
+.upload-rules-list .card {
+  height: 100% !important;
+}
+
+.settle-transactions,
+.customer-wallet-transactions {
+  .card {
+    margin-bottom: 50px !important;
+  }
+}
+
+.my-wallet-table {
+  // .card {
+  //   height: 100% !important;
+  // }
+  .table-row {
+    height: 60px !important;
+  }
+}
+
+.state-logs-table {
+  .card {
+    height: 100% !important;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .table__row {
+    .p-1 {
+      padding: 0.25rem 0 !important;
+    }
+
+    .p-2 {
+      padding: 0.5rem 0 !important;
+    }
+
+    .p-3 {
+      padding: 0.75rem 0 !important;
+    }
+
+    .p-4 {
+      padding: 1rem 0 !important;
+    }
+  }
+}
+
+.date__filter__modal {
+  --height: 200px;
+
+  ion-button {
+    color: var(--ion-color-primary, #3880ff) !important;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .date__filter__modal {
+    --height: 100%;
+  }
+}
+
+.base_alert {
+  --max-width: 90vw !important;
+  --width: 700px !important;
+  user-select: auto;
+}
+
+.action-sheet-wrapper {
+  padding: 0 5px;
+
+  .action-sheet-container {
+    padding: 0 10px;
+  }
+}
+
+.p-tabmenu-nav-btn {
+  background-color: #121212 !important;
+}
+
+@media screen and (min-width: 537px) {
+  .p-tabmenu-nav-btn {
+    display: none !important;
+  }
+}
+
+.customer-detail-tabmenu {
+  .p-tabmenu {
+    width: 320px;
+  }
+}
+
+.settings-detail-tabmenu {
+  .p-tabmenu {
+    width: 320px;
+  }
+}
+
+.amount__danger__color {
+  color: var(--ion-color-danger);
+}
+
+.customer-list-table {
+  padding-bottom: 10px;
+  height: 100%;
+}
+
+.alert-message .text-value {
+  color: var(--text-label-color) !important;
+}
+
+.clear-option {
+  color: red !important;
+}
+
+.clear-option .action-sheet-button-inner {
+  color: red !important;
+}
+
+.activate-tab-container {
+  .p-tabview-nav {
+    li {
+      width: 50%;
+    }
+  }
+
+  .p-tabview-title {
+    margin: 0 auto;
+  }
+}
+
+.date-picker-content {
+  .p-datepicker {
+    border: none !important;
+  }
+}
+
+.settle-button-credit {
+  width: 83px !important;
+}
+
+.ios .settle-button-credit {
+  width: 77px !important;
+}
+.success-buy-alert {
+  --max-width: 90vw !important;
+  --width: 500px !important;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+.dashboard-grid {
+  .card {
+    tbody {
+      tr {
+        &:nth-child(1),
+        &:nth-child(2),
+        &:nth-child(3) {
+          td {
+            color: #19bb77 !important;
+          }
+        }
+      }
+    }
+  }
+}
+.dashboard-grid__height {
+  .card {
+    height: 350px !important;
+  }
+}
+
+ion-modal.exception-modal.show-modal:last-of-type {
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4) !important;
+  --backdrop-opacity: var(--ion-backdrop-opacity, 0.3) !important;
+}
+
+.auth-input {
+  .label-text,
+  input {
+    color: #fff !important;
+  }
+}
+
+.price-list-prices .p-datatable-tbody {
+  background-color: #19bb77 !important;
+}
+
+.rowexpansion-table-prices .p-datatable-tbody > *:last-child {
+  border-bottom: none !important;
+}
+
+.rowexpansion-table-prices .p-datatable-thead > tr > th {
+  border: none !important;
+}
+
+body.barcode-scanning-active {
+  visibility: hidden;
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+.barcode-scanning-modal {
+  visibility: visible;
+}
+
+@media (prefers-color-scheme: dark) {
+  .barcode-scanning-modal {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.information-icon-gift-cards {
+  font-size: 22px;
+  position: absolute;
+}
+.buys {
+  .p-tabview-ink-bar {
+    width: 130px !important;
+  }
+}
+
+.p-treenode-label {
+  width: 100%;
+}
+#advance-filter {
+  font-weight: bold;
+}
+#new-price {
+  font-weight: bold;
+}
+.orders {
+  height: 100%;
+  .p-tabview-panel {
+    height: 100vh;
+    padding-bottom: 156px;
+  }
+  .p-tabview-nav {
+    li {
+      width: 100%;
+      &.p-highlight {
+        background-color: #f2682a;
+        a {
+          color: white !important;
+          background-color: #f2682a !important;
+        }
+      }
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+    .p-tabview-ink-bar {
+      width: 50% !important;
+      background-color: white;
+    }
+  }
+}
+.table-list {
+  p-table {
+    table {
+      tbody {
+        tr {
+          height: 56px;
+        }
+      }
+    }
+  }
+}
+
+.p-datatable-loading-icon {
+  color: var(--text-label-color);
+}
+
+.price-list-table {
+  tr {
+    background-color: var(--ion-color-step-100) !important;
+  }
+  .row-head {
+    background-color: var(--ion-color-step-150) !important;
+    color: var(--ion-text-color) !important;
+    font-weight: 600 !important;
+  }
+  .p-treetable-toggler {
+    color: var(--ion-text-color) !important;
+  }
+}
+
+ion-item.no-padding {
+  --padding-start: 0px;
+  --inner-padding-end: 0px;
+  --padding-end: 0px;
+  --inner-padding-start: 0px;
+}
+
+.mobile-input {
+  min-height: 56px;
+  &-wrapper {
+    ion-button {
+      margin: 0;
+      width: 170px;
+      --border-color: var(
+        --ion-color-step-300,
+        var(--ion-background-color-step-300, #b3b3b3)
+      );
+      --border-width: 1px;
+      min-height: 56px !important;
+    }
+  }
+}
+@media screen and (max-width: 420px) {
+  .mobile-input {
+    ion-button {
+      width: 235px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  }
+}
+.action-sheet-button:not(.action-sheet-cancel) {
+  font-weight: bold;
+}
+.branch-selection {
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  width: 172px;
+}
+
+.change-state-description .textarea-wrapper-inner {
+  height: 100px !important;
+}
+
+.category-tree .p-tree-wrapper {
+  max-height: 81vh !important;
+}
+
+.pay-ach-icon {
+  img {
+    width: 40px;
+    height: 40px;
+  }
+}
+.post-paid-table {
+  .card {
+    height: calc(100vh - 116px) !important;
+  }
+}
+.p-component-overlay {
+  display: none;
+}
+
+.ion-select-page-size {
+  color: var(--table-btn-color) !important;
+  min-height: 43px;
+}

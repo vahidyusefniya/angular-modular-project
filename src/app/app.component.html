@@ -1,0 +1,9 @@
+<ion-content [fullscreen]="true">
+  <ion-router-outlet></ion-router-outlet>
+  <ion-alert
+    [isOpen]="buildIsUpToDate"
+    header="Update app"
+    subHeader="App is updated"
+    [buttons]="alertButtons"
+  ></ion-alert>
+</ion-content>

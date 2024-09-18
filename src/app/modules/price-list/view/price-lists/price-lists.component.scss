@@ -1,0 +1,19 @@
+.link-row {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--hyper-link-color);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+::ng-deep {
+  .p-treetable .p-treetable-thead > tr > th {
+    padding: 0.5rem !important;
+  }
+
+  .p-treetable .p-treetable-tbody > tr > td {
+    padding: 0.5rem !important;
+  }
+}

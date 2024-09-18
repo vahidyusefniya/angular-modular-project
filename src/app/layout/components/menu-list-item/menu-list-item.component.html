@@ -1,0 +1,39 @@
+<ion-item
+  href="#"
+  appPermission
+  [inputAppPermission]="item.permission"
+  [id]="item.id"
+  [routerLink]="item.route"
+  routerLinkActive="active"
+  (click)="onMenuClick(item)"
+  lines="none"
+  detail="false"
+  *ngIf="item.visible"
+>
+  <app-icon [type]="item.icon"></app-icon>
+  <ion-label
+    class="ms-3 menu-label"
+    [ngClass]="{ 'child-label': !item.icon }"
+    >{{ item.displayName }}</ion-label
+  >
+  <ion-icon
+    class="toggle"
+    *ngIf="item.children && item.children.length"
+    name="chevron-up-outline"
+    [@indicatorRotate]="item.expanded ? 'collapsed' : 'expanded'"
+    slot="end"
+  ></ion-icon>
+
+  <ion-icon
+    *ngIf="item.menuItemWarngin"
+    name="alert-circle-outline"
+    slot="end"
+    color="warning"
+    (click)="menuItemWarnginClick($event)"
+  ></ion-icon>
+</ion-item>
+
+<div *ngIf="item.expanded">
+  <app-menu-list-item *ngFor="let child of item.children" [item]="child">
+  </app-menu-list-item>
+</div>

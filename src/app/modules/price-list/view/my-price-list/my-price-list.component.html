@@ -1,0 +1,253 @@
+<app-page-list
+  [cols]="cols"
+  [data]="myPriceList"
+  [listPermission]="'ReportSummary'"
+  [label]="dictionary.MyPriceList"
+  [hasLocalPagination]="false"
+  [hasAdvancedFilter]="true"
+  [hasSearch]="true"
+  [hasExport]="true"
+  [hasRefresh]="true"
+  [hasNewButton]="false"
+  [hasRefresh]="true"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  (advancedFilterClick)="openMyPricesListFilterModal = true"
+  [advancedFilterPermission]="'ReportSummary'"
+  [tagList]="tagList"
+  [showPagination]="true"
+  (pageChanged)="fillLocalMyPriceList($event)"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="myPriceListTable"
+  [showActionSheet]="true"
+  class="align-right-amount"
+  (inputSearch)="onInputSearch($event)"
+  [lastPageNumber]="lastPageNumber"
+  [showPageSizeSelect]="true"
+  (pageSizeChange)="pageSizeChange($event)"
+/>
+<ng-template #myPriceListTable>
+  <p-table
+    [value]="myPriceList"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    dataKey="productId"
+    [loading]="loading"
+    [reorderableColumns]="true"
+    (sortFunction)="sort($event)"
+    [customSort]="true"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th
+          *ngFor="let col of columns"
+          [class]="'row-' + col.field"
+          pReorderableColumn
+          [pSortableColumn]="col.field"
+        >
+          <div class="header__content">
+            {{ col.header }}
+            <p-sortIcon
+              *ngIf="col.field !== 'priceRange'"
+              [field]="col.field"
+            ></p-sortIcon>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-rowData
+      let-columns="columns"
+      let-expanded="expanded"
+    >
+      <tr class="row-table">
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div class="table__row" [ngSwitch]="col.field">
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 row-item">
+              <div *ngSwitchCase="'expansionButton'">
+                <button
+                  *ngIf="rowData.rules.length > 1"
+                  type="button"
+                  pButton
+                  pRipple
+                  [pRowToggler]="rowData"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="
+                    expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
+                  "
+                ></button>
+              </div>
+              <span *ngSwitchCase="'productName'">
+                {{ rowData.product.productName }}
+                <span
+                  class="region-lable mx-1"
+                  *ngIf="rowData.regions?.length > 0"
+                  >{{ rowData.regions[0]?.code }}</span
+                >
+                <label
+                  class="product-type-lable mx-1"
+                  [style.background]="'rgb(193 173 23)'"
+                  *ngIf="rowData.product"
+                  >{{ rowData.product.isPhysical ? "P" : "D" }}</label
+                >
+              </span>
+              <span *ngSwitchCase="'priceRange'">
+                <div *ngIf="rowData.rules.length > 0">
+                  {{ getMaxAndMinPriceRange(rowData) }}
+                </div>
+              </span>
+              <span *ngSwitchCase="'discountBuyingPrice'">
+                <div *ngIf="rowData.rules.length > 0">
+                  <ion-label>
+                    {{ rowData.discountBuyingPrice | truncateDecimalsPipe }}%
+                    <span class="currency"
+                      >({{
+                        getMaxAndMinBuyingPriceMethod(
+                          rowData.rules,
+                          rowData.product
+                        )
+                      }})</span
+                    >
+                  </ion-label>
+                </div>
+              </span>
+              <!-- <span *ngSwitchCase="'buyingPrice'" class="amount_row">
+                <div *ngIf="rowData.rules.length > 0">
+                  {{ getMaxAndMinBuyingPrice(rowData.rules) }}
+                  <span class="currency">
+                    ({{ rowData.product.currency.currencyName }})
+                  </span>
+                </div>
+              </span>
+              <span *ngSwitchCase="'sellingPrice'" class="amount_row">
+                <div *ngIf="rowData.rules.length > 0">
+                  {{ getMaxAndMinSellingPrice(rowData.rules) }}
+
+                  <span class="currency">
+                    ({{ rowData.product.currency.currencyName }})
+                  </span>
+                </div>
+              </span> -->
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-myPrice>
+      <tr>
+        <td colspan="12">
+          <div class="w-100 rowexpansion-table-container">
+            <p-table
+              [value]="myPrice.rules"
+              responsiveLayout="stack"
+              styleClass="p-datatable-gridlines"
+              breakpoint="840px"
+              class="rowexpansion-table-prices"
+            >
+              <ng-template pTemplate="header">
+                <tr class="expanded-header">
+                  <th
+                    *ngFor="let col of rowexpansionMyPriceListColumns"
+                    class="column-color"
+                  >
+                    {{ col.header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rule let-rowIndex="rowIndex">
+                <tr>
+                  <td
+                    *ngFor="
+                      let col of rowexpansionMyPriceListColumns;
+                      let i = index
+                    "
+                    class="m-0 py-0"
+                  >
+                    <div class="table__row" [ngSwitch]="col.field">
+                      <span class="table__label__row me-2">
+                        {{ col.header }}
+                      </span>
+                      <div class="py-2 row-item">
+                        <span *ngSwitchCase="'priceRange'">
+                          <div>
+                            {{ rule.faceValue.start }}
+                            <span *ngIf="rule.faceValue.end">-</span>
+                            {{ rule.faceValue.end }}
+                            <span class="currency">
+                              ({{ myPrice.product.currency.currencyName }})
+                            </span>
+                          </div>
+                        </span>
+                        <span *ngSwitchCase="'discountBuyingPrice'">
+                          <div>
+                            {{
+                              rule.priceValue * 100 - 100 | truncateDecimalsPipe
+                            }}
+                            %
+                          </div>
+                        </span>
+                        <!-- <span *ngSwitchCase="'buyingPrice'" class="amount_row">
+                          <div>
+                            {{
+                              rule.consumerPriceAmount.start
+                                | truncateDecimalsPipe
+                            }}
+                            <span *ngIf="rule.consumerPriceAmount.end">-</span>
+                            {{
+                              rule.consumerPriceAmount.end
+                                | truncateDecimalsPipe
+                            }}
+                            <span class="currency">
+                              ({{ myPrice.product.currency.currencyName }})
+                            </span>
+                          </div>
+                        </span>
+                        <span *ngSwitchCase="'sellingPrice'" class="amount_row">
+                          <div>
+                            {{
+                              rule.resellPriceAmount.start
+                                | truncateDecimalsPipe
+                            }}
+                            <span *ngIf="rule.resellPriceAmount.end">-</span>
+                            {{
+                              rule.resellPriceAmount.end | truncateDecimalsPipe
+                            }}
+
+                            <span class="currency">
+                              ({{ myPrice.product.currency.currencyName }})
+                            </span>
+                          </div>
+                        </span> -->
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-my-price-list-filter
+  *ngIf="openMyPricesListFilterModal"
+  [isOpen]="openMyPricesListFilterModal"
+  (FilterMyPriceList)="saveFilterMyPriceList($event)"
+  (dismiss)="openMyPricesListFilterModal = false"
+  [data]="myPriceListFilter"
+/>

@@ -1,0 +1,26 @@
+.product__barcode__modal {
+  --ion-background-color: var(--ion-color-step-100);
+  --ion-toolbar-background: var(--ion-color-step-100);
+  --ion-toolbar-border-color: var(--ion-color-step-100);
+
+  ion-content {
+    --overflow: hidden;
+
+    ion-card {
+      background-color: #2e2e2e;
+
+      ion-card-content {
+        display: flex;
+        justify-content: center;
+
+        img {
+          width: 100%;
+        }
+      }
+
+      ion-card-subtitle {
+        font-size: 15px;
+      }
+    }
+  }
+}

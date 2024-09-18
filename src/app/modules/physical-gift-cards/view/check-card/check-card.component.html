@@ -1,0 +1,94 @@
+<ion-content class="check-card-container">
+  <ion-card class="card-box">
+    <form #checkForm="ngForm">
+      <ion-grid>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12" sizeMd="6">
+            <ion-row size="6">
+              <ion-col size="12">
+                <ion-label class="my-3 menu-label input-label"
+                  >VAN16 (Barcode)</ion-label
+                >
+              </ion-col>
+              <ion-col size="12">
+                <app-text
+                  [autofocus]="true"
+                  id="barcode"
+                  [Label]="dictionary.Code"
+                  [(ngModel)]="barcode"
+                  [required]="true"
+                  name="barcode"
+                  [maxlength]="30"
+                  [inputmode]="'numeric'"
+                  (keypress)="validateNumberInput($event)"
+                  [clearInput]="true"
+                  (inputChange)="watchBarcode($event)"
+                />
+              </ion-col>
+              <ion-col size="12">
+                <p>
+                  * Enter starting batch number. All cards within the batch must
+                  be consecutive with the same denomination.
+                </p>
+              </ion-col>
+              <ion-col size="12" class="pb-0">
+                <ion-button
+                  color="primary"
+                  (click)="onCheckClick()"
+                  [strong]="true"
+                  expand="block"
+                  [disabled]="!(barcode.length == 30)"
+                >
+                  <b>{{ dictionary.Check }}</b>
+                </ion-button>
+                <hr class="divider" />
+              </ion-col>
+              <ion-col size="12" *ngIf="!!card && barcode !== ''" class="pt-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <ion-label class="label__color">{{
+                    dictionary.SerialNumber
+                  }}</ion-label>
+                  <ion-text color="dark">{{ barcode }}</ion-text>
+                </div>
+                <hr class="divider" />
+                <div class="d-flex justify-content-between align-items-center">
+                  <ion-label class="label__color">{{
+                    dictionary.Product
+                  }}</ion-label>
+                  <ion-text color="dark">{{ card.product.productName }}</ion-text>
+                </div>
+                <hr class="divider" />
+                <div class="d-flex justify-content-between align-items-center">
+                  <ion-label class="label__color">{{
+                    dictionary.UPC
+                  }}</ion-label>
+                  <ion-text color="dark">{{ card.product.upc }}</ion-text>
+                </div>
+                <hr class="divider" />
+                <div class="d-flex justify-content-between align-items-center">
+                  <ion-label class="label__color">{{
+                    dictionary.Status
+                  }}</ion-label>
+                  <ion-text
+                    [color]="
+                      card.status === 'ReadyToActivate'
+                        ? 'dark'
+                        : '' || card.status === 'Activated'
+                        ? 'success'
+                        : '' || card.status === 'FailedToActivate'
+                        ? 'danger'
+                        : '' || card.status === 'InProgress'
+                        ? 'warning'
+                        : ''
+                    "
+                    >{{ card.status }}</ion-text
+                  >
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </ion-card>
+</ion-content>

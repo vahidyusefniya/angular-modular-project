@@ -1,0 +1,426 @@
+<ion-modal
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  [backdropDismiss]="false"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.NewPrice }}</ion-title>
+        <ion-buttons
+          appPermission
+          inputAppPermission="PriceListWrite"
+          slot="end"
+        >
+          <ion-button
+            color="primary"
+            [disabled]="!priceForm.form.valid || rules.length === 0"
+            (click)="onNewClick()"
+          >
+            {{ dictionary.Save }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content
+      [appDirtyPage]="isDirtyPage || rules.length > 0 ? true : false"
+    >
+      <form #priceForm="ngForm">
+        <ion-grid [fixed]="true" class="w-100 ion-no-margin">
+          <ion-row>
+            <ion-col size="12">
+              <ion-input
+                [label]="dictionary.Product"
+                labelPlacement="floating"
+                fill="outline"
+                name="ProductId"
+                [(ngModel)]="productName"
+                [required]="true"
+                [readonly]="true"
+                (click)="openProductSearchModal = true"
+                *ngIf="!openCreatePriceModalByPricesTab; else productLabel"
+                mode="md"
+              />
+              <ng-template #productLabel>
+                <h5>
+                  {{ dictionary.Product }}:
+                  <span class="label__color">{{ productNameInput }}</span>
+                  <span class="region-lable" *ngIf="regionName">{{
+                    regionName
+                  }}</span>
+                </h5>
+              </ng-template>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <div>
+                <app-page-list
+                  [hasAdvancedFilter]="false"
+                  [hasSearch]="false"
+                  [showPagination]="false"
+                  [hasExport]="false"
+                  [hasRefresh]="false"
+                  [hasNewButton]="showNewExceptionButton"
+                  [hasCustomTableContent]="true"
+                  [initialTemplate]="RulesTable"
+                  [label]="dictionary.Exceptions"
+                  class="price-list-prices align-right-amount"
+                  [newButtonLabel]="dictionary.NewException"
+                  (newButtonClick)="openCreateRuleModal = true"
+                  [newButtonPermission]="'PriceListWrite'"
+                />
+                <ng-template #RulesTable>
+                  <p-table
+                    [value]="rules"
+                    responsiveLayout="stack"
+                    styleClass="p-datatable-gridlines"
+                    breakpoint="840px"
+                  >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th *ngFor="let col of rulesColumns">
+                          {{ col.header }}
+                        </th>
+                      </tr>
+                    </ng-template>
+                    <ng-template
+                      pTemplate="body"
+                      let-rule
+                      let-rowIndex="rowIndex"
+                    >
+                      <tr>
+                        <td *ngFor="let col of rulesColumns; let i = index">
+                          <div [ngSwitch]="col.field" class="table__row">
+                            <span class="table__label__row me-2">
+                              {{ col.header }}
+                            </span>
+                            <div class="p-1 row-item">
+                              <span *ngSwitchCase="'price'">
+                                <ion-label class="w-100">
+                                  {{ getMaxAndMinPrice(rule) }}
+                                  <span
+                                    class="default-lable"
+                                    *ngIf="
+                                      rule.faceValue.start === 0 &&
+                                      rule.faceValue.end === -1
+                                    "
+                                  >
+                                    {{ dictionary.Default }}
+                                  </span>
+                                </ion-label>
+                              </span>
+                              <span *ngSwitchCase="'sellingMargin'">
+                                <ion-label class="w-100 ion-text-sm-right">
+                                  {{ rule.priceValue | truncateDecimalsPipe }} %
+                                  <span class="currency">
+                                    <span *ngIf="rule.priceValueMode === 0">
+                                      ({{ dictionary.FaceValue }})
+                                    </span>
+                                    <span *ngIf="rule.priceValueMode === 1">
+                                      ({{ dictionary.BuyValue }})
+                                    </span>
+                                  </span>
+                                </ion-label>
+                              </span>
+                              <span *ngSwitchCase="'status'">
+                                <ion-label
+                                  color="danger"
+                                  *ngIf="rule.isActive === false"
+                                >
+                                  {{ dictionary.Inactive }}
+                                </ion-label>
+                                <ion-label
+                                  color="success"
+                                  *ngIf="rule.isActive === true"
+                                >
+                                  {{ dictionary.Active }}
+                                </ion-label>
+
+                                <ion-label
+                                  class="label__color"
+                                  *ngIf="rule.isActive === null"
+                                >
+                                  {{ dictionary.Inherit }}
+                                </ion-label>
+                              </span>
+                              <span *ngSwitchCase="'action'">
+                                <div class="d-flex gap-2 align-items-center">
+                                  <ion-button
+                                    fill="clear"
+                                    slot="end"
+                                    color="dark"
+                                    appPermission
+                                    inputAppPermission="PriceListWrite"
+                                    (click)="onEditRuleClick(rule)"
+                                    [pTooltip]="dictionary.Delete"
+                                    tooltipPosition="bottom"
+                                    class="ion-no-margin"
+                                  >
+                                    <ion-icon name="pencil-outline"></ion-icon>
+                                  </ion-button>
+                                  <ion-button
+                                    appPermission
+                                    inputAppPermission="PriceListWrite"
+                                    fill="clear"
+                                    color="dark"
+                                    (click)="removeRule(rule)"
+                                    [pTooltip]="'Delete'"
+                                    tooltipPosition="bottom"
+                                    class="ion-no-margin mt-2 mt-sm-0"
+                                    *ngIf="rowIndex > 0"
+                                  >
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                  </ion-button>
+                                </div>
+                              </span>
+                              <span *ngSwitchDefault>
+                                {{ rule[col.field] }}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                      <tr>
+                        <td class="text-center" [attr.colspan]="columns.length">
+                          {{ dictionary.NoException }}
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </ng-template>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+      <div class="separator"></div>
+      <div class="preview-table" *ngIf="priceResultsData.length > 0">
+        <app-page-list
+          [hasAdvancedFilter]="false"
+          [hasSearch]="false"
+          [showPagination]="false"
+          [hasExport]="false"
+          [hasRefresh]="false"
+          [hasNewButton]="false"
+          [hasCustomTableContent]="true"
+          [initialTemplate]="previewResult"
+          [label]="dictionary.FinalResult"
+          class="price-list-prices align-right-amount"
+          [showActionSheet]="false"
+        />
+        <ng-template #previewResult>
+          <p-table
+            [value]="priceResultsData"
+            responsiveLayout="stack"
+            styleClass="p-datatable-gridlines"
+            breakpoint="840px"
+            dataKey="productId"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of columns">
+                  {{ col.header }}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-previewResult>
+              <tr>
+                <td *ngFor="let col of columns; let i = index">
+                  <div [ngSwitch]="col.field" class="table__row">
+                    <span class="table__label__row me-2">
+                      {{ col.header }}
+                    </span>
+                    <div class="p-1 row-item">
+                      <span *ngSwitchCase="'priceRange'">
+                        <ion-label>
+                          {{ previewResult.priceRange }}
+                        </ion-label>
+                      </span>
+                      <!-- <span
+                        *ngSwitchCase="'discountBuyingPrice'"
+                        class="amount_row"
+                      >
+                        <ion-label>
+                          {{
+                            previewResult.discountBuyingPrice
+                              | truncateDecimalsPipe
+                          }}
+                          %
+                          <span
+                            class="priceValueMode"
+                            *ngIf="previewResult.rule.priceValueMode === 0"
+                          >
+                            ({{ dictionary.Face }})
+                          </span>
+                          <span
+                            class="priceValueMode"
+                            *ngIf="previewResult.rule.priceValueMode === 1"
+                          >
+                            ({{ dictionary.Buy }})
+                          </span>
+                        </ion-label>
+                      </span> -->
+                      <span *ngSwitchCase="'buyingPrice'">
+                        <ion-label>
+                          {{
+                            previewResult.discountBuyingPrice
+                              | truncateDecimalsPipe
+                          }}
+                          %
+
+                          <span class="currency">
+                            ({{ previewResult.buyingPrice }})
+                          </span>
+                        </ion-label>
+                      </span>
+                      <!-- <span
+                        *ngSwitchCase="'discountSellingPrice'"
+                        class="amount_row"
+                      >
+                        <ion-label
+                          [class]="
+                            previewResult?.benefit >= 0
+                              ? ''
+                              : 'benefit__danger__color'
+                          "
+                        >
+                          {{
+                            previewResult.discountSellingPrice
+                              | truncateDecimalsPipe
+                          }}
+                          %
+                          <span
+                            class="priceValueMode"
+                            *ngIf="previewResult.rule.priceValueMode === 0"
+                          >
+                            ({{ dictionary.Face }})
+                          </span>
+                          <span
+                            class="priceValueMode"
+                            *ngIf="previewResult.rule.priceValueMode === 1"
+                          >
+                            ({{ dictionary.Buy }})
+                          </span>
+                        </ion-label>
+                      </span> -->
+                      <!-- <span *ngSwitchCase="'sellingMargin'" class="amount_row">
+                        <ion-label
+                          [class]="
+                            previewResult?.benefit >= 0
+                              ? ''
+                              : 'benefit__danger__color'
+                          "
+                        >
+                          {{
+                            previewResult.benefit * 100 | truncateDecimalsPipe
+                          }}
+                          %
+                        </ion-label>
+                      </span> -->
+                      <span *ngSwitchCase="'sellingPrice'">
+                        <div
+                          [class]="
+                            previewResult?.benefit >= 0
+                              ? ''
+                              : 'benefit__danger__color'
+                          "
+                        >
+                          {{
+                            previewResult.rule.priceValue * 100 - 100
+                              | truncateDecimalsPipe
+                          }}%
+
+                          <span class="currency">
+                            ({{ previewResult.sellingPrice }})
+                          </span>
+                        </div>
+                      </span>
+                      <span *ngSwitchCase="'isActive'">
+                        <ion-label
+                          color="danger"
+                          *ngIf="previewResult?.rule?.isActive === false"
+                        >
+                          {{ dictionary.Inactive }}
+                        </ion-label>
+                        <ion-label
+                          color="success"
+                          *ngIf="previewResult?.rule?.isActive === true"
+                        >
+                          {{ dictionary.Active }}
+                        </ion-label>
+
+                        <ion-label
+                          class="label__color"
+                          *ngIf="previewResult?.rule?.isActive === null"
+                        >
+                          {{ dictionary.Inherit }}
+                        </ion-label>
+                      </span>
+                      <span *ngSwitchDefault>
+                        {{ previewResult[col.field] }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td class="text-center" [attr.colspan]="columns.length">
+                  {{ dictionary.NoRecordsFound }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+<app-rule-create
+  *ngIf="openCreateRuleModal"
+  [isOpen]="openCreateRuleModal"
+  (addRule)="addRule($event)"
+  (dismiss)="openCreateRuleModal = false"
+  [priceRange]="priceRange"
+  [isPriceRange]="isPriceRange"
+  [showPriceRangeCheckBox]="showPriceRangeCheckBox"
+/>
+<app-rule-edit
+  *ngIf="openEditRuleModal"
+  [isOpen]="openEditRuleModal"
+  [ruleData]="ruleData"
+  (editRule)="editRule($event)"
+  (dismiss)="openEditRuleModal = false"
+  [showRangeStartAndEndInRuleModal]="showRangeStartAndEndInRuleModal"
+  [productName]="productName!"
+  [priceRange]="priceRange"
+/>
+<ion-alert
+  [isOpen]="showDiscardAlert"
+  [header]="dictionary.DiscardChanges"
+  [buttons]="alertButtons"
+/>
+<product-search
+  *ngIf="openProductSearchModal"
+  [products]="products"
+  [isOpen]="openProductSearchModal"
+  (dismissProductModal)="dismissProductModalEvent()"
+  (select)="onProductChange($event)"
+  (searchEvent)="searchProduct($event)"
+  [searchProductLoading]="searchProductLoading"
+/>
+<ion-alert
+  [isOpen]="showDeleteAlert"
+  [header]="dictionary.DeleteRule"
+  [buttons]="alertDeleteRuleButtons"
+  [message]="dictionary.RequireRuleMessage"
+/>

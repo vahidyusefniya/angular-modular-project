@@ -1,0 +1,19 @@
+.order__detail__logs__modal {
+  --max-height: 260px;
+  --height: 260px;
+  --width: 500px;
+  --max-width: 500px;
+}
+
+@media screen and (max-width: 840px) {
+  .order__detail__logs__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+    --width: 100%;
+  }
+}
+
+.label {
+  color: var(--text-label-color);
+  font-size: 15px;
+}

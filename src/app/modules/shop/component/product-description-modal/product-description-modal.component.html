@@ -1,0 +1,34 @@
+<ion-modal
+  class="product__description__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  [handle]="false"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Description }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div class="d-none" id="description" [innerHTML]="description"></div>
+      <ion-accordion-group>
+        <ion-accordion *ngFor="let description of descriptions">
+          <ion-item slot="header">
+            <ion-label [innerHTML]="description.title"></ion-label>
+          </ion-item>
+          <div
+            class="ion-padding"
+            [innerHTML]="description.description"
+            slot="content"
+          ></div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-content>
+  </ng-template>
+</ion-modal>

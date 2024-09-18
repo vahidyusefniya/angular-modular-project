@@ -1,0 +1,18 @@
+ion-modal {
+  --height: 700px;
+
+  cdk-virtual-scroll-viewport {
+    height: 100%;
+    width: 100%;
+  }
+}
+.wallet__transaction__filter__modal {
+  --max-height: 340px;
+  --height: 340px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}

@@ -1,0 +1,31 @@
+<div class="d-flex align-items-center">
+  <ol class="breadcrumb">
+    <li
+      *ngFor="
+        let breadcrumb of breadcrumbsItems.length > 0
+          ? breadcrumbsItems
+          : breadcrumbs;
+        last as isLast
+      "
+    >
+      <span
+        [ngClass]="{ deactive: breadcrumb.deActive }"
+        *ngIf="isLast || breadcrumb.deActive; else breadcrumbLink"
+      >
+        {{ breadcrumb.label }}
+      </span>
+      <ng-template #breadcrumbLink>
+        <span
+          *ngIf="!isLast"
+          [routerLink]="breadcrumb.url"
+          routerLinkActive="router-link-active"
+        >
+          {{ breadcrumb.label }}
+        </span>
+      </ng-template>
+    </li>
+  </ol>
+  <span class="breadcrumb-variable">
+    {{ breadcrumbVariable }}
+  </span>
+</div>

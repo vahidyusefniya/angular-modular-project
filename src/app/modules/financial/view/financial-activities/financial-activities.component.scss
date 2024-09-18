@@ -1,0 +1,26 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+.link-row {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--hyper-link-color);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.currency {
+  color: gray;
+  font-size: 12px;
+}
+
+@media screen and (min-width: 840px) {
+  .align-right-amount .amount_row {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+}
+.action-btn{
+  width: 85px;
+}

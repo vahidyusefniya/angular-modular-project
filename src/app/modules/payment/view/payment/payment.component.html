@@ -1,0 +1,137 @@
+<ion-content class="ion-no-padding" [fullscreen]="true">
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col size="12" class="payment-method-card-wrapper">
+        <h5 class="text-center mt-2">{{ dictionary.SelectPaymentMethod }}</h5>
+        <ion-row>
+          <ion-col size="12" sizeLg="8" offsetLg="2">
+            <div
+              class="d-flex justify-content-center align-items-center flex-wrap"
+            >
+              <ion-card
+                class="payment-method-card"
+                *ngFor="let item of paymentProfiles; let i = index"
+                (click)="showPaymentDetailModal(item)"
+                [id]="'payment-profile-' + item.paymentProfileId"
+              >
+                <ion-card-content>
+                  <img
+                    [src]="item.providerIcon"
+                    [alt]="item.paymentProfileName"
+                    [ngClass]="{
+                      'ach-icon': item.paymentProfileName === 'ACH'
+                    }"
+                  />
+                </ion-card-content>
+              </ion-card>
+            </div>
+            <div>
+              <hr />
+              <span class="fs-6 d-block w-100 text-center">{{
+                dictionary.ComingSoon
+              }}</span>
+              <div
+                class="d-flex justify-content-center align-items-center flex-wrap"
+              >
+                <ion-card
+                  class="payment-method-card payment-method-card-disabled"
+                  (click)="redirectTo('https://google.com')"
+                  [disabled]="true"
+                >
+                  <ion-card-content>
+                    <app-icon type="JpMorganElectronicCheck"></app-icon>
+                  </ion-card-content>
+                </ion-card>
+                <!-- <ion-card
+                  class="payment-method-card payment-method-card-disabled"
+                  (click)="onAchClick()"
+                >
+                  <ion-card-content>
+                    <app-icon
+                      type="PaymentWallet"
+                      class="d-block mx-auto"
+                      style="width: 60%"
+                    ></app-icon>
+                    <span
+                      class="text-black fs-6 text-center d-block fw-bold mt-2"
+                      >ACH</span
+                    >
+                  </ion-card-content>
+                </ion-card> -->
+                <ion-card
+                  class="payment-method-card payment-method-card-disabled"
+                  (click)="showRedeemModal = true"
+                  [disabled]="true"
+                >
+                  <ion-card-content>
+                    <app-icon
+                      type="PaymentCreditCard"
+                      class="d-block mx-auto"
+                      style="width: 60%"
+                    ></app-icon>
+                    <span class="text-black fs-6 text-center d-block fw-bold"
+                      >Redeem gift card</span
+                    >
+                  </ion-card-content>
+                </ion-card>
+                <ion-card
+                  class="payment-method-card payment-method-card-disabled"
+                  (click)="showChequeModal = true"
+                  [disabled]="true"
+                >
+                  <ion-card-content>
+                    <app-icon
+                      type="ChequeOnline"
+                      class="d-block mx-auto"
+                      style="width: 75%"
+                    ></app-icon>
+                    <span class="text-black fs-6 text-center d-block fw-bold"
+                      >Cheque online for USA</span
+                    >
+                  </ion-card-content>
+                </ion-card>
+                <ion-card
+                  class="payment-method-card payment-method-card-disabled"
+                  (click)="showBankTransferModal = true"
+                  [disabled]="true"
+                >
+                  <ion-card-content>
+                    <app-icon type="BankTransfer"></app-icon>
+                  </ion-card-content>
+                </ion-card>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<app-payment-information
+  [isOpen]="showModal"
+  (dismiss)="showModal = false"
+  [payment]="payment"
+  (createPaymentOrder)="createPaymentOrder($event)"
+  [icon]="icon"
+  *ngIf="showModal"
+/>
+
+<app-bank-transfer
+  [isOpen]="showBankTransferModal"
+  (dismiss)="showBankTransferModal = false"
+/>
+
+<app-redeem [isOpen]="showRedeemModal" (dismiss)="showRedeemModal = false" />
+
+<app-cheque [isOpen]="showChequeModal" (dismiss)="showChequeModal = false" />
+<app-ach-modal
+  [isOpen]="showAchModal"
+  (dismiss)="showAchModal = false"
+  (createPaymentOrder)="createPaymentOrderAuto($event)"
+  *ngIf="showAchModal"
+  [payment]="payment"
+  [icon]="icon"
+  [paymentMethodsProfile]="paymentMethodsProfile"
+  (getCustomerPanelLink)="redirectCustomerPanelLink($event)"
+/>

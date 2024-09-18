@@ -1,0 +1,34 @@
+<ion-select
+  [id]="id"
+  [label]="Label"
+  [placeholder]="placeholder"
+  [(ngModel)]="value"
+  (ngModelChange)="handleChange($event)"
+  [disabled]="disabled"
+  [required]="required"
+  labelPlacement="floating"
+  fill="outline"
+  [ngStyle]="customCss"
+  [interface]="isMobileSize ? 'action-sheet' : 'popover'"
+  class="combo-box"
+  *ngIf="!loading; else loadingTemp"
+>
+  <ion-select-option
+    *ngFor="let item of data"
+    [value]="item[valueField]"
+    class="select-option"
+  >
+    {{ item[textField] }}
+  </ion-select-option>
+  <ion-select-option
+    *ngIf="includeClear && value"
+    value="Clear"
+    class="clear-option"
+  >
+    Clear
+  </ion-select-option>
+</ion-select>
+<ion-spinner name="dots" *ngIf="loading"></ion-spinner>
+<ng-template #loadingTemp>
+  <app-text [Label]="Label" [readonly]="true"></app-text>
+</ng-template>

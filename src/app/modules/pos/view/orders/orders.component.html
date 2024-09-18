@@ -1,0 +1,265 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<app-page-list
+  [loading]="loading"
+  [data]="posOrders"
+  [label]="dictionary.Orders"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  [exportPermission]="'PosOrderRead'"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="posTable"
+  [hasSearch]="false"
+  class="align-right-amount"
+  [showPagination]="true"
+  [hasAdvancedFilter]="true"
+  [newButtonPermission]="'PosOrderRead'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  (advancedFilterClick)="openPosOrdersFilterModal = true"
+  [hasNewButton]="false"
+  [tagList]="tagList"
+  [page]="page"
+  [pageSize]="pageSize"
+  (pageChanged)="pageChanged($event)"
+  [advancedFilterPermission]="'PosOrderRead'"
+/>
+<ng-template #posTable>
+  <p-table
+    appPermission
+    inputAppPermission="PosOrderRead"
+    [value]="posOrders"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'posOrderId'">
+                <ion-text
+                  color="primary"
+                  class="hyper-link"
+                  (click)="showDetail(rowData)"
+                >
+                  {{ rowData[col.field] }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'product'">
+                {{ rowData["pos"].name }}
+              </span>
+              <span *ngSwitchCase="'price'">
+                {{ rowData["pos"].currency.symbol
+                }}{{ rowData["pos"].price | truncateDecimalsPipe }}
+              </span>
+              <span *ngSwitchCase="'isSubscriptive'" class="d-flex align-items-center">
+                <ion-icon
+                  *ngIf="rowData.pos.isSubscriptive"
+                  name="checkmark-outline"
+                ></ion-icon>
+                <ion-icon
+                  *ngIf="!rowData.pos.isSubscriptive"
+                  name="remove-outline"
+                ></ion-icon>
+                <span *ngIf="rowData.pos.isSubscriptive" class="gray-color ms-2">
+                  ({{ getCapturedStates(rowData["paymentItems"]) }} pay of {{ rowData["pos"].installmentCount }})
+                </span>
+              </span>
+              <span *ngSwitchCase="'quantity'">
+                {{ rowData[col.field] | truncateDecimalsPipe }}
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{ rowData[col.field].toISOString() | convertLocalDateTime }}
+              </span>
+              <span *ngSwitchCase="'paymentMethod'">
+                {{ rowData[col.field] }}
+              </span>
+              <ion-label
+                class="d-flex align-items-center"
+                *ngSwitchCase="'state'"
+              >
+                <app-icon
+                  class="mt-1 mx-1"
+                  [type]="convertState(rowData[col.field]).icon"
+                />
+                {{ convertState(rowData[col.field]).status }}
+              </ion-label>
+              <span *ngSwitchCase="'invoice'">
+                <ion-button
+                  color="primary"
+                  fill="clear"
+                  [pTooltip]="dictionary.DownloadInvoice"
+                  tooltipPosition="bottom"
+                  class="download-code-btn m-0"
+                  (click)="downloadInvoice(rowData)"
+                >
+                  <app-icon [type]="'download'" />
+                </ion-button>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-orders-filter
+  [isOpen]="openPosOrdersFilterModal"
+  (dismiss)="openPosOrdersFilterModal = false"
+  *ngIf="openPosOrdersFilterModal"
+  [data]="posOrderFilter"
+  (filterClick)="filterClick($event)"
+/>
+
+<app-order-detail
+  [isOpen]="openPosOrderModal"
+  (dismiss)="openPosOrderModal = false"
+  *ngIf="openPosOrderModal"
+  [posOrder]="posOrder"
+/>
+
+<div #pdfContent id="content" *ngIf="invoice">
+  <div class="row">
+    <div class="col-6">
+      <img src="./assets/img/logo-black-text.png" width="170" />
+    </div>
+    <div class="col-6">
+      <h6>{{ dictionary.Invoice }} #</h6>
+      <table class="date-table">
+        <tr>
+          <th>{{ dictionary.Date }}</th>
+          <th>{{ dictionary.DueDate }}</th>
+        </tr>
+        <tr>
+          <td>
+            {{ invoice.createdTime.toISOString()! | convertLocalDateTime }}
+          </td>
+          <td>
+            {{ invoice.createdTime.toISOString()! | convertLocalDateTime }}
+          </td>
+        </tr>
+        <tr>
+          <td class="fw-bold bg-gray fs-5">{{ dictionary.TimeZone }}</td>
+          <td class="fw-bold bg-gray fs-5">{{ dictionary.TotalDue }}</td>
+        </tr>
+        <tr>
+          <td>
+            <span *ngIf="branch.merchant?.timeZone; else elseBlock">{{
+              branch.merchant?.timeZone
+            }}</span>
+            <ng-template #elseBlock> - </ng-template>
+          </td>
+          <td>
+            {{ invoice.pos.currency.symbol
+            }}{{ invoice.posPrice * invoice.quantity | truncateDecimalsPipe }}
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-12 d-flex mt-4">
+      <div class="bill-to">
+        <div class="bill-to-text">{{ dictionary.BillTo }}</div>
+      </div>
+      <div class="user-info ms-2 d-flex flex-column">
+        <span class="fs-4">{{ branch.merchant?.merchantName }}</span>
+        <span class="gray-color"
+          >{{ dictionary.Tel }}: +{{ branch.merchant?.phoneNumber?.countryCode
+          }}{{ branch.merchant?.phoneNumber?.number }}</span
+        >
+        <span class="gray-color"
+          >{{ dictionary.Email }}: {{ branch.merchant?.email }}</span
+        >
+        <span class="gray-color">VAT/TAX ID #</span>
+      </div>
+    </div>
+    <div class="col-12 mt-5">
+      <table class="items-table">
+        <tr>
+          <th>{{ dictionary.ItemNumber }}</th>
+          <th>{{ dictionary.Product }}</th>
+          <th>{{ dictionary.Quantity }}</th>
+          <th>{{ dictionary.UnitPrice }}</th>
+          <th>{{ dictionary.TotalPrice }}</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>{{ invoice.pos.name }}</td>
+          <td>{{ invoice.quantity }}</td>
+          <td>
+            {{ invoice.pos.currency.symbol
+            }}{{ invoice.posPrice | truncateDecimalsPipe }}
+          </td>
+          <td>
+            {{ invoice.pos.currency.symbol
+            }}{{ invoice.posPrice * invoice.quantity | truncateDecimalsPipe }}
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-12 mt-5">
+      <div class="col-5 offset-7">
+        <div
+          class="w-100 d-flex justify-content-between align-items-center py-2 invoice-total"
+        >
+          <span class="fs-4">{{ dictionary.Subtotal }}</span>
+          <span class="fs-4"
+            >{{ invoice.pos.currency.symbol
+            }}{{
+              invoice.posPrice * invoice.quantity | truncateDecimalsPipe
+            }}</span
+          >
+        </div>
+        <div
+          class="w-100 d-flex justify-content-between align-items-center py-2 invoice-total"
+        >
+          <span class="fs-3 text-orange">{{ dictionary.Total }}</span>
+          <span class="fs-3 text-orange"
+            >{{ invoice.pos.currency.symbol
+            }}{{
+              invoice.posPrice * invoice.quantity | truncateDecimalsPipe
+            }}</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mt-5">
+      <div class="invoice-footer w-100 fs-6">
+        <div class="text-center">
+          <span class="badge-orange">{{ dictionary.Company }}</span>
+          {{ dictionary.Ezpin }}
+          <span class="badge-orange">{{ dictionary.Address }}</span>
+          {{ address }}
+          <br />
+          <br />
+          <span class="badge-orange">{{ dictionary.Email }}</span>
+          {{ email }}
+          <span class="badge-orange">{{ dictionary.Phone }}</span>
+          {{ phone }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

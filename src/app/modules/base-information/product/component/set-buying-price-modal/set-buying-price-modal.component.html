@@ -1,0 +1,17 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.SetBuyingPrice }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <app-price-list-prices [branchId]="branchId" [priceListId]="id!" />
+    </ion-content>
+  </ng-template>
+</ion-modal>

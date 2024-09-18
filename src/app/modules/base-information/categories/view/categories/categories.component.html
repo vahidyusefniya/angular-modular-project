@@ -1,0 +1,59 @@
+<p-tree
+  appPermission
+  inputAppPermission="CategoryRead"
+  [scrollHeight]="'90vh'"
+  [filter]="true"
+  filterMode="strict"
+  filterPlaceholder="Search category"
+  [value]="treeData"
+  [loading]="loading"
+  class="category-tree"
+>
+  <ng-template let-node pTemplate="default">
+    <div class="d-flex align-items-center">
+      <img
+        class="node-image"
+        [lazyLoad]="node.data.imageUrl ? node.data.imageUrl : localImageSRC"
+        [src]="localImageSRC"
+        alt="img"
+      />
+      <ion-label
+        class="mx-2"
+        *ngIf="checkCCategoryWritePermission(); else label"
+        [class]="node.label !== 'root' ? 'link-item' : ''"
+        (click)="node.label !== 'root' ? onEditCategoryClick(node) : ''"
+      >
+        {{ node.label }}
+      </ion-label>
+      <ng-template #label>
+        <ion-label class="mx-2">
+          {{ node.label }}
+        </ion-label>
+      </ng-template>
+      <ion-icon
+        appPermission
+        inputAppPermission="CategoryWrite"
+        class="icon__btn link-item"
+        slot="end"
+        name="add"
+        (click)="onAddCategoryClick(node)"
+      ></ion-icon>
+    </div>
+  </ng-template>
+</p-tree>
+<app-add-category
+  (dismiss)="showCategoryForm = false"
+  (submit)="submitCreate($event)"
+  [isOpen]="showCategoryForm"
+  [model]="categoryForm"
+  *ngIf="showCategoryForm"
+>
+</app-add-category>
+<app-edit-category
+  (dismiss)="showEditCategoryForm = false"
+  (submit)="submitEdit($event)"
+  [isOpen]="showEditCategoryForm"
+  [model]="categoryForm"
+  *ngIf="showEditCategoryForm"
+>
+</app-edit-category>

@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-button class="modal_btn" (click)="close()">{{
+        dictionary.Cancel
+      }}</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        id="save__btn"
+        class="modal_btn"
+        (click)="onFilterClick()"
+        [strong]="true"
+        ><b>{{ dictionary.Filter }}</b></ion-button
+      >
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form>
+    <ion-list>
+      <div class="row px-3">
+        <app-date-picker
+          [id]="'startTime'"
+          name="startTime"
+          [Label]="dictionary.BeginTime"
+          class="col-12 my-1"
+          [(ngModel)]="filter.beginTime"
+          (selectionChange)="selectionBeginTimeChange($event)"
+          [minDate]="minDate"
+        ></app-date-picker>
+        <app-date-picker
+          [id]="'endTime'"
+          name="endTime"
+          [Label]="dictionary.EndTime"
+          class="col-12 my-1"
+          [(ngModel)]="filter.endTime"
+          [maxDate]="maxDate"
+          (selectionChange)="selectionEndTimeChange($event)"
+        ></app-date-picker>
+      </div>
+    </ion-list>
+  </form>
+</ion-content>

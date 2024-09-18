@@ -1,0 +1,231 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<ion-content fullscreen>
+  <div class="d-flex align-items-center">
+    <ion-label class="d-flex align-items-center">
+      {{ dictionary.PostpaidACHAccount }}:
+      <span class="value-label">
+        <ion-spinner
+          name="dots"
+          *ngIf="loading; else elseBlock"
+          class="ms-2"
+        ></ion-spinner>
+        <ng-template #elseBlock>
+          <span
+            *ngIf="
+              selectedBranch.merchant
+                ?.postPayAchPaymentMethodProviderProfileId === null;
+              else elseBlock
+            "
+            class="ms-2 d-flex align-items-center"
+          >
+            {{ dictionary.NoAccountHasBeenSet }}
+            <ion-icon
+              name="alert-circle-outline"
+              slot="end"
+              color="warning"
+              class="ms-2"
+            ></ion-icon>
+          </span>
+          <ng-template #elseBlock>
+            <span class="ms-2">
+              {{ paymentMethodNumber }}
+            </span>
+          </ng-template>
+        </ng-template>
+      </span>
+    </ion-label>
+    <ion-button
+      fill="clear"
+      class="edit__btn"
+      (click)="onAchAccountNumberClick()"
+    >
+      <i class="material-icons">edit</i>
+    </ion-button>
+  </div>
+  <div class="pb-4 pb-lg-5">
+    <app-page-list
+      [loading]="loading"
+      [data]="postPaids"
+      [label]="dictionary.PostPaid"
+      [showPagination]="true"
+      [hasLocalPagination]="false"
+      [exportPermission]="'MerchantPostPayRead'"
+      [hasCustomTableContent]="true"
+      [initialTemplate]="posPaidTable"
+      [hasSearch]="false"
+      class="align-right-amount post-paid-table"
+      [showPagination]="true"
+      [hasAdvancedFilter]="true"
+      [showActionSheet]="true"
+      [newButtonPermission]="'MerchantPostPayRead'"
+      (refreshClick)="onRefreshClick()"
+      (exportClick)="onExcelExportClick()"
+      [hasNewButton]="false"
+      [page]="page"
+      [pageSize]="pageSize"
+      (pageChanged)="pageChanged($event)"
+      (advancedFilterClick)="openPostPaidModalFilter = true"
+      [tagList]="tagList"
+    />
+  </div>
+</ion-content>
+<ng-template #posPaidTable>
+  <p-table
+    appPermission
+    inputAppPermission="MerchantPostPayRead"
+    [value]="postPaids"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'postPayInvoiceId'">
+                {{ rowData[col.field] }}
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{ rowData[col.field].toISOString() | convertLocalDateTime }}
+              </span>
+              <span *ngSwitchCase="'paymentOrderId'">
+                <ion-text
+                  color="primary"
+                  class="hyper-link"
+                  (click)="showDetail(rowData['paymentOrder'].paymentOrderId)"
+                  *ngIf="
+                    rowData['paymentOrder'].paymentOrderId !== null;
+                    else elseBlock
+                  "
+                >
+                  {{ rowData["paymentOrder"].paymentOrderId }}
+                </ion-text>
+                <ng-template #elseBlock> - </ng-template>
+              </span>
+              <span *ngSwitchCase="'amount'">
+                {{ rowData[col.field] | truncateDecimalsPipe }}
+                <span class="currency"
+                  >({{ rowData.currency.currencyName }})</span
+                >
+              </span>
+              <span *ngSwitchCase="'state'">
+                <span
+                  *ngIf="
+                    generatePaymentOrderStateName(rowData) ===
+                    dictionary.Pending
+                  "
+                >
+                  <div class="d-flex">
+                    <app-icon
+                      [type]="generatePaymentOrderStateName(rowData)"
+                    ></app-icon>
+                    <span class="ms-1">
+                      {{ generatePaymentOrderStateName(rowData) }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === dictionary.Charged">
+                  <div class="d-flex">
+                    <app-icon
+                      [type]="rowData.paymentOrderState"
+                      class="d-flex"
+                    ></app-icon>
+                    <span class="ms-1">
+                      {{ dictionary.Charged }}
+                    </span>
+                  </div>
+                </span>
+                <span
+                  *ngIf="rowData.paymentOrderState === dictionary.Discharged"
+                >
+                  <div class="d-flex">
+                    <app-icon
+                      [type]="rowData.paymentOrderState"
+                      class="d-flex"
+                    ></app-icon>
+                    <span class="ms-1">
+                      {{ dictionary.Discharged }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === dictionary.Failed">
+                  <div class="d-flex">
+                    <app-icon
+                      [type]="rowData.paymentOrderState"
+                      class="d-flex"
+                    ></app-icon>
+                    <span class="ms-1">
+                      {{ dictionary.Failed }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === 'Captured'">
+                  <div class="d-flex">
+                    <app-icon [type]="'Complete'" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ rowData.paymentOrderState }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === 'Disputed'">
+                  <div class="d-flex">
+                    <app-icon [type]="'Discharged'" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ rowData.paymentOrderState }}
+                    </span>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-assign-ach-account-numbers
+  [isOpen]="openAchAccountNumbersModal"
+  *ngIf="openAchAccountNumbersModal"
+  (dismiss)="openAchAccountNumbersModal = false"
+  [accountNumbers]="accountNumbers"
+  (assignAccountNumber)="assignAccountNumber($event)"
+  [assignedPaymentMethodProviderProfileId]="
+    assignedPaymentMethodProviderProfileId
+  "
+  [title]="
+    !assignedPaymentMethodProviderProfileId
+      ? dictionary.SetPostpaidAchAccount
+      : dictionary.ChangePostpaidAchAccount
+  "
+/>
+
+<app-post-paid-filter
+  *ngIf="openPostPaidModalFilter"
+  [isOpen]="openPostPaidModalFilter"
+  [data]="postPaidFilter"
+  (dismiss)="openPostPaidModalFilter = false"
+  (filterClick)="savePostPaidFilter($event)"
+/>

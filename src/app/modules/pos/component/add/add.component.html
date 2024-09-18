@@ -1,0 +1,107 @@
+<ion-modal
+  class="create__branch__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.NewPos }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!posForm.form.valid || loading"
+            (click)="onNewPosClick()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #posForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-text
+                [autofocus]="true"
+                id="name"
+                [Label]="dictionary.Name"
+                [required]="true"
+                (keydown.enter)="posForm.form.valid ? onNewPosClick() : ''"
+                name="name"
+                [(ngModel)]="pos.name"
+              ></app-text>
+            </ion-col>
+            <ion-col size="4">
+              <app-currency-combobox
+                name="currencyId"
+                [(ngModel)]="currency"
+                [required]="true"
+                (selectionChange)="changeCurrency($event)"
+              />
+            </ion-col>
+            <ion-col size="8">
+              <ion-input
+                labelPlacement="floating"
+                fill="outline"
+                [label]="dictionary.Price"
+                [(ngModel)]="pos.price"
+                name="price"
+                id="price"
+                [required]="true"
+                [inputmode]="'numeric'"
+                [maskitoElement]="maskPredicate"
+                [maskito]="thousandSeparator"
+                mode="md"
+                (keydown.enter)="posForm.form.valid ? onNewPosClick() : ''"
+                class="price"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <ion-label>{{ dictionary.Description }}</ion-label>
+              <p-editor
+                name="description"
+                [(ngModel)]="pos.description"
+                [style]="{ height: '200px' }"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <p-fileUpload
+                name="image"
+                [url]="uploadImageUrl"
+                (onUpload)="onUpload($event)"
+                [multiple]="false"
+                [auto]="true"
+                accept="image/*"
+                [maxFileSize]="1000000"
+                (onBeforeUpload)="onBeforeUpload()"
+              >
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">
+                      <div class="content">
+                        <img
+                          alt="upload-image"
+                          width="50"
+                          height="30"
+                          src="{{ imageUrl }}"
+                        />
+                        <ion-label class="mx-2">{{ file.name }}</ion-label>
+                      </div>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

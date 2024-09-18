@@ -1,0 +1,88 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ title }} {{ modalName }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!salesManagerForm.form.valid"
+            (click)="onSaveClick()"
+          >
+            {{ dictionary.Save }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #salesManagerForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-text
+                id="name"
+                [Label]="dictionary.Name"
+                [(ngModel)]="saleManager.name"
+                name="name"
+                [required]="true"
+                [autofocus]="true"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                id="email"
+                [Label]="dictionary.Email"
+                [(ngModel)]="saleManager.email"
+                name="email"
+                [required]="true"
+                [email]="true"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <app-mobile
+                [Label]="dictionary.PhoneNumber"
+                name="phoneNumber"
+                id="phoneNumber"
+                (inputChange)="phoneNumberChange($event)"
+                [required]="true"
+                #phoneNumber
+                [value]="
+                  saleManager.phoneNumber
+                    ? saleManager.phoneNumber.number
+                    : phone.number
+                "
+                [code]="
+                  saleManager.phoneNumber
+                    ? saleManager.phoneNumber.countryCode
+                    : phone.countryCode
+                "
+              />
+            </ion-col>
+            <ion-col size="12">
+              <ion-item
+                href="#"
+                routerLinkActive="active"
+                lines="none"
+                detail="false"
+              >
+                <ion-toggle
+                  color="success"
+                  name="canPreOrder"
+                  class="w-100 w-sm-auto"
+                  [(ngModel)]="saleManager.isActive"
+                >
+                  {{ dictionary.Activate }}
+                </ion-toggle>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

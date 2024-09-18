@@ -1,0 +1,10 @@
+.currency__modal {
+  --max-height: 133px;
+  --height: 133px;
+}
+@media screen and (max-width: 840px) {
+  .currency__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

@@ -1,0 +1,26 @@
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-tabs
+    [class]="deviceMode === 'mobile' && width < 500 ? '' : 'desktop__tab__view'"
+    *ngIf="!loading"
+  >
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button
+        *ngFor="let tab of tabs"
+        [disabled]="tab.disabled"
+        [routerLink]="tab.path"
+        [routerLinkActive]="'active'"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="onTabClick(tab.path)"
+      >
+        <app-icon [type]="tab.icon" />
+        {{ tab.name }}
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+  <div class="loading__content">
+    <ion-spinner *ngIf="loading" color="dark" />
+  </div>
+</ion-content>

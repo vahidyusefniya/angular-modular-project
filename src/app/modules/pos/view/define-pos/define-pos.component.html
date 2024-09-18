@@ -1,0 +1,93 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<app-page-list
+  [loading]="loading"
+  [data]="poses"
+  [label]="dictionary.DefinePos"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  [exportPermission]="'PosWrite'"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="posTable"
+  [hasSearch]="false"
+  class="align-right-amount"
+  [showPagination]="true"
+  [hasAdvancedFilter]="false"
+  (newButtonClick)="showNewPos = true"
+  [newButtonLabel]="dictionary.NewPos"
+  [showActionSheet]="true"
+  [newButtonPermission]="'PosWrite'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+/>
+<ng-template #posTable>
+  <p-table
+    appPermission
+    inputAppPermission="PosWrite"
+    [value]="poses"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'name'">
+                <ion-text
+                  color="primary"
+                  class="hyper-link"
+                  (click)="editPos(rowData)"
+                >
+                  {{ rowData["name"] }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'price'">
+                <span>
+                  {{ rowData["currency"].symbol
+                  }}{{ rowData["price"] | truncateDecimalsPipe }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-add
+  [isOpen]="showNewPos"
+  *ngIf="showNewPos"
+  (dismiss)="showNewPos = false"
+  (newPosClick)="createPos($event)"
+/>
+
+<app-edit
+  [isOpen]="showEditPos"
+  *ngIf="showEditPos"
+  (dismiss)="showEditPos = false"
+  (editPosClick)="onEditPos($event)"
+  [pos]="pos"
+/>

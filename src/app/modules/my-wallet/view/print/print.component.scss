@@ -1,0 +1,174 @@
+.grid-wrapper {
+  height: 100%;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--ion-text-color);
+}
+
+.separator:not(:empty)::before {
+  margin-right: 0.25em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 0.25em;
+}
+
+.h-27 {
+  height: 27%;
+}
+
+.wallet-transaction-container {
+  height: 525px;
+}
+
+
+.credit-card {
+  width: auto;
+  min-width: 210px;
+  padding-bottom: 2px;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.container-card::-webkit-scrollbar {
+  height: 5px;
+}
+
+.container-card::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 5px;
+}
+
+
+
+.value-label {
+  color: gray !important;
+}
+
+.content-grid {
+  margin-bottom: 55px;
+}
+
+.title {
+  color: #F2672A !important;
+}
+
+#content {
+  position: relative;
+
+  .export-btn {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    z-index: 9;
+  }
+}
+
+.table {
+  width: 100%;
+
+  tr {
+
+    th,
+    td {
+      background-color: transparent !important;
+    }
+  }
+
+  thead {
+    th {
+      color: white;
+    }
+  }
+
+  tbody {
+    tr {
+
+      td {
+        color: gray;
+      }
+
+      &:last-child {
+
+        td {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 839px) {
+  .my-wallet-transactions {
+    padding-bottom: 15px;
+  }
+
+  .table {
+    thead {
+      display: none;
+    }
+
+    tbody {
+      tr {
+        display: flex;
+        flex-direction: column;
+
+        td {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom-width: 0px;
+
+          .mobile-col {
+            color: white;
+          }
+
+          &:last-child {
+            border-bottom-width: 1px;
+          }
+        }
+
+      }
+    }
+  }
+
+  #content {
+    .export-btn {
+      left: 50%;
+      top: auto;
+      bottom: 10px;
+      width: 90% !important;
+      transform: translate(-50%, 0);
+    }
+  }
+}
+
+@media screen and (min-width: 840px) {
+  .w-sm-auto {
+    width: auto !important;
+  }
+
+  .mobile-col {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .text-white {
+    color: black !important;
+  }
+}

@@ -1,0 +1,20 @@
+<ion-content fullscreen>
+  <ion-grid>
+    <p-tabMenu
+      [model]="items"
+      [activeItem]="activeItem"
+      [scrollable]="true"
+      *ngIf="showTab"
+    >
+      <ng-template pTemplate="item" let-item>
+        <span class="p-menuitem-text"> {{ item.label }}</span>
+      </ng-template>
+    </p-tabMenu>
+    <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+      <ion-spinner *ngIf="loading" color="dark" class="m-5" />
+    </div>
+    <div *ngIf="!loading">
+      <router-outlet></router-outlet>
+    </div>
+  </ion-grid>
+</ion-content>

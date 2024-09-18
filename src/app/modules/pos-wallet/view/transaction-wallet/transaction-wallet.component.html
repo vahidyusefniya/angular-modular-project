@@ -1,0 +1,115 @@
+<app-phone-header-layout
+  [showBackButton]="true"
+  [title]="currency?.currencyName"
+/>
+<ion-content appPermission inputAppPermission="WalletTransactionRead">
+  <ion-card class="ion-no-margin m-2" *ngFor="let item of walletTransactions">
+    <ion-card-content class="py-2">
+      <ion-grid class="ion-no-padding ion-no-margin">
+        <ion-row>
+          <ion-col class="mt-1" size="6">
+            <ion-label color="dark">
+              <span *ngIf="item.supplierMerchant.merchantId !== merchantId">
+                {{ item.supplierMerchant.merchantName }}
+                <span class="currency"> ({{ dictionary.Sender }}) </span>
+              </span>
+
+              <span *ngIf="item.receiverMerchant.merchantId !== merchantId">
+                {{ item.receiverMerchant.merchantName }}
+                <span class="currency"> ({{ dictionary.Receiver }}) </span>
+              </span>
+            </ion-label>
+          </ion-col>
+          <ion-col class="mt-1 d-flex justify-content-end" size="6">
+            <ion-label color="dark">
+              {{ item.createdTime.toISOString() | convertLocalDateTime }}
+            </ion-label>
+          </ion-col>
+          <ion-col class="mt-1" size="6">
+            <ion-label color="dark">
+              {{ item.transferWalletType }}
+            </ion-label>
+          </ion-col>
+          <ion-col class="mt-1 d-flex justify-content-end" size="6">
+            <ion-label color="dark">
+              <span *ngIf="item.receiverMerchant.merchantId !== merchantId">
+                <bdi class="amount__danger__color d-flex align-items-center">
+                  -{{ item.amount | truncateDecimalsPipe }}
+                  <span class="currency ms-2">
+                    ({{ item.currency.currencyName }})
+                  </span>
+                </bdi>
+              </span>
+
+              <span *ngIf="item.receiverMerchant.merchantId === merchantId">
+                <bdi class="d-flex align-items-center">
+                  {{ item.amount | truncateDecimalsPipe }}
+                  <span class="currency ms-2">
+                    ({{ item.currency.currencyName }})
+                  </span>
+                </bdi>
+              </span>
+            </ion-label>
+          </ion-col>
+          <ion-col [ngSwitch]="item.transferWalletState" class="mt-1" size="12">
+            <ion-button
+              *ngSwitchCase="'Completed'"
+              [disabled]="true"
+              color="success"
+              size="small"
+              fill="outline"
+              expand="block"
+            >
+              {{ dictionary.Complete }}
+            </ion-button>
+            <ion-button
+              *ngSwitchCase="'Failed'"
+              [disabled]="true"
+              color="danger"
+              size="small"
+              fill="outline"
+              expand="block"
+            >
+              {{ dictionary.Failed }}
+            </ion-button>
+            <ion-button
+              *ngSwitchCase="'Unverified'"
+              [disabled]="true"
+              color="warning"
+              size="small"
+              fill="outline"
+              expand="block"
+            >
+              {{ "Unverified" }}
+            </ion-button>
+            <ion-button
+              *ngSwitchDefault
+              [disabled]="true"
+              color="secondary"
+              size="small"
+              fill="outline"
+              expand="block"
+            >
+              {{ dictionary.Pending }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-infinite-scroll (ionInfinite)="onScroll($event)">
+    <div class="infinite-scroll-content">
+      <ion-spinner
+        *ngIf="currentSize && currentSize > 0 && loading"
+        color="dark"
+      ></ion-spinner>
+    </div>
+  </ion-infinite-scroll>
+  <div *ngIf="walletTransactions.length === 0 && !pageLoading">
+    <h5 class="row justify-content-center mt-2">No Records</h5>
+  </div>
+
+  <div *ngIf="pageLoading" class="loading__content height">
+    <ion-spinner color="dark"></ion-spinner>
+  </div>
+</ion-content>

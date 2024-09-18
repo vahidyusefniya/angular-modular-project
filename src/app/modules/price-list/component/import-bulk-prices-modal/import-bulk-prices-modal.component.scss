@@ -1,0 +1,42 @@
+@import "../../../../../assets/scss/primeng.scss";
+ion-modal {
+  --height: 630px;
+  --width: 1000px;
+}
+
+::ng-deep .p-fileupload-content {
+  padding: 0 !important;
+}
+
+::ng-deep .p-fileupload-buttonbar {
+  padding: 5px !important;
+  display: flex;
+}
+
+::ng-deep .p-fileupload-row > div {
+  padding: 9px 5px 5px !important;
+}
+
+.container-table {
+  height: 300px;
+}
+
+::ng-deep .page-list .card {
+  height: 100% !important;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+    --width: 100% !important;
+  }
+}
+
+.sample-excel {
+  cursor: pointer;
+  padding-left: 7px;
+}
+
+.dl-excel{
+  color: var(--ion-color-primary);
+}

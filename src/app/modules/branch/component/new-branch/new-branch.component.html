@@ -1,0 +1,57 @@
+<ion-modal
+  class="create__branch__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.NewOffice }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!branchForm.form.valid"
+            (click)="onNewBranchClick()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #branchForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-text
+                [autofocus]="true"
+                id="branchName"
+                [Label]="dictionary.Name"
+                [(ngModel)]="branch.branchName"
+                name="branchName"
+                [required]="true"
+                (keydown.enter)="branchForm.form.valid ? onNewBranchClick() : ''"
+              ></app-text>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-text-area-input
+                name="description"
+                [Label]="dictionary.Description"
+                id="description"
+                [(ngModel)]="branch.description"
+                (keydown.enter)="branchForm.form.valid ? onNewBranchClick() : ''"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

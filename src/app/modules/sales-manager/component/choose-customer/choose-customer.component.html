@@ -1,0 +1,63 @@
+<ion-modal [isOpen]="isOpen" (willDismiss)="cancel()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button color="primary" (click)="cancel()" [strong]="true">
+            <b>{{ dictionary.Cancel }}</b>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Assign customer to {{ saleManagerName }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            [disabled]="selectedCustomer.length == 0"
+            color="primary"
+            (click)="onClickSave()"
+            [strong]="true"
+          >
+            <b>{{ dictionary.Save }}</b>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <app-text
+        [autofocus]="true"
+        id="branchName"
+        [Label]="dictionary.Customer"
+        [(ngModel)]="customerName"
+        (inputChange)="searchName($event)"
+        name="branchName"
+      />
+      <!-- <ion-radio-group
+        *ngFor="let customer of customersList"
+        allow-empty-selection="true"
+        (ionChange)="handleChange(customer)"
+      >
+        <ion-item class="mt-2">
+          <ion-radio [value]="customer" justify="space-between">
+            {{ customer.merchantName }}
+          </ion-radio>
+        </ion-item>
+      </ion-radio-group> -->
+      <ng-container *ngIf="!loading">
+        <div *ngIf="customersList.length !== 0; else empty_content">
+          <div *ngFor="let customer of customersList" class="mt-2">
+            <ion-item>
+              <ion-label>{{ customer.merchantName }}</ion-label>
+              <ion-checkbox
+                (ionChange)="handleChange(customer)"
+                slot="end"
+              ></ion-checkbox>
+            </ion-item>
+          </div>
+        </div>
+        <ng-template #empty_content>
+          <span class="empty_content">No customer can be assigned.</span>
+        </ng-template>
+      </ng-container>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- (click)="setSelectedCustomer.emit(customer)" -->

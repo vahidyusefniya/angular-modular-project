@@ -1,0 +1,26 @@
+.payment-method-card-wrapper {
+  border: 1px solid #a6a6a6;
+  border-radius: 4px;
+  background-color: var(--ion-payment-wrapper-bg);
+  .payment-method-card {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #a6a6a6;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: ease all 0.2s;
+    filter: grayscale(1);
+    &:hover {
+      border: 3px solid var(--ion-color-primary, #3880ff);
+      filter: grayscale(0);
+    }
+  }
+}
+
+.ach-icon {
+  height: 40px;
+  width: 40px;
+}

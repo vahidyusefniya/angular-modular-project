@@ -1,0 +1,15 @@
+ion-modal {
+  --height: 210px;
+}
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}
+
+.confirm-text {
+  color: var(--gray);
+  .bold-text {
+    color: var(--ion-text-color);
+  }
+}

@@ -1,0 +1,39 @@
+<form #activeForm="ngForm">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="my-3" size="12">
+        <div class="amount-input">
+          <ion-input
+            labelPlacement="floating"
+            fill="outline"
+            [label]="dictionary.CustomPrice"
+            [(ngModel)]="faceValuePrice"
+            name="amount"
+            id="amount"
+            [required]="true"
+            [maskito]="thousandSeparator"
+            [maskitoElement]="maskPredicate"
+            (ionInput)="onInput($event)"
+            [class]="priceRangeMessage != '' ? 'error-input' : ''"
+            [autofocus]="true"
+            [inputmode]="'numeric'"
+            mode="md"
+            #customPrice
+            [appPreventNavigateNumber]="true"
+            (keyup.enter)="onContinueClick()"
+          />
+          <ion-button 
+            (click)="onContinueClick()"
+            [disabled]="!activeForm.form.valid"
+          >
+            {{ dictionary.Active }}
+          </ion-button>
+        </div>
+        <span
+          class="amount-range-label"
+          [innerHTML]="amountRangeLabel"
+        ></span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>

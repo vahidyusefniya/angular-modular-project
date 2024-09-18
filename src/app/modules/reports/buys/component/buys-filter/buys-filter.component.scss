@@ -1,0 +1,10 @@
+.buys__filter__modal {
+  --height: 400px;
+}
+
+@media screen and (max-width: 840px) {
+  .buys__filter__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

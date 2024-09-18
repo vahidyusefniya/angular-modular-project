@@ -1,0 +1,101 @@
+<ion-modal
+  class="wallet__transaction__filter__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Filter }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="primary" (click)="onFilterClick()">
+            {{ dictionary.Done }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form>
+        <ion-grid [fixed]="true">
+          <ion-row *ngIf="customers.length !== 0 && !hiddenCustomerInput">
+            <ion-col size="12">
+              <ion-input
+                [label]="dictionary.Customer"
+                labelPlacement="floating"
+                fill="outline"
+                name="customerMerchantId"
+                [value]="customer?.merchantName"
+                [readonly]="true"
+                (click)="openMultiSelectCustomerModal = true"
+                mode="md"
+              ></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-combobox
+                [Label]="dictionary.Type"
+                [(ngModel)]="filter.walletOrderType"
+                [data]="walletOrderTypes"
+                [textField]="'name'"
+                [valueField]="'value'"
+                name="walletOrderTypes"
+                [includeClear]="true"
+                (selectionChange)="typeSelectionChange($event)"
+              />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-combobox
+                [Label]="dictionary.State"
+                [(ngModel)]="filter.walletOrderState"
+                [data]="walletOrderStates"
+                [textField]="'name'"
+                [valueField]="'value'"
+                name="type"
+                [includeClear]="true"
+                (selectionChange)="walletOrderStateSelectionChange($event)"
+              />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-date-picker
+                [id]="'from'"
+                name="from"
+                [Label]="dictionary.BeginTime"
+                [(ngModel)]="filter.from"
+                [maxDate]="filter.end ? filter.end : maxDate"
+              ></app-date-picker>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-date-picker
+                [id]="'end'"
+                name="end"
+                [Label]="dictionary.EndTime"
+                [(ngModel)]="filter.end"
+                [maxDate]="maxDate"
+                [minDate]="filter.from"
+              ></app-date-picker>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<app-customer-search
+  *ngIf="openMultiSelectCustomerModal"
+  [isOpen]="openMultiSelectCustomerModal"
+  (select)="confirmMultiSelectProfilesModal($event)"
+  [customers]="customers"
+/>

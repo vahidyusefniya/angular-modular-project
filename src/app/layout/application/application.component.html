@@ -1,0 +1,25 @@
+<ion-content *ngIf="isNetworkConnected" appResize [fullscreen]="true">
+  <app-desktop-app *ngIf="appMode === 'desktop' && showApp"></app-desktop-app>
+  <app-mobile-app *ngIf="appMode === 'mobile' && showApp"></app-mobile-app>
+  <ion-loading
+    [isOpen]="!showApp && !openChooseBranchModal"
+    [message]="dictionary.Loading"
+  />
+</ion-content>
+<app-choose-branch
+  *ngIf="openChooseBranchModal"
+  [isOpen]="openChooseBranchModal"
+  (dismiss)="openChooseBranchModal = false"
+  (branchSelectionChange)="branchSelectionChange($event)"
+  [branches]="branches"
+  [selectedBranch]="selectedBranch"
+  [state]="'init'"
+/>
+<ion-loading [isOpen]="!showApp" [message]="dictionary.Loading"></ion-loading>
+<ion-alert
+  [isOpen]="!isNetworkConnected"
+  header="You're offline."
+  message="Please check your internet connection"
+  backdropDismiss="false"
+  [buttons]="networkAlertButtons"
+/>

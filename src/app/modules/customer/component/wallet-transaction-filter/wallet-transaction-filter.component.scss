@@ -1,0 +1,11 @@
+.wallet__transaction__filter__modal {
+  --max-height: 340px;
+  --height: 340px;
+}
+
+@media screen and (max-width: 840px) {
+  .wallet__transaction__filter__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

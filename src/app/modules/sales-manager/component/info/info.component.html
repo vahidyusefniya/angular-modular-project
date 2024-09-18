@@ -1,0 +1,79 @@
+<!--suppress JSUnresolvedReference -->
+<div
+  appPermission
+  inputAppPermission="SaleManagerRead"
+  class="content"
+  *ngIf="saleManager"
+>
+  <ion-grid>
+    <ion-card *ngIf="!loading" class="ion-no-margin mt-1">
+      <ion-card-content>
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-between align-items-center"
+        >
+          <div class="d-flex flex-column align-items-start w-100">
+            <div class="d-flex mb-1">
+              <ion-label class="label">{{ dictionary.Name }}:</ion-label>
+              <span class="ms-2 result-text">{{ saleManager.name }}</span>
+            </div>
+            <div class="d-flex mb-1">
+              <ion-label class="label">{{ dictionary.Email }}:</ion-label>
+              <span class="ms-2 result-text">{{ saleManager.email }}</span>
+            </div>
+            <div class="d-flex mb-1">
+              <ion-label class="label">{{ dictionary.Phone }}:</ion-label>
+              <span class="ms-2 result-text">
+                <span *ngIf="!!saleManager?.phoneNumber; else elseBlock">
+                  (+{{ saleManager.phoneNumber?.countryCode }})
+                  {{ saleManager.phoneNumber?.number }}
+                </span>
+                <ng-template #elseBlock> - </ng-template>
+              </span>
+            </div>
+            <div class="d-flex">
+              <ion-label class="label">{{ dictionary.Status }}:</ion-label>
+              <ion-text
+                class="ms-2 result-text"
+                color="primary"
+                [color]="
+                  changeActiveStatus(saleManager.isActive) === 'Deactive'
+                    ? 'danger'
+                    : ''
+                "
+                >{{ changeActiveStatus(saleManager.isActive) }}</ion-text
+              >
+            </div>
+          </div>
+          <ion-button
+            appPermission
+            inputAppPermission="SaleManagerWrite"
+            color="primary"
+            (click)="onOpenEditModal()"
+            class="assign-btn"
+            id="assign-office-button"
+          >
+            {{ dictionary.Edit }}
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-row *ngIf="loading">
+      <ion-col size="12" *ngFor="let number of [0]" class="p-0">
+        <ion-skeleton-text
+          style="height: 114px; width: 100%"
+          [animated]="true"
+        ></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
+
+<app-edit-modal
+  *ngIf="showEditModal"
+  [isOpen]="showEditModal"
+  (dismiss)="showEditModal = false"
+  [title]="dictionary.Edit"
+  (submitEditSaleManager)="onEditSaleManager($event)"
+  [saleManager]="saleManagerInput"
+>
+</app-edit-modal>

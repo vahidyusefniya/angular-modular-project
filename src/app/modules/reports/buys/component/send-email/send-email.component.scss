@@ -1,0 +1,13 @@
+.buys__filter__modal {
+  --height: 200px;
+}
+.my-email-message{
+  font-size: 18px;
+}
+
+@media screen and (max-width: 840px) {
+  .buys__filter__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

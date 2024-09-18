@@ -1,0 +1,35 @@
+<div class="my-2">
+  <app-page-list
+    [cols]="cols"
+    [data]="customers"
+    [listPermission]="'SaleManagerRead'"
+    [loading]="loading"
+    [label]="'Assigned customers'"
+    [hasLocalPagination]="true"
+    [hasAdvancedFilter]="false"
+    [hasSearch]="false"
+    [hasSearch]="true"
+    [hasExport]="false"
+    [hasRefresh]="false"
+    [hasNewButton]="true"
+    [hasRefresh]="true"
+    [hasExport]="true"
+    [page]="page"
+    [pageSize]="pageSize"
+    [showPagination]="true"
+    [newButtonLabel]="dictionary.AssignCustomer"
+    (newButtonClick)="showAssignCustomersModal = true"
+    [newButtonPermission]="'AssignMerchantToSaleManager'"
+    (exportClick)="onExcelExportClick()"
+    (refreshClick)="onRefreshClick()"
+    (inputSearch)="localSearchCustomer(page, $event)"
+    (iconRowClick)="unassignToBranchConfirmation($event)"
+  />
+</div>
+
+<app-choose-customer
+  *ngIf="showAssignCustomersModal"
+  [isOpen]="showAssignCustomersModal"
+  (dismiss)="dismissAssignBranchModal()"
+  (setSelectedCustomer)="setSelectedBranch($event)"
+></app-choose-customer>

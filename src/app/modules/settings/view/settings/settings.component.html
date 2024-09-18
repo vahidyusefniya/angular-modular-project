@@ -1,0 +1,15 @@
+<ion-content>
+  <p-tabMenu
+    [model]="tabs"
+    [(activeItem)]="activeTab"
+    [scrollable]="true"
+    class="settings-detail-tabmenu"
+  >
+    <ng-template pTemplate="item" let-item>
+      <span class="p-menuitem-text"> {{ item.label }}</span>
+    </ng-template>
+  </p-tabMenu>
+  <div class="main">
+    <router-outlet></router-outlet>
+  </div>
+</ion-content>

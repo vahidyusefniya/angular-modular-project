@@ -1,0 +1,42 @@
+
+@media print {
+  ion-card{
+    box-shadow: none !important;
+  }
+  #content {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    .title{
+      color: #F2672A !important;
+    }
+    .label{
+      color: black !important;
+      font-weight: bold;
+    }
+    .mobile-col{
+      display: none;
+    }
+  }
+  ion-menu, ion-header, ion-toolbar{
+    display: none !important;
+  }
+
+  body {
+    margin: 0;
+    color: red;
+    background-color: #fff;
+  }
+  @media screen and (max-width: 840px) {
+    #content {
+      width: 1200px;
+    }
+  }
+  .print-col{
+    width: 50% !important;
+    max-width: 50% !important;
+  }
+  .table thead{
+    display: table-header-group;
+  }
+}

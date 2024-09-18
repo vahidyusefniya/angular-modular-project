@@ -1,0 +1,24 @@
+<!--suppress JSUnresolvedReference -->
+<ion-modal [animated]="false" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" color="primary" (click)="onDismiss()"
+            >{{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title
+          >Customers who are assigned "{{ gateWayListName }}"
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-item class="ion-margin" mode="md" *ngFor="let customer of customers">
+        <ion-label>
+          <h3>{{ customer.merchantName }}</h3>
+        </ion-label>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>

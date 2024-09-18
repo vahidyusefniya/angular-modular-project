@@ -1,0 +1,35 @@
+<app-phone-header-layout
+  [showSearchBar]="true"
+  [searchValue]="searchValue"
+  [showBackButton]="true"
+  [title]="title"
+  (search)="onInputSearch($event)"
+/>
+<ion-content>
+  <cdk-virtual-scroll-viewport
+    itemSize="50"
+    minBufferPx="500"
+    maxBufferPx="2000"
+    *ngIf="products.length > 0"
+  >
+    <app-product-card
+      *cdkVirtualFor="let product of products; let id = index"
+      [id]="id"
+      [product]="product"
+      (cardClick)="createOrder($event)"
+    ></app-product-card>
+  </cdk-virtual-scroll-viewport>
+  <div
+    *ngIf="products.length === 0"
+    class="d-flex justify-content-center ion-margin"
+  >
+    <ion-label>{{ dictionary.NoRecordsFound }}</ion-label>
+  </div>
+</ion-content>
+
+<app-order
+  *ngIf="openOrderModal"
+  [isOpen]="openOrderModal"
+  (dismiss)="openOrderModal = false"
+  [product]="selectedProduct"
+/>

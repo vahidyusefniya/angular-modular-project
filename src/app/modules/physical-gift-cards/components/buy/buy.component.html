@@ -1,0 +1,93 @@
+<ion-modal class="order__modal" (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #receiveForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col class="ion-padding" size="12" size-sm="5">
+              <div class="w-100 d-flex justify-content-center">
+                <img
+                  ngSrc="{{
+                    product.imageUrl ? product.imageUrl : localImageSRC
+                  }}"
+                  width="181"
+                  height="118"
+                  alt="product"
+                  class="ion-margin"
+                />
+              </div>
+            </ion-col>
+            <ion-col size="12" size-sm="7">
+              <ion-row>
+                <ion-col size="12">
+                  {{ product.productName }}
+                </ion-col>
+                <ion-col size="12">
+                  {{ dictionary.BundleSize }}: 10
+                </ion-col>
+                <ion-col size="12">
+                  {{ dictionary.UPC }}: 
+                  <span *ngIf="product.upc !== null;else elseBlock">
+                    {{ product.upc }}
+                  </span>
+                  <ng-template #elseBlock>
+                    -
+                  </ng-template>
+                </ion-col>
+                <ion-col size="12">
+                  <span>{{ dictionary.ProvideYourQuantityOfChoiceForItem }}:</span>
+                </ion-col>
+                <ion-col class="number__col" size="12">
+                  <ion-button
+                    (click)="onReduceProductClick()"
+                    fill="clear"
+                    color="dark"
+                    [disabled]="checkDisabledReduceButton()"
+                  >
+                    <app-icon [type]="'remove-outline'" />
+                  </ion-button>
+                  <app-text
+                    id="productCount"
+                    name="productCount"
+                    [Label]="dictionary.Count"
+                    [(ngModel)]="productCount"
+                    [required]="true"
+                    [mask]="thousandSeparator"
+                    [inputmode]="'numeric'"
+                    [isPreventNavigateNumber]="true"
+                  />
+                  <ion-button
+                    (click)="onAddProductClick()"
+                    fill="clear"
+                    color="dark"
+                  >
+                    <app-icon [type]="'add'" />
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+    <ion-footer class="p-1">
+      <ion-button
+        (click)="onAddToCardClick()"
+        expand="block"
+        [disabled]="receiveForm.form.invalid"
+        id="continue-btn"
+      >
+        {{ dictionary.AddToCard }}
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>

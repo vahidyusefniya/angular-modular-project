@@ -1,0 +1,88 @@
+<!--suppress JSUnresolvedReference -->
+<div class="content">
+  <ion-grid>
+    <div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="fs-4" *ngIf="customerCredits.length > 0">{{
+          dictionary.Credit
+        }}</span>
+        <div class="d-flex w-100 justify-content-end">
+          <ion-button
+            appPermission
+            inputAppPermission="FinancialCreate"
+            class="mx-1"
+            (click)="showCreditModalClick()"
+            id="credit-button"
+            [disabled]="loading"
+          >
+            <i class="material-icons">add</i>
+            {{ dictionary.Credit }}
+            <ion-spinner
+              class="position-absolute"
+              slot="start"
+              name="lines"
+              *ngIf="loading"
+            ></ion-spinner>
+          </ion-button>
+        </div>
+      </div>
+      <div class="separator my-2" *ngIf="customerCredits.length > 0"></div>
+    </div>
+    <ion-row *ngIf="loading">
+      <ion-col
+        size="12"
+        sizeLg="2"
+        *ngFor="let number of [0, 1, 2, 3, 4, 5]"
+        class="py-0"
+      >
+        <ion-skeleton-text
+          style="height: 114px; width: 100%"
+          [animated]="true"
+        ></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!loading && customerCredits.length > 0" class="gap-2 mb-2">
+      <div class="credit-card" *ngFor="let credit of customerCredits">
+        <ion-card class="ion-no-margin">
+          <ion-card-content>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fs-4"
+                >{{ credit.balance | truncateDecimalsPipe }}
+                <span class="currency">({{ credit.currencyName }})</span></span
+              >
+            </div>
+            <ion-button
+              appPermission
+              inputAppPermission="FinancialCreate"
+              (click)="showSettleModalClick(credit)"
+              class="w-100"
+              id="settle-button"
+              >{{ dictionary.settle }}</ion-button
+            >
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-row>
+  </ion-grid>
+  <app-settle-transactions
+    appPermission
+    inputAppPermission="Settle"
+    (refreshEmiter)="initPage()"
+    [loading]="loading"
+    *ngIf="!loading"
+  ></app-settle-transactions>
+</div>
+<app-credit
+  *ngIf="showCreditModal"
+  [isOpen]="showCreditModal"
+  (dismiss)="showCreditModal = false"
+  [variableTitle]="merchantName"
+  (createCredit)="createCredit($event)"
+/>
+<app-settle
+  *ngIf="showSettleModal"
+  [isOpen]="showSettleModal"
+  (dismiss)="showSettleModal = false"
+  (submit)="submitSettleModal($event)"
+  [currency]="currency"
+/>

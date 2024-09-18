@@ -1,0 +1,113 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" class="charge__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.PaymentDetail }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid *ngIf="paymentOrder">
+        <ion-card class="p-4 mx-1">
+          <div class="d-sm-flex gap-sm-4">
+            <div class="mb-2 mb-sm-0">
+              <ion-label class="text-label">
+                {{ dictionary.PaymentOrderId }}:
+                <span class="gray__color">{{ paymentOrder.paymentOrderId }}</span>
+              </ion-label>
+            </div>
+            <div>
+              <ion-label class="text-label">
+                {{ dictionary.ProviderPaymentId }}:
+                <span class="gray__color">{{
+                    paymentOrder.providerPaymentId
+                  }}</span>
+              </ion-label>
+            </div>
+          </div>
+        </ion-card>
+        <ion-row class="h-100">
+          <ion-col size="12" class="h-75">
+            <app-page-list
+              [data]="stateLogs"
+              [hasNewButton]="false"
+              [showActionSheet]="false"
+              [hasAdvancedFilter]="false"
+              [hasRefresh]="false"
+              [hasSearch]="false"
+              [hasExport]="false"
+              [showPagination]="false"
+              [hasCustomTableContent]="true"
+              [initialTemplate]="stateLogsTable"
+              [label]="dictionary.StateLogs"
+              class="state-logs-table"
+            />
+            <ng-template #stateLogsTable>
+              <p-table
+                [value]="stateLogs"
+                [columns]="cols"
+                responsiveLayout="stack"
+                styleClass="p-datatable-gridlines"
+                breakpoint="840px"
+              >
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th class="column-color" *ngFor="let col of columns">
+                      {{ col.header }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                  <tr>
+                    <td
+                      class="column-color m-0 py-0"
+                      *ngFor="let col of columns; let i = index"
+                    >
+                      <div class="table__row" [ngSwitch]="col.field">
+                        <span class="table__label__row me-2">{{
+                          col.header
+                        }}</span>
+                        <div class="p-2">
+                          <div
+                            class="d-flex align-items-center"
+                            *ngSwitchCase="'State'"
+                          >
+                            <app-icon
+                              class="mt-1"
+                              [type]="checkIconState(rowData.stateId)"
+                            ></app-icon>
+                            <span class="ms-1">{{ rowData.state }}</span>
+                          </div>
+                          <span *ngSwitchCase="'createdTime'">
+                            {{
+                              rowData.createdTime.toISOString()
+                                | convertLocalDateTime
+                            }}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                  <tr>
+                    <td
+                      class="text-center column-color"
+                      [attr.colspan]="columns.length"
+                    >
+                      {{ "NoRecordsFound" }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </ng-template>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,32 @@
+.rule-edit-form-content {
+  --overflow: hidden;
+}
+@media screen and (min-width: 840px) {
+  .w-sm-auto {
+    width: auto !important;
+  }
+}
+
+ion-modal {
+  --height: 320px;
+}
+
+.edit-price-modal {
+  --height: 200px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}
+
+.region-lable {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 3px;
+  background-color: var(--text-label-color);
+  color: var(--card-header-row);
+  font-weight: 700;
+  margin-left: 3px;
+}

@@ -1,0 +1,36 @@
+<app-page-list
+  [cols]="cols"
+  [data]="currencies"
+  [loading]="loading"
+  [label]="dictionary.Currencies"
+  [newButtonLabel]="dictionary.NewCurrency"
+  [newButtonPermission]="'CurrencyWrite'"
+  [listPermission]="'CurrencyRead'"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [hasExport]="true"
+  [hasLocalPagination]="true"
+  (newButtonClick)="showNewCurrencyForm()"
+  (linkRowClick)="onEditCurrencyClick($event)"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  [page]="page"
+  [pageSize]="pageSize"
+  class="table-list"
+/>
+
+<app-add-currency
+  (dismiss)="showCurrencyForm = false"
+  (submit)="submitCreate($event)"
+  [isOpen]="showCurrencyForm"
+  [model]="currencyForm"
+>
+</app-add-currency>
+
+<app-edit-currency
+  (dismiss)="showEditCurrencyForm = false"
+  (submit)="submitUpdate($event)"
+  [isOpen]="showEditCurrencyForm"
+  [model]="currencyForm"
+>
+</app-edit-currency>

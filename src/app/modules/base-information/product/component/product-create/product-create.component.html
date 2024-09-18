@@ -1,0 +1,215 @@
+<ion-modal
+  class="create__product__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.NewProduct }}</ion-title>
+        <ion-buttons appPermission inputAppPermission="ProductWrite" slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!productForm.form.valid"
+            (click)="onNewProductClick()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #productForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                id="product_name"
+                [Label]="dictionary.ProductName"
+                [(ngModel)]="product.productName"
+                name="productName"
+                [required]="true"
+                class="productName"
+                (keydown.enter)="
+                  productForm.form.valid ? onNewProductClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                name="regionName"
+                id="regionName"
+                [(ngModel)]="selectedRegionName"
+                [Label]="dictionary.Region"
+                [required]="true"
+                [readonly]="true"
+                (click)="openSelectRegionModal = true"
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-number
+                id="upc"
+                [Label]="dictionary.UPC"
+                [(ngModel)]="product.upc"
+                name="upc"
+                [required]="true"
+                (keydown.enter)="
+                  productForm.form.valid ? onNewProductClick() : ''
+                "
+              ></app-number>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-currency-combobox
+                name="CurrencyId"
+                [(ngModel)]="product.currencyId"
+                [required]="true"
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [id]="'provider'"
+                name="provider"
+                [Label]="dictionary.Provider"
+                [(ngModel)]="product.providerId"
+                [required]="true"
+                [readonly]="true"
+                (keydown.enter)="
+                  productForm.form.valid ? onNewProductClick() : ''
+                "
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+
+              <app-category-modal
+              [id]="'categoryName'"
+              [label]="dictionary.Category"
+              [categoryId]="product.categoryId"
+              (chooseCategory)="chooseCategory($event)"
+              (removeCat)="removeCategory()"
+            />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                id="provider_sku"
+                [Label]="dictionary.ProviderSKU"
+                [(ngModel)]="product.providerSku"
+                name="providerSku"
+                [required]="true"
+                (keydown.enter)="
+                  productForm.form.valid ? onNewProductClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                id="card_number_text"
+                class="col-md-6 col-sm-12"
+                [Label]="dictionary.CardNumber"
+                [(ngModel)]="product.cardNumberText"
+                name="cardNumberText"
+                [required]="true"
+                (keydown.enter)="
+                  productForm.form.valid ? onNewProductClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                id="pin_text"
+                class="col-md-6 col-sm-12"
+                [Label]="dictionary.PinText"
+                [(ngModel)]="product.pinText"
+                name="pinText"
+                [required]="true"
+                (keydown.enter)="
+                  productForm.form.valid ? onNewProductClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col class="d-flex align-items-center" size="12" size-sm="4">
+              <ion-toggle
+                color="success"
+                name="canPreOrder"
+                class="w-100 w-sm-auto"
+                [(ngModel)]="product.canPreOrder"
+              >
+                {{ dictionary.CanPreOrder }}
+              </ion-toggle>
+            </ion-col>
+            <ion-col size="12" size-sm="4">
+              <ion-toggle
+                name="canImmediate"
+                color="success"
+                class="w-100 w-sm-auto"
+                [(ngModel)]="product.canImmediate"
+              >
+                {{ dictionary.CanImmediate }}
+              </ion-toggle>
+            </ion-col>
+            <ion-col size="12" size-sm="4">
+              <ion-toggle
+                color="success"
+                name="showPin"
+                class="w-100 w-sm-auto"
+                [(ngModel)]="product.showPin"
+              >
+                {{ dictionary.ShowPin }}
+              </ion-toggle>
+            </ion-col>
+            <ion-col size="12">
+              <ion-label>{{ dictionary.Description }}</ion-label>
+              <p-editor
+                name="description"
+                [(ngModel)]="product.description"
+                [style]="{ height: '200px' }"
+              />
+            </ion-col>
+            <ion-col appPermission inputAppPermission="UploadImage" size="12">
+              <ion-label>{{ dictionary.Image }}</ion-label>
+              <p-fileUpload
+                name="image"
+                [url]="uploadImageUrl"
+                (onUpload)="onUpload($event)"
+                [multiple]="false"
+                [auto]="true"
+                accept="image/*"
+                [maxFileSize]="1000000"
+              >
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">
+                      <div class="content">
+                        <img
+                          width="50"
+                          height="30"
+                          ngSrc="{{ imageUrl }}"
+                          alt="upload-file"
+                        />
+                        <ion-label class="mx-2">{{ file.name }}</ion-label>
+                      </div>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+
+<app-region
+  *ngIf="openSelectRegionModal"
+  [isOpen]="openSelectRegionModal"
+  (dismiss)="openSelectRegionModal = false"
+  [selectedRegion]="selectedRegion"
+  (chooseRegion)="chooseRegion($event)"
+/>

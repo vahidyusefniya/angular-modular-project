@@ -1,0 +1,31 @@
+<ion-modal (willDismiss)="onDismiss()" class="history__modal" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="light">
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" (click)="onDismiss()" color="primary"
+            >{{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Filter }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            id="save__btn"
+            class="modal_btn"
+            (click)="onFilterClick()"
+            [strong]="true"
+            color="primary"
+            ><b>{{ dictionary.Filter }}</b></ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <div class="row px-3">
+          <app-currency-combobox name="CurrencyId" [(ngModel)]="currencyId" />
+        </div>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>

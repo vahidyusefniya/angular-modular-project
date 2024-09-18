@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-grid class="ion-no-margin py-0">
+      <ion-row *ngIf="showHeader" class="mt-2 pt-1">
+        <ion-col class="content__header" size="2">
+          <img
+            *ngIf="showFlagButton"
+            (click)="onFlagClick()"
+            class="region__image"
+            ngSrc="{{ flagImage ? flagImage : placeholder }}"
+            width="40"
+            height="30"
+            alt="flat-image"
+            role="button"
+          />
+          <ion-button
+            size="small"
+            color="primary"
+            *ngIf="showBackButton"
+            fill="clear"
+            class="ion-no-margin ion-no-padding"
+            (click)="onBackClick()"
+          >
+            <ion-icon
+              class="back__btn__icon"
+              slot="start"
+              name="chevron-back-outline"
+            ></ion-icon>
+            <ion-label class="back__btn__label">{{
+              dictionary.Back
+            }}</ion-label>
+          </ion-button>
+        </ion-col>
+        <ion-col class="content__header justify-content-center" size="8">
+          <img
+            *ngIf="showHeaderLogo && !title"
+            class="logo__image"
+            ngSrc="../../../../assets/img/ezpin.png"
+            width="400"
+            height="256"
+            style="width: 47px; height: 30px"
+            alt="logo"
+          />
+          {{ title }}
+        </ion-col>
+        <ion-col class="content__header justify-content-end" size="2">
+          <ion-icon
+            *ngIf="showMenu"
+            color="dark"
+            name="person-outline"
+            (click)="onMenuClick()"
+          ></ion-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!showHeader" class="mt-2"></ion-row>
+      <ion-row class="my-2">
+        <ion-col class="py-0" *ngIf="showSearchBar" size="12">
+          <ion-searchbar
+            [id]="searchbarId"
+            [value]="searchValue"
+            show-cancel-button="focus"
+            cancel-button-text="Cancel"
+            [placeholder]="searchBarPlaceholder"
+            [debounce]="500"
+            (ionInput)="changeSearchInput($event)"
+            (ionFocus)="onFocus()"
+            (ionBlur)="onBlur()"
+            (ionClear)="onClear()"
+          ></ion-searchbar>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>

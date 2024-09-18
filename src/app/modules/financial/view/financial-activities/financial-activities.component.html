@@ -1,0 +1,274 @@
+<app-page-list
+  [data]="financialActivities"
+  [cols]="cols"
+  [tagList]="tagList"
+  (pageChanged)="pageChanged($event)"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasAdvancedFilter]="true"
+  (advancedFilterClick)="openFinancialActivitiesFilter = true"
+  [hasNewButton]="false"
+  [hasSearch]="false"
+  [hasExport]="true"
+  (refreshClick)="onRefreshClick()"
+  [label]="dictionary.FinancialActivities"
+  class="align-right-amount"
+  [initialTemplate]="financialActivitiesTable"
+  [hasCustomTableContent]="true"
+  (exportClick)="onExcelExportClick()"
+/>
+<ng-template #financialActivitiesTable>
+  <p-table
+    appPermission
+    inputAppPermission="PaymentOrderRead"
+    [value]="financialActivities"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div class="table__row" [ngSwitch]="col.field">
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1">
+              <span *ngSwitchCase="'orderId'">
+                <ion-text
+                  color="primary"
+                  class="link-row"
+                  [id]="rowData.merchantName"
+                  (click)="onLinkRowClickClick(rowData)"
+                >
+                  {{ rowData[col.field] }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{
+                  rowData[col.field] | convertLocalDateTime : "YYYY/MM/DD HH:mm"
+                }}
+              </span>
+              <span *ngSwitchCase="'financialOrderType'">
+                {{ rowData[col.field] }}
+              </span>
+              <span *ngSwitchCase="'amount'">
+                <span
+                  [ngClass]="col.customClass"
+                  [ngStyle]="col.customCss"
+                  class="d-flex align-items-start gap-1"
+                >
+                  <ng-container
+                    *ngIf="rowData['targetMerchant'].merchantId !== merchantId"
+                  >
+                    <span *ngIf="rowData[col.field] === 0"
+                      >{{ rowData.currency.symbol
+                      }}{{ rowData[col.field] }}</span
+                    >
+                    <bdi
+                      class="amount__danger__color d-flex align-items-center"
+                      *ngIf="rowData[col.field] !== 0"
+                    >
+                      {{ rowData.currency.symbol }}-{{
+                        rowData[col.field] | truncateDecimalsPipe
+                      }}
+                    </bdi>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="rowData['targetMerchant'].merchantId === merchantId"
+                  >
+                    <bdi class="d-flex align-items-center">
+                      {{ rowData.currency.symbol
+                      }}{{ rowData[col.field] | truncateDecimalsPipe }}
+                    </bdi>
+                  </ng-container>
+                </span>
+              </span>
+              <span *ngSwitchCase="'customer'">
+                <span *ngIf="rowData['baseMerchant'].merchantId !== merchantId">
+                  {{ rowData["baseMerchant"].merchantName }}
+                  <span class="currency"> ({{ dictionary.Sender }}) </span>
+                </span>
+
+                <span
+                  *ngIf="rowData['targetMerchant'].merchantId !== merchantId"
+                >
+                  {{ rowData["targetMerchant"].merchantName }}
+                  <span class="currency"> ({{ dictionary.Receiver }}) </span>
+                </span>
+              </span>
+              <span
+                class="d-flex align-items-center"
+                *ngSwitchCase="'financialOrderState'"
+              >
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Completed'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Completed'
+                      ? 'Complete'
+                      : 'inProgress__circle'
+                  "
+                />
+
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Created'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Created'
+                      ? rowData[col.field]
+                      : 'inProgress__circle'
+                  "
+                />
+
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Failed'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Failed'
+                      ? rowData[col.field]
+                      : 'inProgress__circle'
+                  "
+                />
+
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Unverified'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Pending'
+                      ? rowData[col.field]
+                      : 'inProgress__circle'
+                  "
+                />
+                <span class="ms-1">{{ rowData[col.field] }}</span>
+              </span>
+              <span *ngSwitchCase="'state'" class="d-flex align-items-center">
+                <div
+                  *ngIf="
+                    rowData.firstVerifierUserEmail !== null;
+                    else firstElseBlock
+                  "
+                >
+                  <ion-icon
+                    name="checkmark-outline"
+                    color="success"
+                    style="font-size: 22px"
+                    [id]="'first-email-success-' + rowData['orderId']"
+                    [pTooltip]="rowData.firstVerifierUserEmail"
+                    tooltipPosition="top"
+                  ></ion-icon>
+                </div>
+                <ng-template #firstElseBlock>
+                  <div>
+                    <ion-icon
+                      name="close-outline"
+                      style="font-size: 22px"
+                      [id]="'first-email-failed-' + rowData['orderId']"
+                      [pTooltip]="dictionary.NotVerify"
+                      tooltipPosition="top"
+                    ></ion-icon>
+                  </div>
+                </ng-template>
+
+                <div *ngIf="rowData.secondVerifierUserEmail !== null">
+                  <ion-icon
+                    name="checkmark-outline"
+                    color="success"
+                    style="font-size: 22px"
+                    [id]="'second-email-success-' + rowData['orderId']"
+                    [pTooltip]="rowData.secondVerifierUserEmail"
+                    tooltipPosition="top"
+                  ></ion-icon>
+                </div>
+                <div
+                  *ngIf="
+                    rowData.secondVerifierUserEmail === null &&
+                    rowData.rejecterUserEmail === null
+                  "
+                >
+                  <ion-icon
+                    name="close-outline"
+                    style="font-size: 22px"
+                    [id]="'second-email-failed-' + rowData['orderId']"
+                    [pTooltip]="dictionary.NotVerify"
+                    tooltipPosition="top"
+                  ></ion-icon>
+                </div>
+
+                <div *ngIf="rowData.rejecterUserEmail !== null">
+                  <ion-icon
+                    name="close-outline"
+                    color="danger"
+                    style="font-size: 22px"
+                    [id]="'rejecter-user-email-' + rowData['orderId']"
+                    [pTooltip]="rowData.rejecterUserEmail"
+                    tooltipPosition="top"
+                  ></ion-icon>
+                </div>
+              </span>
+              <span *ngSwitchCase="'approve'">
+                <ion-button
+                  [id]="rowData.orderId + '_approve__btn'"
+                  color="primary"
+                  appPermission
+                  inputAppPermission="FinancialVerify"
+                  (click)="approveOrder(rowData)"
+                  class="m-0 action-btn"
+                  *ngIf="showButtonCondition(rowData)"
+                >
+                  {{ dictionary.Verify }}
+                </ion-button>
+              </span>
+              <span *ngSwitchCase="'reject'">
+                <ion-button
+                  [id]="rowData.orderId + '_reject__btn'"
+                  color="primary"
+                  appPermission
+                  inputAppPermission="FinancialReject"
+                  fill="outline"
+                  (click)="rejectOrder(rowData)"
+                  class="m-0 action-btn"
+                  *ngIf="showButtonCondition(rowData)"
+                >
+                  {{ dictionary.Reject }}
+                </ion-button>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-financial-activities-filter
+  *ngIf="openFinancialActivitiesFilter"
+  [isOpen]="openFinancialActivitiesFilter"
+  [hiddenCustomerInput]="hiddenCustomerInput"
+  [data]="financialActivitiesFilter"
+  (dismiss)="openFinancialActivitiesFilter = false"
+  (filterClick)="saveFinancialActivitiesFilter($event)"
+  [customers]="customers"
+  [customer]="customer"
+/>
+
+<app-financial-activities-detail
+  *ngIf="openFinancialActivitiesDetail"
+  [isOpen]="openFinancialActivitiesDetail"
+  [financialActivity]="financialActivity"
+  (dismiss)="openFinancialActivitiesDetail = false"
+/>

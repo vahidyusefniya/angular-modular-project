@@ -1,0 +1,302 @@
+<ion-modal
+  class="create__pos__order__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Buy }} "{{ pos?.name }}"</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!posForm.form.valid || loading"
+            (click)="onBuyClick()"
+          >
+            {{ dictionary.Buy }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #posForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <div class="mb-2">{{ dictionary.SelectYourGateway }}</div>
+              <ion-radio-group [value]="posOrderPaymentMethod.CreditCard">
+                <ion-radio
+                  class="me-5"
+                  labelPlacement="end"
+                  [value]="'CreditCard'"
+                  (click)="setPaymentMethod(posOrderPaymentMethod.CreditCard)"
+                  id="creditCard"
+                >
+                  {{ dictionary.CreditCard }}
+                </ion-radio>
+                <ion-radio
+                  class="me-5"
+                  labelPlacement="end"
+                  [value]="'Ach'"
+                  id="ach"
+                  (click)="setPaymentMethod(posOrderPaymentMethod.Ach)"
+                >
+                  {{ dictionary.ACH }}
+                </ion-radio>
+                <ion-radio
+                  labelPlacement="end"
+                  [value]="'Wallet'"
+                  (click)="setPaymentMethod(posOrderPaymentMethod.Wallet)"
+                  id="wallet"
+                  [disabled]="walletBalance === 0"
+                  *ngIf="!pos?.isSubscriptive"
+                >
+                  <span class="d-flex align-items-center">
+                    <span>{{ dictionary.EZPINWallet }}</span>
+                    <ion-spinner
+                      *ngIf="loadingWallet"
+                      name="dots"
+                      class="ms-2"
+                    ></ion-spinner>
+                    <span
+                      *ngIf="!loadingWallet"
+                      class="ms-2 gray-color balance"
+                    >
+                      <span *ngIf="walletBalance > 0; else elseBlock">
+                        ({{ dictionary.Balance }}: {{ pos?.currency?.symbol
+                        }}{{ walletBalance | truncateDecimalsPipe }})
+                      </span>
+                      <ng-template #elseBlock>
+                        ({{ dictionary.YouDontHaveBalance }})
+                      </ng-template>
+                    </span>
+                  </span>
+                </ion-radio>
+              </ion-radio-group>
+            </ion-col>
+            <ion-col size="12">
+              <div class="quantity">
+                <ion-input
+                  labelPlacement="floating"
+                  fill="outline"
+                  id="quantity"
+                  name="quantity"
+                  [label]="dictionary.Quantity"
+                  [(ngModel)]="model.quantity"
+                  [required]="true"
+                  [maskito]="thousandSeparator"
+                  [maskitoElement]="maskPredicate"
+                  [inputmode]="'numeric'"
+                  mode="md"
+                  minValue
+                  [minValueNumber]="0"
+                  maxValue
+                  [maxValueNumber]="
+                    model.paymentMethod === posOrderPaymentMethod.Wallet
+                      ? maxQuantity
+                      : 100000000000000
+                  "
+                  (ionInput)="onInputQuantity()"
+                  (keydown.enter)="posForm.form.valid ? onBuyClick() : ''"
+                  #quantityInput
+                />
+                <span class="total-price"
+                  >{{ dictionary.TotalPrice }}: {{ pos?.currency?.symbol
+                  }}{{ getTotalPrice() | truncateDecimalsPipe }}</span
+                >
+                <span class="text-danger text-error">{{
+                  errorTextQuantityInput
+                }}</span>
+              </div>
+            </ion-col>
+            <ion-col
+              size="12"
+              *ngIf="
+                model.paymentMethod === posOrderPaymentMethod.Ach ||
+                (model.paymentMethod === posOrderPaymentMethod.CreditCard &&
+                  pos?.isSubscriptive)
+              "
+            >
+              <ion-row class="align-items-center">
+                <ion-col size="12" sizeSm="6" class="ps-sm-0">
+                  <app-combobox
+                    id="accountNumber"
+                    [Label]="
+                      model.paymentMethod ===
+                        posOrderPaymentMethod.CreditCard && pos?.isSubscriptive
+                        ? dictionary.CreditCard
+                        : dictionary.AccountNumber
+                    "
+                    [(ngModel)]="model.paymentMethodProviderProfileId"
+                    name="accountNumber"
+                    [data]="accountNumbers"
+                    [textField]="'paymentMethodNumber'"
+                    [valueField]="'paymentMethodProviderProfileId'"
+                    [required]="true"
+                    [loading]="loadingWallet"
+                    [disabled]="accountNumbers.length === 0"
+                  />
+                </ion-col>
+                <ion-col size="12" sizeSm="6">
+                  <ion-button
+                    [pTooltip]="
+                      model.paymentMethod === posOrderPaymentMethod.Ach
+                        ? 'By clicking on add account, you will be redirected to your accounts page'
+                        : 'By clicking on add credit card, you will be redirected to your credit cards page'
+                    "
+                    tooltipPosition="bottom"
+                    [disabled]="loadingCustomerPanelLink"
+                    fill="clear"
+                    (click)="createCustomerPanelLink()"
+                  >
+                    <span *ngIf="loadingCustomerPanelLink; else elseBlock">
+                      <ion-spinner name="dots" color="primary"></ion-spinner>
+                    </span>
+                    <ng-template #elseBlock>
+                      <ion-icon name="add-outline"></ion-icon>
+                      {{
+                        model.paymentMethod ===
+                          posOrderPaymentMethod.CreditCard &&
+                        pos?.isSubscriptive
+                          ? dictionary.AddCard
+                          : dictionary.AddAccount
+                      }}
+                    </ng-template>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+
+            <ion-col size="12">
+              <ion-input
+                labelPlacement="floating"
+                fill="outline"
+                id="name"
+                [label]="dictionary.FullName"
+                name="name"
+                [(ngModel)]="model.shipping.fullName"
+                [required]="true"
+                (keydown.enter)="posForm.form.valid ? onBuyClick() : ''"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="12">
+              <app-mobile
+                [Label]="dictionary.PhoneNumber"
+                name="phoneNumber"
+                id="phoneNumber"
+                (inputChange)="phoneNumberChange($event)"
+                [required]="true"
+                (keydown.enter)="posForm.form.valid ? onBuyClick() : ''"
+                #phoneNumber
+              />
+            </ion-col>
+
+            <ion-col size="12">
+              <app-text
+                id="country"
+                [Label]="dictionary.Country"
+                name="country"
+                [readonly]="true"
+                (click)="showCountryModal = true"
+                (keydown.space)="showCountryModal = true"
+                [(ngModel)]="countryName"
+              />
+            </ion-col>
+
+            <ion-col size="4">
+              <app-text
+                id="state"
+                [Label]="dictionary.StateProvinceTerritory"
+                name="state"
+                [readonly]="true"
+                (click)="showStateModal = true"
+                (keydown.space)="showStateModal = true"
+                [(ngModel)]="stateName"
+                [disabled]="countryName === ''"
+              />
+            </ion-col>
+
+            <ion-col size="4">
+              <app-text
+                id="city"
+                [Label]="dictionary.City"
+                name="city"
+                [readonly]="true"
+                (click)="showCityModal = true"
+                (keydown.space)="showCityModal = true"
+                [(ngModel)]="cityName"
+                [disabled]="
+                  countryName === '' ||
+                  stateName === '' ||
+                  stateName === 'Other'
+                "
+              />
+            </ion-col>
+
+            <ion-col size="4">
+              <ion-input
+                labelPlacement="floating"
+                fill="outline"
+                id="zipcode"
+                [label]="dictionary.ZIPPostalCode"
+                name="zipcode"
+                [(ngModel)]="model.shipping.address.zipCode"
+                [required]="true"
+                (keydown.enter)="posForm.form.valid ? onBuyClick() : ''"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="12">
+              <ion-input
+                labelPlacement="floating"
+                fill="outline"
+                [label]="dictionary.Address"
+                name="address"
+                id="address"
+                (keydown.enter)="posForm.form.valid ? onBuyClick() : ''"
+                [(ngModel)]="model.shipping.address.rawAddress"
+                [required]="true"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<app-radio-list
+  [isOpen]="showCountryModal"
+  *ngIf="showCountryModal"
+  (dismiss)="showCountryModal = false"
+  [data]="countries"
+  [title]="dictionary.SelectCountry"
+  (select)="selectCountry($event)"
+  [selectedObject]="country"
+/>
+
+<app-radio-list
+  [isOpen]="showStateModal"
+  *ngIf="showStateModal"
+  (dismiss)="showStateModal = false"
+  [data]="states"
+  [title]="dictionary.SelectStateProvinceTerritory"
+  (select)="selectState($event)"
+  [selectedObject]="state"
+/>
+
+<app-radio-list
+  [isOpen]="showCityModal"
+  *ngIf="showCityModal"
+  (dismiss)="showCityModal = false"
+  [data]="cities"
+  [title]="dictionary.SelectCity"
+  (select)="selectCity($event)"
+  [selectedObject]="city"
+/>

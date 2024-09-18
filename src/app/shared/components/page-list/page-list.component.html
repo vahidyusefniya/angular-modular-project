@@ -1,0 +1,430 @@
+<!--suppress ALL -->
+<div class="card overflow-auto" id="table">
+  <div
+    *ngIf="
+      hasExport || hasNewButton || hasRefresh || hasAdvancedFilter || label
+    "
+    class="card-header"
+  >
+    <div *ngIf="tagList.length !== 0" class="w-100">
+      <app-table-filter-tag [tagList]="tagList"></app-table-filter-tag>
+      <hr />
+    </div>
+    <div class="row">
+      <div
+        class="col-10 col-md-6 d-flex justify-content-start align-items-center"
+      >
+        <app-icon
+          class="mr-4 mt-1 label__section__color"
+          [type]="LabelIcon"
+        ></app-icon>
+        <ion-label class="label__section__color"
+          >{{ label }} <span class="sub-label">{{ subLabel }}</span></ion-label
+        >
+      </div>
+      <div
+        *ngIf="hasCustomTableHeader; else header"
+        class="col-2 col-md-6 d-flex justify-content-end"
+      >
+        <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+      </div>
+      <ng-template #header>
+        <div class="col-2 col-md-6 d-flex justify-content-end">
+          <ion-button
+            *ngIf="hasNewButton"
+            appPermission
+            [inputAppPermission]="newButtonPermission"
+            class="mx-1 lg__mode"
+            (click)="onNewClick()"
+            [disabled]="hasLoadingNewButton"
+            [id]="newButtonId"
+          >
+            <i class="material-icons">add</i>
+            {{ newButtonLabel }}
+            <ion-spinner
+              class="loading-new-button"
+              slot="start"
+              name="lines"
+              *ngIf="hasLoadingNewButton"
+            ></ion-spinner>
+          </ion-button>
+          <ion-button
+            *ngIf="showActionSheet"
+            class="mx-1 table__btn sm__mode"
+            (click)="presentActionSheet()"
+          >
+            <i class="material-icons">more_vert</i>
+          </ion-button>
+          <ion-button
+            *ngIf="hasRefresh"
+            class="mx-1 table__btn lg__mode"
+            (click)="onRefreshClick()"
+            [id]="refreshButtonId"
+            id="refresh-button"
+          >
+            <i class="material-icons">refresh</i>
+          </ion-button>
+          <ion-button
+            *ngIf="hasAdvancedFilter"
+            appPermission
+            [inputAppPermission]="advancedFilterPermission"
+            (click)="onAdvancedFilterClick()"
+            class="mx-1 table__btn lg__mode"
+          >
+            <i class="material-icons">filter_alt</i>
+          </ion-button>
+          <ion-button
+            appPermission
+            [inputAppPermission]="exportPermission"
+            *ngIf="hasExport"
+            class="mx-1 table__btn lg__mode"
+            (click)="onExportClick()"
+          >
+            <i class="material-icons">download</i>
+          </ion-button>
+        </div>
+      </ng-template>
+    </div>
+    <div class="row col-lg-4 col-md-12" *ngIf="hasSearch">
+      <ion-item class="ion-no-padding ps-2">
+        <i class="material-icons me-2">search</i>
+        <ion-input
+          (ionFocus)="onFocusEvent($event)"
+          (ionInput)="initSearchInput($event)"
+          [placeholder]="dictionary.Search"
+          [debounce]="1000"
+          color="dark"
+          [(ngModel)]="searchTerm"
+        >
+        </ion-input>
+      </ion-item>
+    </div>
+  </div>
+  <div class="card-body">
+    <ng-container *ngIf="hasCustomTableContent; else table">
+      <ng-container *ngTemplateOutlet="currentTemplate"></ng-container>
+    </ng-container>
+    <ng-template #table>
+      <div appPermission [inputAppPermission]="listPermission" *ngIf="data">
+        <p-table
+          [value]="data"
+          responsiveLayout="stack"
+          styleClass="p-datatable-gridlines"
+          [columns]="selectedColumns"
+          breakpoint="840px"
+          [loading]="loading"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th
+                class="p-column-title title-label"
+                *ngFor="let col of columns"
+                [ngStyle]="{
+                  minWidth: col.minWidth,
+                  width: col.width,
+                  maxWidth: col.maxWidth
+                }"
+              >
+                {{ col.header }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+              <td
+                *ngFor="let col of columns"
+                class="value-label-table"
+                [ngStyle]="{
+                  minWidth: col.minWidth,
+                  width: col.width,
+                  maxWidth: col.maxWidth
+                }"
+              >
+                <div class="table__row" *ngIf="col.hasNormalRow">
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <div class="break-word p-1">
+                    <span
+                      [ngStyle]="col.customCss"
+                      [ngClass]="col.customClass"
+                      >{{ rowData[col.field] }}</span
+                    >
+                  </div>
+                </div>
+                <div class="table__row" *ngIf="col.hasStatusRow">
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <div class="break-word p-1">
+                    <ion-text
+                      [color]="
+                        mapIsActiveStatus(rowData[col.field]) === 'Deactive'
+                          ? 'danger'
+                          : 'success'
+                      "
+                    >
+                      {{ mapIsActiveStatus(rowData[col.field]) }}
+                    </ion-text>
+                  </div>
+                </div>
+                <div class="table__row" *ngIf="col.hasImageRow">
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <img
+                    height="30"
+                    width="40"
+                    alt="col-img"
+                    ngSrc="{{
+                      rowData[col.field]
+                        ? rowData[col.field]
+                        : localProductImageSRC
+                    }}"
+                  />
+                </div>
+                <div class="table__row" *ngIf="col.hasNumericRow">
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <div class="break-word p-1">
+                    <span
+                      [ngStyle]="col.customCss"
+                      [ngClass]="col.customClass"
+                      >{{ rowData[col.field] | truncateDecimalsPipe }}</span
+                    >
+                  </div>
+                </div>
+                <div class="table__row" *ngIf="col.hasLinkRow">
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <a
+                    [ngClass]="col.customClass"
+                    [ngStyle]="col.customCss"
+                    [routerLink]="rowData[col.field + 'Route']"
+                    [queryParams]="rowData[col.field + 'QueryParams']"
+                    (click)="onLinkRowClick($event, rowData, col)"
+                    *ngIf="checkLinkRowPermission(col.linkRowPermission)"
+                    class="link-row"
+                  >
+                    {{ rowData[col.field] }}
+                  </a>
+                  <div
+                    [ngClass]="col.customClass"
+                    [ngStyle]="col.customCss"
+                    *ngIf="!checkLinkRowPermission(col.linkRowPermission)"
+                  >
+                    {{ rowData[col.field] }}
+                  </div>
+                </div>
+                <div class="table__row" *ngIf="col.hasIconRow">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <app-icon
+                    *ngFor="let iconBtn of col.iconRow"
+                    [ngClass]="col.customClass"
+                    [ngStyle]="col.customCss"
+                    role="button"
+                    [type]="iconBtn.type"
+                    (click)="onIconClick(iconBtn, rowData)"
+                  ></app-icon>
+                </div>
+                <div class="table__row" *ngIf="col.hasTextIconRow">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <div
+                    class="d-flex"
+                    [ngClass]="col.customClass"
+                    [ngStyle]="col.customCss"
+                  >
+                    <app-icon [type]="rowData[col.field]"></app-icon>
+                    <span class="ms-1">{{ rowData[col.field] }}</span>
+                  </div>
+                </div>
+                <div class="table__row" *ngIf="col.hasToggleRow">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <ion-toggle
+                    color="success"
+                    appPermission
+                    [inputAppPermission]="togglePermission"
+                    (click)="onToggleClick($event, rowData, col.header)"
+                    [checked]="rowData[col.field]"
+                  >
+                  </ion-toggle>
+                </div>
+                <div class="table__row" *ngIf="col.hasAmountRow">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <span [ngClass]="col.customClass" [ngStyle]="col.customCss">
+                    {{ rowData[col.field] | amount : "amount" }}
+                    <span class="currency">
+                      {{ rowData[col.field] | amount : "currency" }}
+                    </span>
+                  </span>
+                </div>
+                <div class="table__row" *ngIf="col.hasAmountSign">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <span
+                    [ngClass]="col.customClass"
+                    [ngStyle]="col.customCss"
+                    class="d-flex align-items-start gap-1"
+                  >
+                    <app-icon
+                      [ngClass]="col.customClass"
+                      [ngStyle]="col.customCss"
+                      [type]="rowData[col.field] > 0 ? 'trending_up' : ''"
+                    ></app-icon>
+                    <app-icon
+                      [ngClass]="col.customClass"
+                      [ngStyle]="col.customCss"
+                      [type]="rowData[col.field] < 0 ? 'trending_down' : ''"
+                    ></app-icon>
+                    {{ rowData[col.field] | truncateDecimalsPipe }}
+                  </span>
+                </div>
+                <div class="table__row" *ngIf="col.hasNumberRow">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <span [ngClass]="col.customClass" [ngStyle]="col.customCss">
+                    {{ rowData[col.field] | truncateDecimalsPipe }}
+                  </span>
+                </div>
+                <div class="table__row" *ngIf="col.hasDateTimeRow">
+                  <span class="table__label__row">{{ col.header }}</span>
+                  <span [ngClass]="col.customClass" [ngStyle]="col.customCss">
+                    {{ rowData[col.field] | convertLocalDateTime }}
+                  </span>
+                </div>
+                <div class="table__row" *ngIf="col.hasButtonRow">
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <div class="d-flex px-1">
+                    <ion-button
+                      type="button"
+                      *ngFor="let button of col.buttonRow"
+                      appPermission
+                      [inputAppPermission]="button.permission"
+                      [color]="button.color ? button.color : 'medium'"
+                      [fill]="button.fill ? button.fill : 'outline'"
+                      (click)="onButtonClick(button, rowData)"
+                    >
+                      <app-icon *ngIf="button.icon" [type]="button.icon" />
+                      <span *ngIf="button.name">{{ button.name }}</span>
+                    </ion-button>
+                  </div>
+                </div>
+                <div class="table__row" *ngIf="col.hasTextButtonRow">
+                  <div class="button__text__row">
+                    <div>{{ rowData[col.field] }}</div>
+                    <ion-button
+                      color="medium"
+                      fill="outline"
+                      appPermission
+                      [inputAppPermission]="col.hasTextButtonRowPermission"
+                      (click)="onTextButtonClick(rowData)"
+                    >
+                      <app-icon
+                        *ngIf="col.textButtonIconRow"
+                        [type]="col.textButtonIconRow"
+                      />
+                      <span *ngIf="col.textButtonLabelRow">
+                        {{ col.textButtonLabelRow }}
+                      </span>
+                    </ion-button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td class="text-center" [attr.colspan]="columns.length">
+                {{ dictionary.NoRecordsFound }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </ng-template>
+  </div>
+  <div
+    *ngIf="!hasLocalPagination && data && showPagination"
+    class="card-footer py-0 py-sm-2"
+  >
+    <div
+      *ngIf="showPageSizeSelect"
+      class="page__size__select d-none d-md-block mx-2"
+    >
+      <ion-select
+        mode="md"
+        labelPlacement="floating"
+        label="Page size"
+        [id]="id"
+        [(ngModel)]="pageSizeValue"
+        (ngModelChange)="onPageSizeChange($event)"
+        fill="outline"
+        interface="popover"
+        class="ion-select-page-size"
+      >
+        <ion-select-option
+          *ngFor="let item of pageSizeItems"
+          [value]="item['id']"
+          class="select-option"
+          color="dark"
+        >
+          {{ item["name"] }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+    <ion-button
+      [disabled]="page === 1"
+      shape="circle"
+      (click)="onPrevPageClick()"
+    >
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" color="dark" disabled>{{ page }}</ion-button>
+    <ion-button
+      [disabled]="
+        lastPageNumber
+          ? lastPageNumber === page || data.length < pageSize
+          : data.length < pageSize
+      "
+      shape="circle"
+      (click)="onNextPageClick()"
+    >
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+  <div
+    *ngIf="hasLocalPagination && data && showPagination && data.length > 0"
+    class="card-footer py-0 py-sm-2"
+  >
+    <div
+      *ngIf="showPageSizeSelect"
+      class="page__size__select d-none d-md-block mx-2"
+    >
+      <ion-select
+        mode="md"
+        labelPlacement="floating"
+        label="Page size"
+        [id]="id"
+        [(ngModel)]="pageSizeValue"
+        (ngModelChange)="onPageSizeChange($event)"
+        fill="outline"
+        interface="popover"
+        class="ion-select-page-size"
+      >
+        <ion-select-option
+          *ngFor="let item of pageSizeItems"
+          [value]="item['id']"
+          class="select-option"
+          color="dark"
+        >
+          {{ item["name"] }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+    <ion-button
+      [disabled]="page === 1"
+      shape="circle"
+      (click)="onPrevPageClick()"
+    >
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" color="dark" disabled>{{ page }}</ion-button>
+    <ion-button
+      [disabled]="lastPageNumber === page"
+      shape="circle"
+      (click)="onNextPageClick()"
+    >
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+</div>

@@ -1,0 +1,134 @@
+<!--suppress JSUnresolvedReference -->
+<ion-card
+  *ngIf="type === 'category'"
+  class="ion-no-margin cursor category"
+  [id]="id"
+>
+  <img
+    class="img"
+    [lazyLoad]="data.imageUrl ? data.imageUrl : localImageSRC"
+    ngSrc="{{
+      categoryLevel === 'one' ? localImageSRC : localCategoryLevelTowImageSRC
+    }}"
+    width="100"
+    height="100"
+    alt="category-image"
+  />
+  <ion-card-content>
+    {{ data.categoryName }}
+  </ion-card-content>
+</ion-card>
+<ion-card
+  *ngIf="type === 'product' && width > 500; else smCard"
+  class="ion-no-margin product"
+  [id]="id"
+>
+  <img
+    class="img"
+    [lazyLoad]="data.imageUrl ? data.imageUrl : localImageSRC"
+    ngSrc="{{ localImageSRC }}"
+    width="100"
+    height="100"
+    alt="product-image"
+  />
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" class="product-name">
+          {{ data.productName }}
+          <ion-icon
+            (click)="onDescriptionClick()"
+            class="cursor information-icon-gift-cards"
+            name="information-circle"
+            color="primary"
+            *ngIf="data.hasDescription"
+          ></ion-icon>
+        </ion-col>
+        <ion-col *ngIf="data.faceValue" size="12" class="product-price">
+          {{ dictionary.Price }}:
+          {{ data.faceValue.start | truncateDecimalsPipe }}
+          <span *ngIf="data.faceValue.end">
+            -
+            {{
+              coreService$.isUnlimitedNumber(data.faceValue.end)
+                ? "ထ"
+                : (data.faceValue.end | truncateDecimalsPipe)
+            }}
+          </span>
+          <span class="gray__color">({{ data.currency.currencyName }})</span>
+        </ion-col>
+        <ion-col size="12" class="footer">
+          <!-- <i
+            (click)="favorite = !favorite"
+            [style.color]="favorite ? '#EF3B51' : ''"
+            class="material-icons cursor"
+          >
+            {{ favorite ? "favorite" : "favorite_outline" }}
+          </i> -->
+          <!-- <ion-button
+            (click)="onBuyClick()"
+            [disabled]="!data.faceValue"
+            color="info"
+            size="small"
+            fill="outline"
+            class="px-1"
+            [id]="'buy-btn-' + data.productId"
+          >
+            <i class="material-icons"> shopping_cart </i>
+            {{ dictionary.Buy }}
+          </ion-button> -->
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<ng-template #smCard>
+  <ion-card
+    *ngIf="type === 'product'"
+    class="ion-no-margin phone cursor light__color"
+    (click)="onBuyClick()"
+    [id]="id"
+  >
+    <ion-card-content class="ion-no-padding ion-no-margin">
+      <div class="d-flex justify-content-between">
+        <div class="d-flex">
+          <img
+            height="80"
+            width="122"
+            [lazyLoad]="data.imageUrl ? data.imageUrl : localImageSRC"
+            ngSrc="{{ localImageSRC }}"
+            alt="product-img"
+          />
+          <ion-label class="product__name mx-2">
+            {{ data.productName }}
+            {{ data.faceValue.start | truncateDecimalsPipe }} -
+            {{ data.faceValue.end | truncateDecimalsPipe }}
+            <span class="currency"> ({{ data.currency.currencyName }}) </span>
+          </ion-label>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <ion-button
+            color="light"
+            fill="clear"
+            (click)="onFavoriteClick($event)"
+          >
+            <i [style.color]="favorite ? 'red' : ''" class="material-icons">
+              bookmark
+            </i>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            color="primary"
+            (click)="onDescriptionClick($event)"
+          >
+            <ion-icon
+              slot="icon-only"
+              name="information-circle"
+              *ngIf="data.hasDescription"
+            />
+          </ion-button>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ng-template>

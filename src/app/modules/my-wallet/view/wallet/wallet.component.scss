@@ -1,0 +1,67 @@
+.grid-wrapper {
+  height: 100%;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--ion-text-color);
+}
+
+.separator:not(:empty)::before {
+  margin-right: 0.25em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 0.25em;
+}
+
+.h-27 {
+  height: 27%;
+}
+
+.wallet-transaction-container {
+  height: 585px;
+}
+
+.credit-card {
+  width: auto;
+  min-width: 210px;
+  padding-bottom: 2px;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.container-card::-webkit-scrollbar {
+  height: 5px;
+}
+
+.container-card::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 768px) {
+  .my-wallet-transactions {
+    padding-bottom: 10px;
+  }
+}
+
+.key-lable {
+  color: var(--text-label-color);
+
+  span {
+    color: gray;
+    font-size: 12px;
+  }
+}

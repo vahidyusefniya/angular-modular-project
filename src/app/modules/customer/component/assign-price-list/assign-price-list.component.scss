@@ -1,0 +1,11 @@
+.assign__price__list__modal {
+  --max-height: 150px;
+  --height: 150px;
+}
+
+@media screen and (max-width: 840px) {
+  .assign__price__list__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

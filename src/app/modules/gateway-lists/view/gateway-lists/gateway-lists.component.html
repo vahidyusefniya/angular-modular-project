@@ -1,0 +1,99 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<app-page-list
+  [loading]="loading"
+  [data]="gatewayLists"
+  [label]="dictionary.GatewayLists"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  [exportPermission]="'GatewayListRead'"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="gatewayListTable"
+  [hasSearch]="false"
+  class="align-right-amount"
+  [showPagination]="false"
+  [hasAdvancedFilter]="false"
+  (newButtonClick)="redirectToAddGatewayList()"
+  [newButtonLabel]="dictionary.NewGatewayList"
+  [showActionSheet]="true"
+  [newButtonPermission]="'GatewayListWrite'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+/>
+<ng-template #gatewayListTable>
+  <p-table
+    appPermission
+    inputAppPermission="GatewayListRead"
+    [value]="gatewayLists"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'name'">
+                <ion-text
+                  color="primary"
+                  *ngIf="
+                    permissions.includes('SystemPaymentProfileRead');
+                    else elseBlock
+                  "
+                  (click)="onEditGatewayListClick(rowData)"
+                  [id]="rowData['name'] + '-' + rowData['gatewayListId']"
+                >
+                  {{ rowData["name"] }}
+                </ion-text>
+                <ng-template #elseBlock>
+                  <span>{{ rowData["name"] }}</span>
+                </ng-template>
+              </span>
+
+              <span *ngSwitchCase="'delete'">
+                <ion-icon
+                  name="trash-outline"
+                  [pTooltip]="dictionary.Delete"
+                  tooltipPosition="bottom"
+                  (click)="deleteGatewayListConfirmationAlert(rowData)"
+                  class="cursor_pointer"
+                  [id]="'delete-' + rowData['gatewayListId']"
+                  appPermission
+                  inputAppPermission="GatewayListWrite"
+                ></ion-icon>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-show-customers
+  *ngIf="openShowCustomerModal"
+  [isOpen]="openShowCustomerModal"
+  (dismiss)="dismissCustomersModal()"
+  [customers]="customers"
+  [gateWayListName]="gateWayListName"
+/>

@@ -1,0 +1,62 @@
+<ion-modal
+  class="assign__price__list__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ title }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!accountNumbersForm.form.valid"
+            (click)="onAssignAchAccountNumberClick()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #accountNumbersForm="ngForm">
+        <ion-grid>
+          <ion-row class="align-items-center">
+            <ion-col size="9">
+              <app-combobox
+                id="accountNumber"
+                [Label]="dictionary.AccountNumber"
+                [(ngModel)]="paymentMethodProviderProfileId"
+                name="accountNumber"
+                [data]="accountNumbers"
+                [textField]="'paymentMethodNumber'"
+                [valueField]="'paymentMethodProviderProfileId'"
+                [required]="true"
+                [disabled]="accountNumbers.length === 0"
+              />
+            </ion-col>
+            <ion-col size="3">
+              <ion-button
+              fill="clear"
+              (click)="createCustomerPanelLink()"
+            >
+              <span *ngIf="loadingCustomerPanelLink; else elseBlock">
+                <ion-spinner name="dots" color="primary"></ion-spinner>
+              </span>
+              <ng-template #elseBlock>
+                <ion-icon name="add-outline"></ion-icon>
+                {{ dictionary.AddAccount }}
+              </ng-template>
+            </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

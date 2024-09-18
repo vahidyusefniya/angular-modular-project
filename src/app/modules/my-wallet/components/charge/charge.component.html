@@ -1,0 +1,59 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" class="charge__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.ChargeWallet }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!chargeForm.form.valid"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Charge }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #chargeForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-select
+                [required]="true"
+                fill="outline"
+                [label]="dictionary.Gateway"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="gateWay"
+              >
+                <ion-select-option
+                  [value]="item"
+                  *ngFor="let item of gateWays"
+                  aria-label="label"
+                  >{{ item }}</ion-select-option
+                >
+              </ion-select>
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                id="amount"
+                name="amount"
+                [Label]="dictionary.Amount"
+                [(ngModel)]="amount"
+                [required]="true"
+                [mask]="thousandSeparator"
+                [inputmode]="'numeric'"
+                (keydown.enter)="chargeForm.form.valid ? submitForm() : ''"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

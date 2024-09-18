@@ -1,0 +1,29 @@
+.product {
+  width: 250px;
+  height: 370px;
+  margin: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--ion-text-color);
+}
+
+.separator:not(:empty)::before {
+  margin-right: 0.25em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 0.25em;
+}
+
+::ng-deep .p-carousel .p-carousel-indicators {
+  padding: 0 !important;
+}

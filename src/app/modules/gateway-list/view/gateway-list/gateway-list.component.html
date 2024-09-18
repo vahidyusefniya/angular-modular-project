@@ -1,0 +1,46 @@
+<app-page-list
+  [cols]="cols"
+  [data]="gatewayList"
+  [loading]="loading"
+  [label]="dictionary.GateWayList"
+  [hasAdvancedFilter]="false"
+  [hasNewButton]="true"
+  [hasSearch]="false"
+  [hasRefresh]="true"
+  [hasExport]="true"
+  [hasLocalPagination]="true"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  (linkRowClick)="onlinkRowClick($event)"
+  (newButtonClick)="openNewGateway = true"
+  [newButtonLabel]="dictionary.NewGatewayList"
+/>
+
+<app-multi-select-modal
+  *ngIf="openMultiSelectCustomerModal"
+  [isOpen]="openMultiSelectCustomerModal"
+  [inputData]="customers"
+  [valueField]="'merchantId'"
+  [textField]="'merchantName'"
+  [title]="dictionary.AssignToCustomer"
+  (dismiss)="openMultiSelectCustomerModal = false"
+  [selectedValue]="[]"
+  (confirm)="confirmMultiSelectProfilesModal($event)"
+  [confirmBtnText]="dictionary.Assign"
+  [hasSearch]="true"
+/>
+
+<app-new-gateway
+  *ngIf="openNewGateway"
+  [isOpen]="openNewGateway"
+  (dismiss)="openNewGateway = false"
+  (newGatewayClick)="newGatewayClick()"
+/>
+
+<app-edit-gateway
+  *ngIf="openEditGateway"
+  [isOpen]="openEditGateway"
+  (dismiss)="openEditGateway = false"
+  (editGatewayClick)="editGatewayClick()"
+  [title]="editGatewayModalTitle"
+/>

@@ -1,0 +1,171 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<app-page-list
+  [loading]="loading"
+  [data]="posOrders"
+  [tagList]="tagList"
+  [label]="dictionary.AllOrders"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  [exportPermission]="'AllPosOrdersRead'"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="posTable"
+  [hasSearch]="false"
+  class="align-right-amount"
+  [showPagination]="true"
+  [hasAdvancedFilter]="true"
+  [showActionSheet]="true"
+  [newButtonPermission]="'AllPosOrdersRead'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  (advancedFilterClick)="openPosOrdersFilterModal = true"
+  [hasNewButton]="false"
+  [tagList]="tagList"
+  [page]="page"
+  [pageSize]="pageSize"
+  (pageChanged)="pageChanged($event)"
+  [advancedFilterPermission]="'AllPosOrdersRead'"
+/>
+<ng-template #posTable>
+  <p-table
+    appPermission
+    inputAppPermission="AllPosOrdersRead"
+    [value]="posOrders"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'posOrderId'">
+                <ion-text
+                  color="primary"
+                  class="hyper-link"
+                  (click)="showDetail(rowData)"
+                >
+                  {{ rowData[col.field] }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'customerName'">
+                {{ rowData["merchant"].merchantName }}
+              </span>
+              <span *ngSwitchCase="'product'">
+                {{ rowData["pos"].name }}
+              </span>
+              <span *ngSwitchCase="'price'">
+                {{ rowData["pos"].currency.symbol
+                }}{{ rowData["pos"].price | truncateDecimalsPipe }}
+              </span>
+              <span
+                *ngSwitchCase="'isSubscriptive'"
+                class="d-flex align-items-center"
+              >
+                <ion-icon
+                  *ngIf="rowData.pos.isSubscriptive"
+                  name="checkmark-outline"
+                ></ion-icon>
+                <ion-icon
+                  *ngIf="!rowData.pos.isSubscriptive"
+                  name="remove-outline"
+                ></ion-icon>
+                <span
+                  *ngIf="rowData.pos.isSubscriptive"
+                  class="gray-color ms-2"
+                >
+                  ({{ getCapturedStates(rowData["paymentItems"]) }} pay of
+                  {{ rowData["pos"].installmentCount }})
+                </span>
+              </span>
+              <span *ngSwitchCase="'quantity'">
+                {{ rowData[col.field] | truncateDecimalsPipe }}
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{ rowData[col.field].toISOString() | convertLocalDateTime }}
+              </span>
+              <span class="d-flex align-items-center" *ngSwitchCase="'state'">
+                <app-icon
+                  class="mt-1 mx-1"
+                  [type]="convertState(rowData[col.field]).icon"
+                />
+                {{ convertState(rowData[col.field]).status }}
+              </span>
+              <span *ngSwitchCase="'paymentMethod'">
+                {{ rowData[col.field] }}
+              </span>
+              <span *ngSwitchCase="'action'">
+                <ion-button
+                  color="primary"
+                  fill="outline"
+                  *ngIf="rowData.state === 'Paid'"
+                  (click)="onShippingClick(rowData)"
+                  appPermission
+                  inputAppPermission="PosOrderChangeState"
+                >
+                  {{ dictionary.Shipping }}
+                </ion-button>
+                <ion-button
+                  color="primary"
+                  fill="outline"
+                  *ngIf="rowData.state === 'Shipping'"
+                  (click)="onDeliveredClick(rowData)"
+                  appPermission
+                  inputAppPermission="PosOrderChangeState"
+                >
+                  {{ dictionary.Delivered }}
+                </ion-button>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-orders-filter
+  [isOpen]="openPosOrdersFilterModal"
+  [customers]="customers"
+  [showCustomer]="true"
+  (dismiss)="openPosOrdersFilterModal = false"
+  *ngIf="openPosOrdersFilterModal"
+  [data]="posOrderFilter"
+  (filterClick)="filterClick($event)"
+/>
+
+<app-order-detail
+  [isOpen]="openPosOrderModal"
+  (dismiss)="openPosOrderModal = false"
+  *ngIf="openPosOrderModal"
+  [posOrder]="posOrder"
+/>
+
+<app-change-state-modal
+  *ngIf="openConfirmationModal"
+  [isOpen]="openConfirmationModal"
+  (dismiss)="openConfirmationModal = false"
+  (changeState)="confirmChangeState($event)"
+  [posOrder]="posOrder"
+/>

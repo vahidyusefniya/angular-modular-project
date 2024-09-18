@@ -1,0 +1,13 @@
+ion-modal {
+  --height: 254px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}
+.financial-activities-alert{
+  font-size: 12px;
+  color: gray;
+}

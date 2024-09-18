@@ -1,0 +1,15 @@
+<app-phone-header-layout [showBackButton]="true" [title]="dictionary.ExchangeRateList"/>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of exchangeRateList" class="px-3">
+      <ion-label slot="start"
+        >{{ item.baseCurrency.currencyName }} /
+        {{ item.targetCurrency.currencyName }}
+      </ion-label>
+      <ion-label slot="end"> Rate: {{ item.exchangeRate }} </ion-label>
+    </ion-item>
+  </ion-list>
+  <div *ngIf="!loading && exchangeRateList.length === 0">
+    <h5 class="row justify-content-center mt-2">No Records</h5>
+  </div>
+</ion-content>

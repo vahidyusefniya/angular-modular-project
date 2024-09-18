@@ -1,0 +1,91 @@
+<ion-card
+  [ngClass]="color === 'light' ? 'light__color' : ''"
+  (click)="onCardClick(product)"
+  role="button"
+  *ngIf="product"
+>
+  <ion-card-content
+    [ngClass]="color === 'light' ? 'light__color' : ''"
+    class="ion-no-padding ion-no-margin"
+  >
+    <ion-grid class="ion-no-padding ion-no-margin">
+      <ion-row class="m-2">
+        <ion-col size="5">
+          <img
+            height="80"
+            width="122"
+            [lazyLoad]="product.imageUrl ? product.imageUrl : localImageSRC"
+            ngSrc="{{ localImageSRC }}"
+            alt="product-img"
+          />
+        </ion-col>
+        <ion-col class="mid__content__row" size="5">
+          <ion-row>
+            <ion-col size="12">
+              <div class="product__name">
+                {{ product.productName }}
+                <ion-label>
+                  {{ product.productName }}
+                  {{ product.currency.symbol }}
+                  {{ product.faceValue.start | truncateDecimalsPipe }}
+                  <span *ngIf="product.faceValue.end">
+                    -
+                    {{ product.currency.symbol }}
+                    {{ product.faceValue.end | truncateDecimalsPipe }}
+                  </span>
+                </ion-label>
+              </div>
+              <div class="product__name">
+                <ion-label *ngIf="product.faceValue && product.faceValue.end">
+                  {{ dictionary.Price }}:
+                  <span>
+                    {{ product.currency.symbol }}
+                    {{
+                      getCalcStartValue(product.faceValue)
+                        | truncateDecimalsPipe
+                    }}
+                    -
+                    {{ product.currency.symbol }}
+                    {{
+                      getCalcEndValue(product.faceValue) | truncateDecimalsPipe
+                    }}
+                  </span>
+                </ion-label>
+                <ion-label
+                  color="success"
+                  *ngIf="product.faceValue && !product.faceValue.end"
+                >
+                  {{ dictionary.Discount }}:
+                  <span>
+                    {{
+                      getCalcDiscountValue(product.faceValue)
+                        | truncateDecimalsPipe
+                    }}%
+                  </span>
+                </ion-label>
+                <ion-label>
+                  <div *ngIf="product.faceValue && !product.faceValue.end && product.faceValue.consumerFee > 0" class="consumer-fee">
+                    {{ product.currency.symbol }}{{ product.faceValue.consumerFee | truncateDecimalsPipe }} activation fee included 
+                  </div>
+                  <div *ngIf="product.faceValue && product.faceValue.end && product.faceValue.consumerFee > 0" class="consumer-fee">
+                    An activation fee of {{ product.currency.symbol }}{{ product.faceValue.consumerFee | truncateDecimalsPipe }} per card will apply
+                  </div>
+                </ion-label>
+              </div>
+              <br />
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col *ngIf="showFavorite" size="2">
+          <i
+            (click)="onFavoriteClick($event)"
+            [style.color]="favorite ? 'red' : ''"
+            class="material-icons mx-4"
+          >
+            bookmark
+          </i>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,20 @@
+.create__product__modal {
+  --max-height: 700px;
+  --height: 700px;
+
+  li {
+    list-style: none;
+
+    .content {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+@media screen and (max-width: 840px) {
+  .create__product__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

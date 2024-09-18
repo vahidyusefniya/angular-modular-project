@@ -1,0 +1,68 @@
+.order__modal {
+  --height: 580px;
+
+  ion-content {
+    --overflow: hidden;
+
+    form {
+      width: 100%;
+
+      .number__col {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .input {
+        width: 60%;
+      }
+    }
+  }
+}
+.order__modal__with__SMS {
+  --height: 410px;
+  ion-content {
+    --overflow: hidden;
+
+    form {
+      width: 100%;
+
+      .number__col {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .input {
+        width: 60%;
+      }
+    }
+  }
+}
+.error-input {
+  --border-color: var(--highlight-color-invalid) !important;
+  --highlight-color: var(--highlight-color-invalid) !important;
+}
+
+.amount-range-label {
+  color: var(--ion-color-step-550, #737373) !important;
+  font-size: 0.75rem !important;
+  padding-left: 10px;
+}
+
+@media screen and (max-width: 840px) {
+  .order__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+    ion-content {
+      form {
+        .input {
+          width: 90%;
+        }
+      }
+    }
+  }
+}
+.validate-message{
+  font-size: 14px;
+}

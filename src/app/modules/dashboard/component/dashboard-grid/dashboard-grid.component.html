@@ -1,0 +1,34 @@
+<app-page-list
+  [cols]="cols"
+  [data]="rows"
+  [loading]="loading"
+  [label]="title"
+  [listPermission]="'CustomerRead'"
+  [advancedFilterPermission]="'CustomerRead'"
+  [exportPermission]="'CustomerRead'"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [hasExport]="false"
+  [hasNewButton]="false"
+  [hasRefresh]="false"
+  [showActionSheet]="false"
+  [page]="page"
+  [pageSize]="pageSize"
+  [showPagination]="false"
+  [class]="
+    rows.length > 0
+      ? 'align-right-amount dashboard-grid dashboard-grid__height'
+      : 'align-right-amount dashboard-grid__height'
+  "
+/>
+<div
+  class="d-flex align-items-center w-100 py-1 justify-content-between dashboard-grid-footer"
+>
+  <div class="w-100 ps-2 py-2">{{ dictionary.Total }}</div>
+  <div class="w-100 pe-4 d-flex justify-content-end py-2">
+    {{ totalSale | truncateDecimalsPipe : 0 }}
+  </div>
+  <div class="w-100 pe-4 d-flex justify-content-end py-2">
+    {{ totalProfit | truncateDecimalsPipe : 0 }}
+  </div>
+</div>

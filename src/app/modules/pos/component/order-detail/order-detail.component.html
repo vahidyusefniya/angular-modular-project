@@ -1,0 +1,219 @@
+<ion-modal
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  [class]="posOrder?.paymentMethod !== 'Wallet' ? '' : 'order__detail__modal'"
+>
+  <!-- <ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" [class]="posOrder?.paymentOrderId !== null && posOrder?.paymentMethod !== 'Wallet' ? '' : 'shipping-modal'"> -->
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.OrderDetail }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card class="ion-padding ion-no-margin">
+              <h5 class="fw-bold">{{ dictionary.Shipping }}</h5>
+              <hr class="mt-0" />
+              <ion-label color="dark">
+                {{ dictionary.Address }}:
+                <span class="gray-color"
+                  >{{ posOrder?.shipping?.address?.country }} /
+                </span>
+                <span class="gray-color"
+                  >{{ posOrder?.shipping?.address?.state }} /
+                </span>
+                <span class="gray-color"
+                  >{{ posOrder?.shipping?.address?.city }} -
+                </span>
+                <span class="gray-color">{{
+                  posOrder?.shipping?.address?.rawAddress
+                }}</span>
+              </ion-label>
+              <br />
+              <ion-label color="dark">
+                {{ dictionary.ZIPPostalCode }}:
+                <span class="gray-color">{{
+                  posOrder?.shipping?.address?.zipCode
+                }}</span>
+              </ion-label>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12">
+            <app-page-list
+              *ngIf="posOrder?.paymentMethod !== 'Wallet'"
+              [cols]="cols"
+              [data]="payments"
+              [label]="dictionary.Payments"
+              [showPagination]="false"
+              [hasLocalPagination]="false"
+              [hasSearch]="false"
+              [showPagination]="false"
+              [hasRefresh]="false"
+              [hasExport]="false"
+              [hasAdvancedFilter]="false"
+              [showActionSheet]="false"
+              [hasNewButton]="false"
+              class="order-detail-page-list"
+              [hasCustomTableContent]="true"
+              [initialTemplate]="orderDetailTable"
+            />
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ng-template #orderDetailTable>
+        <p-table
+          [value]="payments"
+          [columns]="cols"
+          responsiveLayout="stack"
+          styleClass="p-datatable-gridlines"
+          breakpoint="840px"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns">
+                {{ col.header }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowIndex="rowIndex"
+            let-rowData
+            let-columns="columns"
+          >
+            <tr>
+              <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+                <div
+                  class="table__row"
+                  [class]="{ amount_row: col.field === 'availableCount' }"
+                  [ngSwitch]="col.field"
+                >
+                  <span class="table__label__row me-2">{{ col.header }}</span>
+                  <div class="p-1 py-2">
+                    <span *ngSwitchCase="'dueDate'">
+                      {{ convertDate(rowData[col.field], rowIndex) }}
+                    </span>
+                    <span *ngSwitchCase="'payTime'">
+                      <span
+                        *ngIf="
+                          rowData.state === paymentState.Created ||
+                            rowData.state == null;
+                          else payTimeValue
+                        "
+                      >
+                        <ion-icon name="remove-outline"></ion-icon>
+                      </span>
+                      <ng-template #payTimeValue>
+                        <ion-text
+                          color="primary"
+                          class="hyper-link"
+                          [id]="rowData.merchantName"
+                          (click)="redirectToFinancialPayments(rowData)"
+                          *ngIf="isLinkToFinancialPayments;else elseBlock"
+                        >
+                          {{ rowData[col.field] | convertLocalDateTime }}
+                        </ion-text>
+                        <ng-template #elseBlock>
+                          <span>
+                            {{ rowData[col.field] | convertLocalDateTime }}
+                          </span>
+                        </ng-template>
+                      </ng-template>
+                    </span>
+                    <span *ngSwitchCase="'amount'">
+                      <div *ngIf="rowData.amount">
+                        {{ currencySymbol }}
+                        {{ rowData.amount | truncateDecimalsPipe }}
+                      </div>
+                    </span>
+                    <span *ngSwitchCase="'state'">
+                      <span
+                        *ngIf="
+                          rowData.state ===
+                            paymentState.PaymentProviderDisputed ||
+                          rowData.state ===
+                            paymentState.PaymentProviderCreated ||
+                          rowData.state === paymentState.PaymentProviderCaptured
+                        "
+                      >
+                        <div class="d-flex">
+                          <app-icon [type]="dictionary.Pending"></app-icon>
+                          <span class="ms-1">
+                            {{ dictionary.Pending }}
+                          </span>
+                        </div>
+                      </span>
+                      <span
+                        *ngIf="
+                          rowData.state === paymentState.Created ||
+                          rowData.state == null
+                        "
+                      >
+                        <ion-icon name="remove-outline"></ion-icon>
+                      </span>
+                      <span *ngIf="rowData.state === paymentState.Captured">
+                        <div class="d-flex">
+                          <app-icon [type]="'Complete'"></app-icon>
+                          <span class="ms-1">
+                            {{ rowData.state }}
+                          </span>
+                        </div>
+                      </span>
+                      <span *ngIf="rowData.state === paymentState.Reserved">
+                        <div class="d-flex">
+                          <app-icon [type]="rowData.state"></app-icon>
+                          <span class="ms-1">
+                            {{ rowData.state }}
+                          </span>
+                        </div>
+                      </span>
+                      <span *ngIf="rowData.state === paymentState.Disputed">
+                        <div class="d-flex">
+                          <app-icon [type]="rowData.state"></app-icon>
+                          <span class="ms-1">
+                            {{ rowData.state }}
+                          </span>
+                        </div>
+                      </span>
+                      <span *ngIf="rowData.state === paymentState.Failed">
+                        <div class="d-flex">
+                          <app-icon [type]="rowData.state"></app-icon>
+                          <span class="ms-1">
+                            {{ rowData.state }}
+                          </span>
+                        </div>
+                      </span>
+                      <span *ngIf="rowData.state === paymentState.InProgress">
+                        <div class="d-flex">
+                          <app-icon [type]="rowData.state"></app-icon>
+                          <span class="ms-1">
+                            {{ rowData.state }}
+                          </span>
+                        </div>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td class="text-center" [attr.colspan]="cols.length">
+                {{ dictionary.NoRecordsFound }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+    </ion-content>
+  </ng-template>
+</ion-modal>

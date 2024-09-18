@@ -1,0 +1,22 @@
+<p-carousel
+  [value]="products"
+  *ngIf="products.length !== 0"
+  [numVisible]="5"
+  [numScroll]="3"
+  [circular]="false"
+  [responsiveOptions]="responsiveOptions"
+>
+  <ng-template pTemplate="header">
+    <div class="separator">{{ dictionary.Favorites }}</div>
+  </ng-template>
+  <ng-template let-product pTemplate="item">
+    <div class="product">
+      <app-shop-card
+        [data]="product"
+        [type]="'product'"
+        (descriptionClick)="onOpenDescriptionModalClick($event)"
+        (buyClick)="onOpenBuyModalClick($event)"
+      />
+    </div>
+  </ng-template>
+</p-carousel>

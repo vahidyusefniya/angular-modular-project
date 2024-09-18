@@ -1,0 +1,78 @@
+<div class="d-flex d-lg-none justify-content-center mb-4 text-center">
+  <img src="./assets/img/ezpin.png" class="mx-auto mx-sm-0 logo" />
+</div>
+<div class="px-md-4 px-sm-2">
+  <h3 class="text-white px-2">{{ dictionary.Signup }}</h3>
+  <p class="text-white px-2">Buy a gift card easily and safely</p>
+  <form #signUnForm="ngForm">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <app-text
+            class="auth-input"
+            id="email"
+            [Label]="dictionary.Email"
+            [(ngModel)]="email"
+            name="email"
+            [required]="true"
+            [autofocus]="true"
+            [email]="true"
+            pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})"
+            [errorText]="'Please enter a valid email address.'"
+          ></app-text>
+        </ion-col>
+        <ion-col size="12">
+          <app-text
+            class="auth-input"
+            id="password"
+            [Label]="dictionary.Password"
+            [(ngModel)]="password"
+            name="password"
+            [type]="'password'"
+            [required]="true"
+            (keyup)="passwordCheck()"
+          ></app-text>
+        </ion-col>
+        <ion-col size="12">
+          <app-text
+            class="auth-input"
+            id="password"
+            [Label]="dictionary.ConfirmPassword"
+            [(ngModel)]="confirmPassword"
+            name="password"
+            [type]="'password'"
+            [required]="true"
+            (keyup)="passwordCheck()"
+          ></app-text>
+        </ion-col>
+        <span *ngIf="passError" class="error-message">{{ passError }}</span>
+        <ion-col size="12">
+          <ion-button
+            class="login-button"
+            (click)="onSignUp()"
+            expand="block"
+            [disabled]="!signUnForm.form.valid || !passMatch"
+          >
+            {{ dictionary.Join }}
+          </ion-button>
+        </ion-col>
+        <ion-col size="12">
+          <p class="text-center text-white">
+            {{ dictionary.AlreadyHaveAnAccount
+            }}<a class="link-row" routerLink="/auth/signin">{{
+              dictionary.Signin
+            }}</a>
+          </p>
+        </ion-col>
+        <ion-col size="12" class="social-auth">
+          <span>{{ dictionary.OR }}</span>
+        </ion-col>
+        <ion-col size="12">
+          <app-signin-with-google-button
+            (signinWithGoogle)="signinWithGoogle()"
+          />
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</div>

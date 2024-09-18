@@ -1,0 +1,95 @@
+<app-page-list
+  [cols]="cols"
+  [data]="salesManager"
+  [listPermission]="'SaleManagerRead'"
+  [newButtonPermission]="'SaleManagerWrite'"
+  [newButtonLabel]="dictionary.NewSaleManager"
+  (newButtonClick)="openNewModal = true"
+  [tagList]="tagList"
+  [label]="dictionary.SaleManagers"
+  [hasSearch]="false"
+  [hasLocalPagination]="true"
+  [hasAdvancedFilter]="true"
+  (advancedFilterClick)="onAdvancedFilterClick()"
+  filterMode="isActive"
+  [page]="page"
+  [pageSize]="pageSize"
+  [showPagination]="true"
+  (exportClick)="onExcelExportClick()"
+  (refreshClick)="onRefreshClick()"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="saleManagersTable"
+  [advancedFilterPermission]="'ProductRead'"
+/>
+
+<ng-template #saleManagersTable>
+  <p-table
+    appPermission
+    inputAppPermission="SaleManagerRead"
+    [value]="salesManager"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div class="table__row" [ngSwitch]="col.field">
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'name'"
+                ><ion-text
+                  color="primary"
+                  class="hyper-link"
+                  (click)="linkRowClick(rowData)"
+                  [id]="rowData.name"
+                >
+                  {{ rowData["name"] }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'isActive'">
+                <ion-text
+                  [color]="rowData['isActive'] === 'Deactive' ? 'danger' : ''"
+                >
+                  {{ rowData["isActive"] }}
+                </ion-text>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-new-modal
+  *ngIf="openNewModal"
+  [isOpen]="openNewModal"
+  (dismiss)="openNewModal = false"
+  (submitNewSaleManager)="onCreateSaleManager($event)"
+  [title]="dictionary.NewSaleManager"
+/>
+
+<app-sale-manger-filter
+  *ngIf="openActiveFilter"
+  [isOpen]="openActiveFilter"
+  (dismiss)="openActiveFilter = false"
+  (saleMangerFilterClick)="saveActiveFilter($event)"
+  [data]="salesManagerFilter"
+/>

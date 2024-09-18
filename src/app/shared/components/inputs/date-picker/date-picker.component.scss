@@ -1,0 +1,27 @@
+ion-modal {
+  --width: 500px;
+  --height: 470px;
+  --overflow: hidden;
+
+  ion-content {
+    --overflow: hidden;
+    border: 1px solid gray !important;
+  }
+}
+
+::ng-deep span.p-calendar {
+  width: 100% !important;
+}
+
+:host ::ng-deep button.input-clear-icon {
+  color: var(--ion-color-danger) !important;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --width: 100% !important;
+    --height: 100% !important;
+    --max-height: 100% !important;
+    --max-width: 100% !important;
+  }
+}

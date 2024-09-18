@@ -1,0 +1,22 @@
+<ion-select
+  [id]="id"
+  [label]="Label"
+  [placeholder]="placeholder"
+  [(ngModel)]="value"
+  (ngModelChange)="handleChange($event)"
+  [disabled]="disabled"
+  [required]="required"
+  labelPlacement="floating"
+  fill="outline"
+  [multiple]="true"
+  mode="md"
+>
+  <ion-select-option
+    *ngFor="let item of data"
+    [value]="item[valueField]"
+    class="select-option"
+    aria-label="label"
+  >
+    {{ item[textField] }}
+  </ion-select-option>
+</ion-select>

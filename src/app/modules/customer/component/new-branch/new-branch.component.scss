@@ -1,0 +1,11 @@
+.create__branch__modal {
+  --max-height: 200px;
+  --height: 200px;
+}
+
+@media screen and (max-width: 840px) {
+  .create__branch__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

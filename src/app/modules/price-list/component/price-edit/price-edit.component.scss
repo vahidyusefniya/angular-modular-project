@@ -1,0 +1,110 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+ion-modal {
+  --width: 90%;
+  --height: 90%;
+
+  .icon__btn {
+    cursor: pointer;
+  }
+
+  .action {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .currency {
+    color: gray;
+    font-size: 12px;
+  }
+
+  .preview-table {
+    padding: 0 5px;
+    height: auto;
+  }
+
+  ::ng-deep .content-box {
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 2px solid var(--border-content-box);
+    border-radius: 5px;
+  }
+
+  .content-box::-webkit-scrollbar {
+    width: 5px;
+    background-color: white;
+    border-radius: 5px;
+  }
+
+  .content-box::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    border-radius: 5px;
+  }
+}
+
+.priceValueMode {
+  color: gray;
+  font-size: 12px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100%;
+    --width: 100% !important;
+  }
+}
+
+.error-icon {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.benefit__danger__color {
+  color: var(--ion-color-danger);
+}
+.add__btn {
+  width: 100%;
+  height: 36px;
+}
+.label__color {
+  color: var(--gray);
+}
+@media screen and (min-width: 840px) {
+  .align-right-amount {
+    .row-item {
+      width: 100%;
+      .amount_row {
+        display: flex !important;
+        justify-content: flex-end;
+        align-items: center;
+      }
+    }
+  }
+  .add__btn {
+    width: auto;
+  }
+}
+.separator {
+  margin: 60px 0.5em;
+}
+
+.default-lable {
+  font-size: 12px;
+  background-color: rgb(185, 136, 0);
+  border-radius: 5px;
+  padding: 3px 5px;
+  color: var(--card-header-row);
+  font-weight: 700;
+}
+
+.region-lable {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 3px;
+  background-color: var(--text-label-color);
+  color: var(--card-header-row);
+  font-weight: 700;
+  margin-left: 3px;
+}

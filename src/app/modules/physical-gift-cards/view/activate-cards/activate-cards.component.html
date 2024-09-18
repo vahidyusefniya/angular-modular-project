@@ -1,0 +1,84 @@
+<ion-content class="check-card-container">
+  <ion-card class="card-box">
+    <div class="m-4">
+      <ion-label class="fs-4">{{ dictionary.SingleActivateCard }}</ion-label>
+      <hr class="divider" />
+    </div>
+    <form #checkForm="ngForm">
+      <ion-grid>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12" sizeLg="10" sizeXl="6">
+            <ion-row size="6">
+              <ion-col size="12">
+                <ion-label class="my-3 menu-label input-label"
+                  >VAN16 (Barcode)</ion-label
+                >
+              </ion-col>
+              <ion-col size="12">
+                <ion-input
+                  [(ngModel)]="activateCode"
+                  id="barcode"
+                  name="barcode"
+                  required
+                  labelPlacement="floating"
+                  fill="outline"
+                  #barcodeInput
+                  [label]="dictionary.Code"
+                  maxlength="50"
+                  minlength="30"
+                  [inputmode]="'numeric'"
+                  (keypress)="validateNumberInput($event)"
+                  (ionInput)="watchBarcode()"
+                  (keyup.enter)="checkActivate()"
+                />
+              </ion-col>
+              <ion-col size="12">
+                <p>
+                  * Enter starting batch number. All cards within the batch must
+                  be consecutive with the same denomination.
+                </p>
+              </ion-col>
+              <ion-col size="12">
+                <ion-button
+                  color="primary"
+                  [strong]="true"
+                  expand="block"
+                  [disabled]="
+                    !checkForm.form.valid || (!!card && activateCode !== '')
+                  "
+                  (click)="checkActivate()"
+                >
+                  <span>{{ dictionary.Activate }}</span>
+                </ion-button>
+              </ion-col>
+              <ion-col
+                size="12"
+                *ngIf="!!card && activateCode !== '' && productBuyPrice"
+                class="pt-0"
+              >
+                <hr class="divider" />
+                <app-product-card
+                  [data]="card"
+                  [activateCode]="activateCode"
+                  [faceValues]="faceValues"
+                  [productBuyPrice]="productBuyPrice"
+                  [activeFaceValue]="activeFaceValue"
+                  (chooseFaceValue)="chooseFaceValue($event)"
+                  (setActiveFaceValue)="setActiveFaceValueStart($event)"
+                ></app-product-card>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </ion-card>
+</ion-content>
+<app-confirm
+  [isOpen]="showConfirmModal"
+  (dismiss)="showConfirmModal = false"
+  *ngIf="showConfirmModal"
+  [product]="card"
+  [products]="products"
+  (confirm)="confirm()"
+/>

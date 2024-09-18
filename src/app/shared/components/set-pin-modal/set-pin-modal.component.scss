@@ -1,0 +1,11 @@
+ion-modal {
+  --height: 160px;
+  --width: 400px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+    --width: 100% !important;
+  }
+}

@@ -1,0 +1,30 @@
+ion-card {
+  margin: 0.8rem 0;
+  max-height: 100px;
+
+  .mid__content__row {
+    display: flex;
+    justify-content: flex-start;
+
+    .product__name {
+      font-weight: bold;
+      font-size: 14px;
+
+      .currency {
+        font-size: 13px;
+      }
+    }
+  }
+
+  .info {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+.light__color {
+  background-color: white !important;
+}
+.consumer-fee{
+  font-size: 10px;
+}

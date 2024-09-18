@@ -1,0 +1,51 @@
+<ion-input
+  [id]="id"
+  [autofocus]="autofocus"
+  [label]="Label"
+  labelPlacement="floating"
+  fill="outline"
+  [color]="color"
+  [(ngModel)]="value"
+  (ngModelChange)="handleChange($event)"
+  [required]="required"
+  [maxlength]="maxlength"
+  [minlength]="minlength"
+  [readonly]="readonly"
+  [helperText]="helperText"
+  [errorText]="errorText"
+  [placeholder]="placeholder"
+  [clearInput]="clearInput"
+  [ngStyle]="customCss"
+  (keypress)="onKeypress($event)"
+  (ionBlur)="onBlur($event)"
+  (ionInput)="onIonInput($event)"
+  (keyup)="onKeyup($event)"
+  [inputmode]="inputmode"
+  [debounce]="debounce"
+  [email]="email"
+  [type]="!showPassword ? type : 'text'"
+  [maskito]="mask"
+  [maskitoElement]="maskPredicate"
+  [disabled]="disabled"
+  [autocorrect]="false"
+  mode="md"
+  #baseInput
+  [appPreventNavigateNumber]="isPreventNavigateNumber"
+  [appPreventZeroNumber]="isPreventZeroNumber"
+>
+  <ion-button
+    *ngIf="type === 'password'"
+    fill="clear"
+    slot="end"
+    aria-label="Show/hide password"
+    (click)="togglePasswordVisibility()"
+  >
+    <ion-icon
+      slot="icon-only"
+      [name]="showPassword ? 'eye' : 'eye-off'"
+      aria-hidden="true"
+      color="medium"
+    ></ion-icon>
+  </ion-button>
+</ion-input>
+<ion-spinner name="dots" *ngIf="loading"></ion-spinner>

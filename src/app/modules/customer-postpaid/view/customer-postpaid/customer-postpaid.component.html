@@ -1,0 +1,128 @@
+<app-page-list
+  [loading]="loading"
+  [tagList]="tagList"
+  [data]="postPaids"
+  [label]="dictionary.CustomerPostpaid"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  [exportPermission]="'MerchantPostPayRead'"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="posPaidTable"
+  [hasSearch]="false"
+  class="align-right-amount"
+  [showPagination]="true"
+  [hasAdvancedFilter]="true"
+  (advancedFilterClick)="openPostpaidFilterModal = true"
+  [showActionSheet]="true"
+  [newButtonPermission]="'MerchantPostPayRead'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  [hasNewButton]="false"
+  [page]="page"
+  [pageSize]="pageSize"
+  (pageChanged)="pageChanged($event)"
+/>
+<ng-template #posPaidTable>
+  <p-table
+    appPermission
+    inputAppPermission="MerchantPostPayRead"
+    [value]="postPaids"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'postPayInvoiceId'">
+                {{ rowData[col.field] }}
+              </span>
+              <span *ngSwitchCase="'merchant'">
+                {{ rowData["merchant"].merchantName }}
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{ rowData[col.field].toISOString() | convertLocalDateTime }}
+              </span>
+              <span *ngSwitchCase="'paymentId'">
+                {{ rowData["paymentOrder"].paymentOrderId }}
+              </span>
+              <span *ngSwitchCase="'amount'">
+                {{ rowData[col.field] | truncateDecimalsPipe }}
+                <span class="currency"
+                  >({{ rowData.currency.currencyName }})</span
+                >
+              </span>
+              <span *ngSwitchCase="'state'">
+                <ng-container
+                  [ngSwitch]="generatePaymentOrderStateName(rowData)"
+                >
+                  <div *ngSwitchCase="dictionary.Pending" class="d-flex">
+                    <app-icon [type]="dictionary.Pending"></app-icon>
+                    <span class="ms-1">{{ dictionary.Pending }}</span>
+                  </div>
+                  <div *ngSwitchCase="dictionary.Charged" class="d-flex">
+                    <app-icon [type]="dictionary.Charged"></app-icon>
+                    <span class="ms-1">{{ dictionary.Charged }}</span>
+                  </div>
+                  <div *ngSwitchCase="dictionary.Discharged" class="d-flex">
+                    <app-icon [type]="dictionary.Discharged"></app-icon>
+                    <span class="ms-1">{{ dictionary.Discharged }}</span>
+                  </div>
+                  <div *ngSwitchCase="dictionary.Failed" class="d-flex">
+                    <app-icon [type]="dictionary.Failed"></app-icon>
+                    <span class="ms-1">{{ dictionary.Failed }}</span>
+                  </div>
+                  <div *ngSwitchCase="'Captured'" class="d-flex">
+                    <app-icon [type]="'Complete'"></app-icon>
+                    <span class="ms-1">{{ "Captured" }}</span>
+                  </div>
+                  <div *ngSwitchCase="'Disputed'" class="d-flex">
+                    <app-icon [type]="'Discharged'"></app-icon>
+                    <span class="ms-1">{{ "Disputed" }}</span>
+                  </div>
+                </ng-container>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+<ion-alert
+  [isOpen]="isOpen"
+  [header]="header"
+  [message]="message"
+  [buttons]="buttons"
+/>
+<app-postpaid-filter-modal
+  *ngIf="openPostpaidFilterModal"
+  [isOpen]="openPostpaidFilterModal"
+  (dismiss)="openPostpaidFilterModal = false"
+  [data]="branchPostPayInvoiceFilter"
+  (branchPostPayInvoiceFilter)="onBranchPostPayInvoiceFilter($event)"
+  [customers]="customers"
+/>

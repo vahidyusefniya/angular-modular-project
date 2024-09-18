@@ -1,0 +1,89 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<ion-modal
+  [backdropDismiss]="false"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  class="settle__modal"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title
+          >{{ dictionary.Withdraw }}
+          <span class="fs-5 fw-bold">{{ currency!.currencyName }}</span>
+        </ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!chargeForm.form.valid || priceRangeMessage != ''"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #chargeForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <div class="amount-input">
+                <ion-input
+                  labelPlacement="floating"
+                  fill="outline"
+                  [label]="dictionary.Amount"
+                  [(ngModel)]="withdraw.amount"
+                  name="amount"
+                  id="amount"
+                  [required]="true"
+                  [inputmode]="'numeric'"
+                  [maskitoElement]="maskPredicate"
+                  [maskito]="thousandSeparator"
+                  (ionInput)="onInput($event)"
+                  maxValue
+                  [maxValueNumber]="differenceWalletCreditBalance!"
+                  mode="md"
+                  (keydown.enter)="chargeForm.form.valid ? submitForm() : ''"
+                  class="amount"
+                />
+                <ion-button size="small" (click)="setBalance()" id="max-button"
+                  >Max:
+                  {{
+                    differenceWalletCreditBalance! | truncateDecimalsPipe
+                  }}</ion-button
+                >
+              </div>
+              <span class="text-danger">{{ priceRangeMessage }}</span>
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                [Label]="dictionary.Description"
+                name="referenceNumber"
+                [id]="'description'"
+                [(ngModel)]="withdraw.description"
+                [required]="true"
+                (keydown.enter)="chargeForm.form.valid ? submitForm() : ''"
+              />
+            </ion-col>
+            <ion-col size="12" *ngIf="crditBalance! > 0">
+              <ion-label>
+                The customer has {{ crditBalance?.toLocaleString() }} ({{
+                  currency?.currencyName
+                }}) credit.</ion-label
+              >
+            </ion-col>
+            <ion-col size="12" *ngIf="showDescriptionAlert">
+              <p class="financial-activities-alert">*{{ dictionary.CreatingFinancialActivityAlert }}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

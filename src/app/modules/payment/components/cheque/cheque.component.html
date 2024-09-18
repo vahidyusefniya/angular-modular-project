@@ -1,0 +1,84 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" class="charge__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.PaymentInformation }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!form.form.valid"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #form="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <div class="d-flex py-3">
+                <ion-card class="payment-method-card my-0">
+                  <ion-card-content>
+                    <app-icon type="ChequeOnline"></app-icon>
+                  </ion-card-content>
+                </ion-card>
+
+                <div class="d-flex flex-column">
+                  <span class="fw-bold">Cheque - Only for USA(USD)</span>
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="12">
+              <label>Please Upload image of your cheque:</label>
+              <p-fileUpload
+                name="image"
+                [url]="uploadImageUrl"
+                (onUpload)="onUpload($event)"
+                [multiple]="false"
+                [auto]="true"
+                accept="image/*"
+                [maxFileSize]="1000000"
+              >
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">
+                      <div class="content">
+                        <img
+                          width="50"
+                          height="30"
+                          ngSrc="{{ imageUrl }}"
+                          alt="upload-file"
+                        />
+                        <ion-label class="mx-2">{{ file.name }}</ion-label>
+                      </div>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                id="amount"
+                name="amount"
+                [Label]="dictionary.Amount"
+                [(ngModel)]="amount"
+                [required]="true"
+                [mask]="thousandSeparator"
+                [inputmode]="'numeric'"
+                (keydown.enter)="form.form.valid ? submitForm() : ''"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

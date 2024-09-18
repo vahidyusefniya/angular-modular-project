@@ -1,0 +1,40 @@
+<ion-modal class="block__modal" (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="light">
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" (click)="onDismiss()"
+            >{{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <!-- <ion-title>{{ dictionary.Empty }}</ion-title> -->
+        <ion-buttons slot="end">
+          <ion-button class="modal_btn" color="primary" (click)="onConfirmClick()">
+            {{ dictionary.Confirm }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #blockForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              Are you sure to change status order
+              {{ posOrder?.posOrderId }}
+              <span *ngIf="posOrder?.state === 'Paid'">to shipping?</span>
+              <span *ngIf="posOrder?.state === 'Shipping'">to delivered?</span>
+            </ion-col>
+            <ion-col size="12">
+              <app-text-area-input
+                name="description"
+                [(ngModel)]="description"
+                class="change-state-description"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,41 @@
+<ion-input
+  [id]="id"
+  [label]="Label"
+  labelPlacement="floating"
+  fill="outline"
+  [disabled]="disabled"
+  autocomplete="off"
+  [required]="required"
+  [readonly]="readonly"
+  [autofocus]="autofocus"
+  [value]="value | date : 'yyyy-MM-dd'"
+  class="ion-text-end"
+  mode="md"
+  clearInput="true"
+  (ionInput)="inputValueChange($event)"
+/>
+<ion-modal #popoverDatetime [trigger]="id" [keepContentsMounted]="true">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="popoverDatetime.dismiss()" color="primary">
+            Cancel
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-no-padding ion-no-margin date-picker-content" style="border: none !important;">
+      <p-calendar
+        [minDate]="min"
+        [maxDate]="max"
+        [selectionMode]="'single'"
+        [(ngModel)]="value"
+        (ngModelChange)="handleChange($event); popoverDatetime.dismiss()"
+        [inline]="true"
+        [showClear]="true"
+      >
+      </p-calendar>
+    </ion-content>
+  </ng-template>
+</ion-modal>

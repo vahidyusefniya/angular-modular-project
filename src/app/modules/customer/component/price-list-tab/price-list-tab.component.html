@@ -1,0 +1,37 @@
+<ion-item lines="none">
+  <div class="d-flex align-items-center">
+    <ion-label>
+      {{ dictionary.PriceList }}:
+      <span class="value-label">
+        {{ assignedPriceListName }}
+      </span>
+    </ion-label>
+    <ion-button
+      appPermission
+      inputAppPermission="AssignPriceList"
+      fill="clear"
+      (click)="onAssignPriceListClick()"
+      class="edit__btn"
+      *ngIf="priceLists.length > 1"
+    >
+      <!-- <app-icon type="edit" /> -->
+      <i class="material-icons">edit</i>
+    </ion-button>
+  </div>
+</ion-item>
+<div
+  appPermission
+  inputAppPermission="PriceListRead"
+  class="price-list-tab pb-4 pb-lg-5"
+>
+  <app-price-list-prices *ngIf="!loading"/>
+</div>
+<app-customer-assign-price-list
+  *ngIf="openAssignPriceListModal"
+  [isOpen]="openAssignPriceListModal"
+  [priceLists]="priceLists"
+  [title]="assignPriceListModalTitle"
+  [assignedPriceListId]="assignedPriceListId"
+  (dismiss)="openAssignPriceListModal = false"
+  (assignPriceList)="assignPriceList($event)"
+/>

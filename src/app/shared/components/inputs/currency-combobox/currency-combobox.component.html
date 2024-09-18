@@ -1,0 +1,39 @@
+<ion-select
+  id="currencyId"
+  name="currencyId"
+  [label]="dictionary.Currency"
+  [(ngModel)]="value"
+  (ngModelChange)="handleChange($event)"
+  [disabled]="disabled"
+  [required]="required"
+  labelPlacement="floating"
+  fill="outline"
+  [interface]="isMobileSize ? 'action-sheet' : 'popover'"
+  class="combo-box"
+  *ngIf="!loading;else loadingTemp"
+>
+  <ion-select-option
+    *ngFor="let item of currencies"
+    [value]="item['currencyId']"
+    class="select-option"
+    aria-label="label"
+  >
+    {{ item["currencyName"] }}
+  </ion-select-option>
+  <ion-select-option
+    *ngIf="includeClear && value"
+    value="Clear"
+    class="clear-option"
+  >
+    Clear
+  </ion-select-option>
+</ion-select>
+<ion-spinner name="dots" *ngIf="loading"></ion-spinner>
+<ng-template #loadingTemp>
+  <app-text
+    id="Currency"
+    [Label]="dictionary.Currency"
+    name="Currency"
+    [readonly]="true"
+  ></app-text>
+</ng-template>

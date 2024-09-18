@@ -1,0 +1,15 @@
+<ion-card class="ion-no-margin" role="button" [id]="id" (click)="onCategoryClick()">
+  <img
+    class="img"
+    [lazyLoad]="category.imageUrl ? category.imageUrl : localImageSRC"
+    ngSrc="{{
+      categoryLevel === 'one' ? localImageSRC : localCategoryLevelTowImageSRC
+    }}"
+    width="112"
+    height="73"
+    alt="category-img"
+  />
+  <ion-card-content>
+    {{ category.categoryName }}
+  </ion-card-content>
+</ion-card>

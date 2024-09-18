@@ -1,0 +1,55 @@
+.order__modal {
+  --ion-background-color: var(--ion-color-step-100);
+  --ion-toolbar-background: var(--ion-color-step-100);
+  --ion-toolbar-border-color: var(--ion-color-step-100);
+
+  ion-content {
+    --overflow: hidden;
+
+    .number__col {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 50px;
+    }
+
+    .hr {
+      width: 100%;
+      height: 3px;
+      background-color: var(--table-btn-color);
+    }
+
+    .product__amount__info {
+      font-size: 12px;
+      margin: 0.8rem 0;
+    }
+
+    .description__button {
+      --background: white;
+      --background-hover: white;
+      --background-activated: white;
+      --background-focused: white;
+      --color: #f2682a;
+    }
+
+    .amount {
+      width: 100%;
+      font-size: 13px;
+      padding-left: 1rem;
+      background: transparent !important;
+      border: 1px solid;
+      border-radius: 5px;
+    }
+
+    .error-input {
+      border-color: var(--ion-color-danger);
+    }
+  }
+
+  .checkout {
+    --background: #f2682a;
+    --background-hover: #f2682a;
+    --background-activated: #f2682a;
+    --background-focused: #f2682a;
+  }
+}

@@ -1,0 +1,30 @@
+ion-item {
+  cursor: pointer;
+  --background: var(--menu-background);
+  color: var(--white);
+
+  &:hover {
+    --color: var(--ion-color-primary);
+  }
+  app-icon {
+    display: flex;
+  }
+}
+
+.active {
+  color: var(--ion-color-primary);
+}
+
+.toggle {
+  color: var(--white) !important;
+}
+
+.menu-label {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.child-label {
+  padding-left: 35px;
+}

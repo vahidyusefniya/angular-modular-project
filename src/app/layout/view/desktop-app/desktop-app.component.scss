@@ -1,0 +1,170 @@
+ion-menu {
+  width: 264px;
+  min-width: 0;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0.4rem 0.4rem;
+}
+
+#main-content {
+  width: 100%;
+  height: 100%;
+
+  ion-content {
+    --width: 100%;
+    --height: 100%;
+    --overflow: hidden;
+  }
+}
+
+ion-menu ion-content {
+  --background: var(--menu-background);
+
+  ion-header {
+    --background: var(--menu-background) !important;
+    border-bottom: 1px solid var(--side__bar__border__color) !important;
+
+    ion-toolbar {
+      --background: var(--menu-background) !important;
+    }
+  }
+
+  .side__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+    border-bottom: 1px solid var(--side__bar__border__color);
+  }
+
+  #inbox-list {
+    background: var(--menu-background);
+    overflow: hidden;
+  }
+}
+
+.header-buttons {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--hyper-link-color);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.mode-section {
+  background: var(--menu-background);
+}
+
+.sidebar-select-box {
+  padding-top: 10px;
+  border-bottom: 1px solid var(--side__bar__border__color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 1000px) {
+  ion-menu {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 840px) {
+  .w-sm-auto {
+    width: auto !important;
+  }
+}
+
+ion-item {
+  cursor: pointer;
+  --background: var(--menu-background);
+  color: var(--white);
+
+  &:hover {
+    --color: var(--ion-color-primary);
+  }
+}
+
+.avatar-shape {
+  width: 30px;
+  height: 30px;
+}
+
+.popop-container {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+
+  h6,
+  p {
+    cursor: default;
+  }
+}
+
+.popop-modal {
+  position: relative;
+
+  .popover-viewport {
+    border-radius: 13px;
+  }
+
+  .popop-header {
+    background-color: var(--profile-color);
+    height: 100px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  .popop-content {
+    .popop-container {
+      padding-top: 40px;
+
+      .user-email {
+        width: 90%;
+        font-size: 14px;
+        font-weight: 200;
+        letter-spacing: 1px;
+        text-wrap: wrap;
+      }
+
+      .toggle {
+        margin-top: 1rem;
+        letter-spacing: 1px;
+      }
+
+      .user-name {
+        font-size: 17px;
+        font-weight: 500;
+      }
+
+      .user-avatar {
+        border: 1.5px solid var(--text-white);
+      }
+    }
+
+    .signout-btn {
+      border-top: 1px solid #2a2a2a;
+      margin-top: 13px;
+    }
+  }
+  .profile-btn {
+    font-size: 16px;
+  }
+}
+
+.salemanager-name {
+  font-size: 13px;
+  color: rgb(197, 195, 195);
+}

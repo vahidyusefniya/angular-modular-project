@@ -1,0 +1,195 @@
+<!--suppress JSUnresolvedReference -->
+<div appPermission inputAppPermission="CustomerRead" class="content">
+  <ion-grid>
+    <ion-card class="ion-no-margin mt-1">
+      <ion-card-content>
+        <div class="row">
+          <div class="col-12 col-sm-8">
+            <div class="d-flex flex-column align-items-start w-100">
+              <div class="d-flex mb-1">
+                <ion-label class="label">{{ dictionary.Name }}:</ion-label>
+                <span class="ms-2 result-text">{{
+                  merchant?.merchantName
+                }}</span>
+              </div>
+              <div class="d-flex mb-1">
+                <ion-label class="label">{{ dictionary.Id }}:</ion-label>
+                <span class="ms-2 result-text">{{ merchant?.merchantId }}</span>
+              </div>
+              <div class="d-flex">
+                <ion-label class="label"
+                  >{{ dictionary.SaleManger }}:</ion-label
+                >
+                <span class="ms-2 result-text">{{
+                  merchant?.saleManager?.name || "-"
+                }}</span>
+              </div>
+              <div class="d-flex mb-1">
+                <ion-label class="label">{{ dictionary.Email }}:</ion-label>
+                <span class="ms-2 result-text">{{ merchant?.email }}</span>
+              </div>
+              <div class="d-flex pt-1">
+                <ion-label class="label"
+                  >{{ dictionary.PhoneNumber }}:</ion-label
+                >
+                <span class="ms-2 result-text">
+                  <span *ngIf="!!merchant?.phoneNumber; else elseBlock">
+                    (+{{ merchant?.phoneNumber?.countryCode }})
+                    {{ merchant?.phoneNumber?.number }}
+                  </span>
+                  <ng-template #elseBlock> - </ng-template>
+                </span>
+              </div>
+              <div class="d-flex pt-1">
+                <ion-label class="label"
+                  >{{ dictionary.WhatsappNumber }}:</ion-label
+                >
+                <span class="ms-2 result-text">
+                  <span *ngIf="!!merchant?.whatsappNumber; else elseBlock">
+                    (+{{ merchant?.whatsappNumber?.countryCode }})
+                    {{ merchant?.whatsappNumber?.number }}
+                  </span>
+                  <ng-template #elseBlock> - </ng-template>
+                </span>
+              </div>
+              <div class="d-flex pt-1">
+                <ion-label class="label">{{ dictionary.Website }}:</ion-label>
+                <span class="ms-2 result-text">{{
+                  merchant?.website || "-"
+                }}</span>
+              </div>
+              <div class="d-flex pt-1">
+                <ion-label class="label">{{ dictionary.TimeZone }}:</ion-label>
+                <span class="ms-2 result-text">
+                  {{ timezoneNumber }}
+                </span>
+              </div>
+              <div *ngIf="merchant && merchant.address">
+                <div class="d-flex pt-1">
+                  <ion-label class="label">{{ dictionary.Address }}:</ion-label>
+                  <span
+                    *ngIf="merchant.address.country"
+                    class="ms-2 result-text"
+                  >
+                    {{ merchant.address.country }} /
+                  </span>
+                  <span *ngIf="merchant.address.state" class="ms-2 result-text">
+                    {{ merchant.address.state }} /
+                  </span>
+                  <span *ngIf="merchant.address.city" class="ms-2 result-text">
+                    {{ merchant.address.city }} -
+                  </span>
+                  <span
+                    *ngIf="merchant.address.rawAddress"
+                    class="ms-2 result-text"
+                  >
+                    {{ merchant.address.rawAddress }}
+                  </span>
+                </div>
+                <div class="d-flex pt-1">
+                  <ion-label class="label"
+                    >{{ dictionary.ZIPPostalCode }}:</ion-label
+                  >
+                  <span class="ms-2 result-text">{{
+                    merchant.address.postalCode || "-"
+                  }}</span>
+                </div>
+              </div>
+              <div *ngIf="merchant" class="d-flex pt-1">
+                <ion-label class="label">{{ dictionary.Status }}:</ion-label>
+                <ion-text
+                  class="ms-2 result-text"
+                  color="primary"
+                  [color]="
+                    changeActiveStatus(merchant.isActive) === 'Deactive'
+                      ? 'danger'
+                      : ''
+                  "
+                  >{{ changeActiveStatus(merchant.isActive) }}</ion-text
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-4">
+            <div
+              class="d-flex flex-column align-items-end justify-content-center mt-2 mt-sm-0"
+            >
+              <ion-button
+                appPermission
+                inputAppPermission="MerchantWrite"
+                color="primary"
+                (click)="onEditClick()"
+                id="edit-customer-button"
+                class="assign-btn"
+              >
+                {{ dictionary.Edit }}
+              </ion-button>
+              <ion-button
+                appPermission
+                inputAppPermission="AssignMerchantToSaleManager"
+                color="primary"
+                (click)="showAssignSaleMangerToMerchantModal = true"
+                class="assign-btn"
+                id="assign-to-sale-manager"
+              >
+                {{
+                  selectedSaleManagerId
+                    ? dictionary.ChangeSaleManager
+                    : dictionary.AssignToSaleManager
+                }}
+              </ion-button>
+              <ion-button
+                appPermission
+                inputAppPermission="AssignMerchantToSaleManager"
+                color="primary"
+                (click)="onUnassignClick()"
+                class="assign-btn"
+                id="unassign-sale-manager"
+                *ngIf="selectedSaleManagerId"
+              >
+                {{ dictionary.UnassignSaleManager }}
+              </ion-button>
+              <ion-button
+                appPermission
+                inputAppPermission="AssignMerchant"
+                color="primary"
+                (click)="onAssignToBranchClick()"
+                class="assign-btn"
+                id="assign-to-office"
+                *ngIf="showAssignToOfficeBtn"
+              >
+                {{ dictionary.AssignToOffice }}
+              </ion-button>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-grid>
+</div>
+
+<app-choose-branch-customer
+  *ngIf="showAssignToBranchModal"
+  [isOpen]="showAssignToBranchModal"
+  [branches]="branches"
+  [selectedBranch]="selectedBranch"
+  (dismiss)="dismissAssignBranchModal()"
+  (assign)="assignToBranchConfirmation()"
+  (setSelectedBranch)="setSelectedBranch($event)"
+></app-choose-branch-customer>
+
+<app-assign-sale-manager
+  *ngIf="showAssignSaleMangerToMerchantModal"
+  [isOpen]="showAssignSaleMangerToMerchantModal"
+  [selectedSaleManagerId]="selectedSaleManagerId"
+  (dismiss)="dismissAssignSaleMangerToMerchantModal()"
+  (setSelectedSaleManager)="SelectedSaleManager($event)"
+></app-assign-sale-manager>
+
+<app-customer-edit
+  *ngIf="showEditCustomerModal"
+  [isOpen]="showEditCustomerModal"
+  (dismiss)="showEditCustomerModal = false"
+  (editCustomer)="editCustomer($event)"
+  [editCustomerData]="customerEdit"
+/>

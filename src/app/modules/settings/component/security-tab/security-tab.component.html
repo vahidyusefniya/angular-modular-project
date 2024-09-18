@@ -1,0 +1,95 @@
+<ion-card>
+  <ion-card-header>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card-title class="mb-2">{{ dictionary.TwoFADownloadAndResend }}</ion-card-title>
+        <ion-card-title class="mb-2">{{ dictionary.TwoFATabTitle }}</ion-card-title>
+        <ion-card-subtitle>{{ dictionary.TwoFATabSubtitle }} </ion-card-subtitle>
+      </ion-col>
+    </ion-row>
+  </ion-card-header>
+  <ion-card-content>
+    <form #twoFAVerifyForm="ngForm">
+      <ion-row>
+        <ion-col *ngFor="let link of links" size="12">
+          <a [href]="link.href">
+            {{ link.name }}
+          </a>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" class="ion-no-padding mt-2">
+          <ion-row>
+            <ion-col size="12">
+              <ion-row>
+                <ion-col sizeMd="3" sizeSm="12" class="ion-no-padding">
+                  <ion-label color="dark" *ngIf="!isActive2Fa">
+                    {{ dictionary.VerifyTheCodeFromTheApp }}
+                  </ion-label>
+                  <ion-input
+                    [label]="dictionary.Code"
+                    id="code"
+                    name="code"
+                    [(ngModel)]="code"
+                    required
+                    fill="outline"
+                    labelPlacement="floating"
+                    class="my-2"
+                    *ngIf="!isActive2Fa"
+                    (keydown.enter)="twoFAVerifyForm.form.valid ? onActiveClick() : ''"
+                  />
+                  <ion-button
+                    [disabled]="!twoFAVerifyForm.form.valid"
+                    (click)="onActiveClick()"
+                    color="success"
+                    *ngIf="!isActive2Fa"
+                    class="w-100"
+                  >
+                    {{ dictionary.Active }}
+                  </ion-button>
+                  <ion-button
+                    (click)="onInactiveClick()"
+                    *ngIf="isActive2Fa"
+                    color="danger"
+                    class="w-100"
+                  >
+                    {{ dictionary.Inactive }}
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="12" *ngIf="showQrCode; else showQrCodeElse">
+          <img
+            *ngIf="!qrCodeLoading; else loadingTemp"
+            [src]="qrCodeValue"
+            [alt]="qrCodeValue"
+            width="200"
+          />
+          <ng-template #loadingTemp>
+            <div class="loading-qr-code">
+              <ion-spinner color="dark" />
+            </div>
+          </ng-template>
+        </ion-col>
+        <ng-template #showQrCodeElse>
+          <ion-col size="12">
+            <ion-label
+            color="primary" 
+            (click)="showQrCode = !showQrCode"
+            class="reset-2fa-btn">
+              {{ dictionary.Reset2FA }}
+            </ion-label>
+          </ion-col>
+        </ng-template>
+      </ion-row>
+    </form>
+  </ion-card-content>
+</ion-card>
+<ion-alert
+  [isOpen]="isOpen"
+  [header]="dictionary.InactiveCode"
+  message="Are you sure to inactivate 2FA?"
+  [buttons]="buttons"
+/>

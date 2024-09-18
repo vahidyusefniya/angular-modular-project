@@ -1,0 +1,62 @@
+<app-phone-header-layout [showBackButton]="true" [title]="dictionary.Wallet"/>
+<ion-content
+  appPermission
+  inputAppPermission="WalletTransactionRead"
+>
+<ion-title class="text-center my-2">Choose your wallet</ion-title>
+  <ion-grid class="ion-no-padding">
+    <ion-row *ngIf="loading">
+      <ion-col
+        size="12"
+        sizeLg="2"
+        *ngFor="let number of [0, 1, 2, 3, 4, 5]"
+        class="py-0 px-2"
+      >
+        <ion-skeleton-text
+          style="height: 100px; width: 100%"
+          [animated]="true"
+        ></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+
+    <ion-row
+      *ngIf="!loading && creditAndWalletList.length > 0"
+      class="gap-2 mb-2 p-2"
+    >
+      <div class="credit-card" *ngFor="let creditWallet of creditAndWalletList">
+        <ion-card
+          class="ion-no-margin"
+          [id]="'wallet-credit-card-' + creditWallet.currencyId"
+          (click)="onSelectWallet(creditWallet)"
+        >
+          <ion-card-content>
+            <div
+              class="d-flex justify-content-between align-items-center border-bottom"
+            >
+              <h5 class="key-lable">{{ creditWallet.currencyName }}</h5>
+            </div>
+            <div
+              *ngIf="creditWallet.balanceWallet"
+              class="d-flex justify-content-between align-items-center pt-2"
+            >
+              <div>
+                <span class="key-lable"> {{ dictionary.Wallet }}: </span>
+                <span>
+                  {{ creditWallet.balanceWallet | truncateDecimalsPipe }}
+                </span>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="key-lable"> {{ dictionary.Credit }}: </span>
+                <span>
+                  {{ creditWallet.balanceCredit | truncateDecimalsPipe }}
+                </span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

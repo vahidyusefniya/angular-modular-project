@@ -1,0 +1,38 @@
+<div class="mobile-input">
+  <div class="d-flex align-items-center mobile-input-wrapper">
+    <ion-button 
+    fill="outline"
+    size="medium" 
+    (click)="showCountryModal = true"
+    color="medium"
+    class="ion-no-padding me-2 h-100"
+      >{{ country.brief }} (+{{ country.code }}) <ion-icon name="chevron-down-outline" class="ms-2"></ion-icon></ion-button
+    >
+
+    <ion-input 
+    [id]="id"
+    fill="outline"
+    [value]="value"
+    (ionChange)="onInputChange($event)"
+    [required]="required"
+    [readonly]="readonly"
+    [errorText]="errorText"
+    [placeholder]="placeholder"
+    [label]="Label"
+    [inputmode]="inputmode"
+    [maskito]="phoneMask"
+    [maskitoElement]="maskPredicate"
+    [disabled]="disabled"
+    mode="md"
+    labelPlacement="floating"
+    #baseInput></ion-input>
+    
+  </div>
+</div>
+
+<app-countries 
+[isOpen]="showCountryModal"
+*ngIf="showCountryModal"
+(dismiss)="showCountryModal = false"
+(countrySubmit)="countrySubmit($event)"
+[country]="country"/>

@@ -1,0 +1,46 @@
+<ion-row
+  class="d-flex justify-content-between flex-row-reverse border-bottom py-2 my-2"
+>
+  <ion-col size="12" size-lg="4">
+    <app-combobox
+      name="dateTime"
+      [Label]="customLabel || dictionary.DateRange"
+      [data]="dateTimeCmbData"
+      [filterable]="false"
+      [valueField]="'name'"
+      [textField]="'name'"
+      [(ngModel)]="dateTime"
+      (selectionChange)="dateTimeSelectionChange()"
+      [hasClear]="false"
+      class="w-100"
+    />
+  </ion-col>
+</ion-row>
+<app-page-list
+  [cols]="cols"
+  [data]="aggregateReportList"
+  [listPermission]="'ReportSummary'"
+  [loading]="loading"
+  [label]="dictionary.AggregateSalesReport"
+  [hasLocalPagination]="true"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [hasExport]="true"
+  [hasRefresh]="false"
+  [showActionSheet]="false"
+  [hasNewButton]="false"
+  [hasRefresh]="true"
+  (linkRowClick)="onCurrencyClick($event)"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  [tagList]="tagList"
+/>
+
+<app-aggregate-report-filter
+  *ngIf="openAggregateReportFilterModal"
+  [isOpen]="openAggregateReportFilterModal"
+  (dismiss)="openAggregateReportFilterModal = false"
+  (reportFilterClick)="saveAggregateReportFilter($event)"
+  [data]="aggregateReportFilter"
+  (dismiss)="dismissModal($event)"
+/>

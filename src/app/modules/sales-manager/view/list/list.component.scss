@@ -1,0 +1,13 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+.hyper-link {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cursor_pointer {
+  cursor: pointer;
+}

@@ -1,0 +1,19 @@
+<ion-content [fullscreen]="true">
+  <div class="main">
+    <ion-grid>
+      <ion-row
+        ><ion-col size="12" class="ion-text-center pageNotFoundLabel">
+          <span>404</span>
+        </ion-col>
+        <ion-col size="12" class="ion-text-center">
+          <h3>{{ dictionary.PageNotFound }}</h3>
+        </ion-col>
+        <ion-col size="12" class="ion-text-center">
+          <a [href]="appUrl">
+            <h5>{{ dictionary.ReturnToApp }}</h5>
+          </a>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

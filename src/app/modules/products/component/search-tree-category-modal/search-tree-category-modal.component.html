@@ -1,0 +1,38 @@
+<ion-modal class="categories__modal" [isOpen]="isOpen" (willDismiss)="cancel()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button color="primary" (click)="cancel()">
+            <b>{{ dictionary.Cancel }}</b>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Categories }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <p-tree
+        *ngIf="!loading"
+        [value]="treeData"
+        selectionMode="single"
+        [(selection)]="selectedCategory"
+        class="w-full md:w-30rem"
+        [filter]="true"
+        filterMode="strict"
+      >
+        <ng-template let-node pTemplate="default">
+          <div class="d-flex align-items-center">
+            <ion-label class="mx-2 w-100 text-decoration-underline" (click)="selectCategory(node)">{{ node.label }}</ion-label>
+          </div>
+        </ng-template>
+      </p-tree>
+      <div *ngIf="loading">
+        <ion-skeleton-text
+          *ngFor="let number of coreService.getSkeletonNumbers(20)"
+          style="height: 50px; width: 100%"
+          [animated]="true"
+        ></ion-skeleton-text>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

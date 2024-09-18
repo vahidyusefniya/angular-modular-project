@@ -1,0 +1,39 @@
+<ion-modal
+  [backdropDismiss]="state !== 'init'"
+  [isOpen]="isOpen"
+  (willDismiss)="cancel()"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons *ngIf="state === 'change'" slot="start">
+          <ion-button color="primary" (click)="cancel()">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.ChooseYourOperatingBranch }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <app-text
+        [autofocus]="true"
+        id="branchName"
+        [Label]="dictionary.Name"
+        [(ngModel)]="branchName"
+        name="branchName"
+        (inputChange)="searchName($event)"
+      />
+      <ion-radio-group [value]="branch?.branchId">
+        <ion-item
+          (click)="onFocusBranch(branch!)"
+          class="mt-2"
+          *ngFor="let branch of branches"
+        >
+          <ion-radio [value]="branch.branchId" justify="space-between">
+            {{ getBranchName(branch) }}
+          </ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </ion-content>
+  </ng-template>
+</ion-modal>

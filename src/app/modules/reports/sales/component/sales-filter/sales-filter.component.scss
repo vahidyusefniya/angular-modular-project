@@ -1,0 +1,11 @@
+.sales__filter__modal {
+  --max-height: 450px;
+  --height: 450px;
+}
+
+@media screen and (max-width: 840px) {
+  .sales__filter__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

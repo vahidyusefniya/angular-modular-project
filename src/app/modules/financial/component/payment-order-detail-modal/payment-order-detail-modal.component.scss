@@ -1,0 +1,20 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+ion-modal {
+  --height: 70%;
+  --width: 800px;
+
+  .gray__color {
+    color: gray;
+  }
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}
+
+.text-label{
+  color: var(--text-label-color);
+}

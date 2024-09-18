@@ -1,0 +1,212 @@
+<!--suppress JSUnresolvedReference -->
+<div class="content">
+  <ion-grid>
+    <div>
+      <div>
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- <span class="fs-4 w-100" *ngIf="creditAndWalletList.length > 0">{{
+            dictionary.Balance
+          }}</span> -->
+          <div
+            appPermission
+            inputAppPermission="FinancialCreate"
+            *ngIf="!isSmallMode; else smallMode"
+            class="d-flex w-100 justify-content-end"
+          >
+            <ion-button
+              class="mx-1 charge-btn"
+              (click)="showRebateModalClick()"
+              id="rebate-button"
+              [disabled]="loading"
+            >
+              <i class="material-icons">add</i>
+              {{ dictionary.Rebate }}
+              <ion-spinner
+                class="position-absolute"
+                slot="start"
+                name="lines"
+                *ngIf="loading"
+              ></ion-spinner>
+            </ion-button>
+            <ion-button
+              class="mx-1"
+              (click)="showCreditModalClick()"
+              id="credit-button"
+              [disabled]="loading"
+            >
+              <i class="material-icons">add</i>
+              {{ dictionary.Credit }}
+              <ion-spinner
+                class="position-absolute"
+                slot="start"
+                name="lines"
+                *ngIf="loading"
+              ></ion-spinner>
+            </ion-button>
+            <ion-button
+              class="mx-1 charge-btn"
+              (click)="showChargeModalClick()"
+              id="charge-button"
+              [disabled]="loading"
+            >
+              <i class="material-icons">add</i>
+              {{ dictionary.Charge }}
+              <ion-spinner
+                class="position-absolute"
+                slot="start"
+                name="lines"
+                *ngIf="loading"
+              ></ion-spinner>
+            </ion-button>
+          </div>
+          <ng-template #smallMode>
+            <div
+              appPermission
+              inputAppPermission="FinancialCreate"
+              class="d-flex w-100 justify-content-end"
+            >
+              <ion-button
+                class="mx-1 table__btn sm__mode"
+                (click)="presentActionSheet()"
+                id="presentFinancialActionSheet"
+              >
+                <i class="material-icons">more_vert</i>
+              </ion-button>
+            </div>
+          </ng-template>
+        </div>
+        <div
+          class="separator my-2"
+          *ngIf="creditAndWalletList.length > 0"
+        ></div>
+      </div>
+      <ion-row *ngIf="loading">
+        <ion-col
+          size="12"
+          sizeLg="2"
+          *ngFor="let number of [0, 1, 2, 3, 4, 5]"
+          class="py-0"
+        >
+          <ion-skeleton-text
+            style="height: 114px; width: 100%"
+            [animated]="true"
+          ></ion-skeleton-text>
+        </ion-col>
+      </ion-row>
+      <ion-row
+        *ngIf="!loading && creditAndWalletList.length > 0"
+        class="gap-2 mb-2"
+      >
+        <div
+          class="credit-card"
+          *ngFor="let creditWallet of creditAndWalletList"
+        >
+          <ion-card
+            class="ion-no-margin"
+            [id]="'wallet-credit-card-' + creditWallet.currencyId"
+          >
+            <ion-card-content>
+              <div
+                class="d-flex justify-content-between align-items-center border-bottom"
+              >
+                <h5 class="key-lable">
+                  {{ creditWallet.currencyName }}
+                  <span *ngIf="creditWallet?.isForTest">(Test)</span>
+                </h5>
+              </div>
+              <div
+                class="d-flex justify-content-between align-items-center"
+              >
+                <div>
+                  <span class="key-lable"> {{ dictionary.Wallet }}: </span>
+                  <span>
+                    {{ creditWallet.balanceWallet | truncateDecimalsPipe }}
+                  </span>
+                </div>
+                <ion-button
+                  appPermission
+                  inputAppPermission="FinancialCreate"
+                  (click)="showWithdrawModalClick(creditWallet)"
+                  [id]="'withdraw-button-' + creditWallet.currencyId"
+                  [disabled]="creditWallet?.balanceWallet! <= 0"
+                  size="small"
+                  >{{ dictionary.Withdraw }}</ion-button
+                >
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="key-lable"> {{ dictionary.Credit }}: </span>
+                  <span>
+                    {{ creditWallet.balanceCredit | truncateDecimalsPipe }}
+                  </span>
+                </div>
+                <ion-button
+                  size="small"
+                  appPermission
+                  inputAppPermission="FinancialCreate"
+                  (click)="showSettleModalClick(creditWallet)"
+                  [id]="'settle-button-' + creditWallet.currencyId"
+                  [disabled]="!checkShowSettle(creditWallet)"
+                  class="settle-button-credit"
+                  >{{ dictionary.settle }}</ion-button
+                >
+              </div>
+              <div class="pt-1">
+                <span class="key-lable">{{ dictionary.Debt }}: </span>
+                <span>{{ creditWallet.debt | truncateDecimalsPipe }}</span>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ion-row>
+    </div>
+  </ion-grid>
+  <app-wallet-transaction
+    (refreshEmiter)="initPage()"
+    [loading]="loading"
+    *ngIf="!loading"
+  ></app-wallet-transaction>
+</div>
+<app-charge
+  *ngIf="showChargeModal"
+  [isOpen]="showChargeModal"
+  (dismiss)="showChargeModal = false"
+  [variableTitle]="merchantName"
+  (createCharge)="createCharge($event)"
+  [banks]="banks"
+/>
+
+<app-withdraw
+  *ngIf="showWithdrawModal"
+  [isOpen]="showWithdrawModal"
+  (dismiss)="showWithdrawModal = false"
+  (submit)="submitWithdrawModal($event)"
+  [currency]="currency"
+  [differenceWalletCreditBalance]="differenceWalletCreditBalance"
+  [crditBalance]="crditBalance"
+/>
+
+<app-settle
+  *ngIf="showSettleModal"
+  [isOpen]="showSettleModal"
+  (dismiss)="showSettleModal = false"
+  (submit)="submitSettleModal($event)"
+  [currency]="currency"
+  [minBalance]="minBalance"
+/>
+
+<app-credit
+  *ngIf="showCreditModal"
+  [isOpen]="showCreditModal"
+  (dismiss)="showCreditModal = false"
+  [variableTitle]="merchantName"
+  (createCredit)="createCredit($event)"
+/>
+
+<app-rebate
+  *ngIf="showRebateModal"
+  [isOpen]="showRebateModal"
+  (dismiss)="showRebateModal = false"
+  [variableTitle]="merchantName"
+  (createRebate)="createRebate($event)"
+/>

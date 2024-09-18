@@ -1,0 +1,45 @@
+<ion-modal
+  class="order__filter__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Filter }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="primary" (click)="onFilterClick()">
+            {{ dictionary.Done }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form>
+        <ion-grid [fixed]="true">
+          <ion-row>
+            <ion-col size="12">
+              <app-combobox
+                [id]="'isActive'"
+                name="isActive"
+                [Label]="dictionary.Status"
+                [data]="activeList"
+                [valueField]="'statusValue'"
+                [textField]="'statusName'"
+                [filterable]="false"
+                [(ngModel)]="filterSaleManager.isActive"
+                [includeClear]="true"
+                (selectionChange)="statusSelectionChange($event)"
+              ></app-combobox>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

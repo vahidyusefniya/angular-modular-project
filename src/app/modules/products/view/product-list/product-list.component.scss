@@ -1,0 +1,16 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+ion-text {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.region-label {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 2px 6px 2px 6px;
+  background-color: rgb(193 173 23) !important;
+  color: var(--card-header-row);
+  font-weight: 700;
+}

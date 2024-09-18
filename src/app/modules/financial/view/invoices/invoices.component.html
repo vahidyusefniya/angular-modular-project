@@ -1,0 +1,85 @@
+<app-page-list
+  [data]="invoices"
+  [cols]="cols"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasAdvancedFilter]="false"
+  [exportPermission]="'PaymentOrderRead'"
+  [hasNewButton]="false"
+  [showActionSheet]="false"
+  [hasSearch]="false"
+  [hasExport]="false"
+  (refreshClick)="onRefreshClick()"
+  [label]="dictionary.Invoices"
+  class="align-right-amount"
+  [initialTemplate]="invoicesTable"
+  [hasCustomTableContent]="true"
+/>
+<ng-template #invoicesTable>
+  <p-table
+    appPermission
+    inputAppPermission="PaymentOrderRead"
+    [value]="invoices"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1">
+              <span *ngSwitchCase="'invoiceId'">
+                {{ rowData[col.field] }}
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{ rowData[col.field] | convertLocalDateTime : "YYYY/MM/DD HH:mm" }}
+              </span>
+              <span *ngSwitchCase="'beginTime'">
+                {{ rowData[col.field] | convertLocalDateTime : "YYYY/MM/DD HH:mm" }}
+              </span>
+              <span *ngSwitchCase="'endTime'">
+                {{ rowData[col.field] | convertLocalDateTime : "YYYY/MM/DD HH:mm" }}
+              </span>
+              <span *ngSwitchCase="'action'">
+                <ion-button
+                  color="primary"
+                  appPermission
+                  inputAppPermission="PaymentOrderRead"
+                  fill="clear"
+                  (click)="onDownloadClick(rowData)"
+                  [pTooltip]="dictionary.DownloadCodes"
+                  tooltipPosition="bottom"
+                  class="download-code-btn m-0"
+                >
+                  <app-icon [type]="'download'" />
+                </ion-button>
+              </span>
+              
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>

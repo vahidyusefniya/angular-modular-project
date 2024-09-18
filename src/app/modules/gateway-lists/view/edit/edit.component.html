@@ -1,0 +1,116 @@
+<ion-content [fullscreen]="true">
+  <ion-card class="m-0">
+    <ion-grid>
+      <form #gatewayListForm="ngForm">
+        <ion-row class="d-flex align-items-end justify-content-between">
+          <ion-col size="12" class="d-sm-none">
+            <ion-button
+              (click)="onEditGatewayList()"
+              class="w-100 m-0"
+              [disabled]="!gatewayListForm.form.valid"
+              >{{ dictionary.Save }}
+            </ion-button>
+          </ion-col>
+          <ion-col size="12" sizeLg="5">
+            <app-text
+              id="name"
+              [Label]="dictionary.Name"
+              [(ngModel)]="name"
+              name="name"
+              [required]="true"
+              [disabled]="!hasGatewayListWritePermission"
+            ></app-text>
+          </ion-col>
+          <ion-col size="12" sizeLg="2" class="d-none d-sm-block">
+            <ion-button
+              (click)="onEditGatewayList()"
+              class="w-100 m-0"
+              [disabled]="!gatewayListForm.form.valid"
+              >{{ dictionary.Save }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+      <ion-row>
+        <ion-col size="12" class="providers-grid">
+          <app-page-list
+            [data]="providers"
+            [label]="dictionary.Providers"
+            [showPagination]="false"
+            [hasLocalPagination]="false"
+            [hasCustomTableContent]="true"
+            [initialTemplate]="providersTable"
+            [hasSearch]="false"
+            [hasAdvancedFilter]="false"
+            [hasNewButton]="false"
+            [hasExport]="false"
+            [hasRefresh]="false"
+            [showActionSheet]="false"
+          />
+          <ng-template #providersTable>
+            <p-table
+              appPermission
+              inputAppPermission="PaymentProfileRead"
+              [value]="providers"
+              [columns]="cols"
+              responsiveLayout="stack"
+              styleClass="p-datatable-gridlines"
+              breakpoint="840px"
+            >
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns">
+                    {{ col.header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                  <td
+                    class="py-1 my-1"
+                    *ngFor="let col of columns; let i = index"
+                  >
+                    <div class="table__row" [ngSwitch]="col.field">
+                      <span class="table__label__row me-2">{{
+                        col.header
+                      }}</span>
+                      <div class="p-1 py-2">
+                        <span *ngSwitchCase="'paymentProfileName'">
+                          <ion-text>
+                            {{ rowData[col.field] }}
+                          </ion-text>
+                        </span>
+                        <span *ngSwitchCase="'providerImage'">
+                          <img [src]="rowData[col.field]" />
+                        </span>
+                        <span *ngSwitchCase="'isActive'">
+                          <ion-toggle
+                            [(ngModel)]="rowData[col.field]"
+                            (ionChange)="changeIsActiveStatus(rowData)"
+                          ></ion-toggle>
+                        </span>
+                        <span *ngSwitchCase="'allSubCustomerState'">
+                          <ion-toggle
+                            [(ngModel)]="rowData[col.field]"
+                            [disabled]="!rowData.isActive"
+                          ></ion-toggle>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td class="text-center" [attr.colspan]="cols.length">
+                    {{ dictionary.NoRecordsFound }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>

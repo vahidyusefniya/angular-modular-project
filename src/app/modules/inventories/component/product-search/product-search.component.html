@@ -1,0 +1,58 @@
+<!--suppress JSUnresolvedReference -->
+<ion-modal [animated]="false" (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" color="primary" (click)="onDismiss()"
+            >{{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Product }}</ion-title>
+      </ion-toolbar>
+      <ion-toolbar>
+        <ion-searchbar
+          show-clear-button="focus"
+          [animated]="false"
+          [placeholder]="dictionary.Search"
+          (ionInput)="searchProduct($event)"
+          [debounce]="1000"
+          [autofocus]="true"
+          #searchInput
+        ></ion-searchbar>
+      </ion-toolbar>
+    </ion-header>
+    <div *ngIf="searchProductLoading" class="row ion-justify-content-center">
+      <ion-skeleton-text
+        *ngFor="let number of [0, 1, 2, 3, 4, 5, 6, 7, 8]"
+        style="height: 47px; width: 90%"
+        [animated]="true"
+        class="my-2"
+      ></ion-skeleton-text>
+    </div>
+    <ion-content *ngIf="!searchProductLoading">
+      <cdk-virtual-scroll-viewport
+        *ngIf="products.length !== 0"
+        itemSize="30"
+        maxBufferPx="2000"
+      >
+        <ion-item
+          button
+          (click)="selectProduct(product)"
+          class="ion-margin"
+          mode="md"
+          *cdkVirtualFor="let product of products"
+        >
+          <ion-label>
+            <h3>{{ product.productName }}</h3>
+          </ion-label>
+        </ion-item>
+      </cdk-virtual-scroll-viewport>
+      <div *ngIf="products.length === 0">
+        <ion-item class="text-center">
+          <ion-label>{{ dictionary.NoRecord }}</ion-label>
+        </ion-item>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

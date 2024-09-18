@@ -1,0 +1,11 @@
+<app-page-list
+  [label]="dictionary.Categories"
+  [cols]="cols"
+  [data]="categories"
+  [hasNewButton]="false"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [showPagination]="false"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+/>

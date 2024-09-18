@@ -1,0 +1,43 @@
+<!--suppress ALL -->
+<ion-modal [animated]="false" (willDismiss)="onDismiss()" [isOpen]="isOpen" class="customer_search__filter__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" color="primary" (click)="onDismiss()"
+            >{{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Customer }}</ion-title>
+      </ion-toolbar>
+      <ion-toolbar>
+        <ion-searchbar
+          show-clear-button="focus"
+          [animated]="false"
+          [placeholder]="dictionary.Search"
+          (ionInput)="searchCustomer($event)"
+        ></ion-searchbar>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <cdk-virtual-scroll-viewport itemSize="30" maxBufferPx="2000">
+        <ion-item
+          button
+          (click)="selectCustomer(customer)"
+          class="ion-margin"
+          mode="md"
+          *cdkVirtualFor="let customer of filterCustomers"
+        >
+          <ion-label>
+            <h3>{{ customer.merchantName }}</h3>
+          </ion-label>
+        </ion-item>
+      </cdk-virtual-scroll-viewport>
+      <div *ngIf="customers.length === 0">
+        <ion-item>
+          <ion-label>{{ dictionary.NoRecord }}</ion-label>
+        </ion-item>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

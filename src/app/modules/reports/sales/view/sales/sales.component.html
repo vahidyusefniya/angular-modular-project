@@ -1,0 +1,349 @@
+<!--suppress JSUnresolvedReference -->
+
+<div class="main">
+  <p-tabView
+    (onChange)="onTabChange()"
+    class="position-relative"
+    [(activeIndex)]="activeIndex"
+  >
+    <p-tabPanel class="tabPanel" [header]="dictionary.DigitalCards">
+      <div *ngIf="activeIndex == 0">
+        <app-page-list
+          [label]="dictionary.Sales"
+          [data]="orders"
+          [tagList]="tagList"
+          [hasNewButton]="false"
+          (advancedFilterClick)="openOrderFilter = true"
+          [advancedFilterPermission]="'BuyOrderRead'"
+          [exportPermission]="'BuyOrderRead'"
+          (refreshClick)="onRefreshClick()"
+          (exportClick)="onExcelExportClick()"
+          [hasCustomTableContent]="true"
+          [initialTemplate]="orderTable"
+          (pageChanged)="pageChanged($event)"
+          [page]="page"
+          [pageSize]="pageSize"
+          (inputSearch)="searchSales($event)"
+          class="align-right-amount"
+        />
+        <ng-template #orderTable>
+          <p-table
+            appPermission
+            inputAppPermission="BuyOrderRead"
+            [value]="orders"
+            [columns]="cols"
+            responsiveLayout="stack"
+            styleClass="p-datatable-gridlines"
+            breakpoint="840px"
+            [loading]="loading"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th class="column-color" *ngFor="let col of columns">
+                  {{ col.header }}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td class="py-0" *ngFor="let col of columns; let i = index">
+                  <div
+                    class="table__row"
+                    [class.amount_row]="
+                      col.field === 'salePrice' ||
+                      col.field === 'quantity' ||
+                      col.field === 'totalBuyAmount'
+                    "
+                    [ngSwitch]="col.field"
+                  >
+                    <span class="table__label__row me-2">{{ col.header }}</span>
+                    <div class="py-2">
+                      <span *ngSwitchCase="'buyOrderId'">
+                        <span
+                          class="link-row"
+                          (click)="showDetailModal(rowData)"
+                        >
+                          {{ rowData[col.field] }}
+                        </span>
+                      </span>
+                      <span *ngSwitchCase="'productName'">
+                        {{ rowData[col.field] }}
+                        {{ rowData["productCurrency"]["symbol"]
+                        }}{{ rowData["faceValue"] }}
+                      </span>
+                      <span *ngSwitchCase="'createdTime'">
+                        {{
+                          rowData[col.field]
+                            | convertLocalDateTime : "YYYY/MM/DD HH:mm"
+                        }}
+                      </span>
+                      <span *ngSwitchCase="'buyerMerchant'">
+                        {{ rowData[col.field].merchantName }}
+                      </span>
+                      <div
+                        class="d-flex align-items-center"
+                        *ngSwitchCase="'unitBuyAmount'"
+                      >
+                        <bdi>
+                          {{ rowData["productCurrency"]["symbol"]
+                          }}{{ rowData[col.field] }}
+                        </bdi>
+                      </div>
+                      <div
+                        class="d-flex align-items-center"
+                        *ngSwitchCase="'totalBuyAmount'"
+                      >
+                        <bdi>
+                          {{ rowData["productCurrency"]["symbol"]
+                          }}{{ rowData[col.field] | truncateDecimalsPipe }}
+                        </bdi>
+                      </div>
+                      <span *ngSwitchCase="'quantity'">
+                        {{ rowData[col.field] | truncateDecimalsPipe }}
+                      </span>
+                      <div
+                        class="d-flex align-items-center"
+                        *ngSwitchCase="'buyOrderState'"
+                      >
+                        <div
+                          *ngIf="rowData[col.field] === 'Complete'"
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon class="mt-1" [type]="'Complete'"></app-icon>
+                          <span class="ms-1">{{ dictionary.Complete }}</span>
+                        </div>
+
+                        <div
+                          *ngIf="rowData[col.field] === 'Failed'"
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon class="mt-1" [type]="'Failed'"></app-icon>
+                          <span class="ms-1">{{ dictionary.Failed }}</span>
+                        </div>
+                        <div
+                          *ngIf="rowData[col.field] === 'Created'"
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon class="mt-1" [type]="'Created'"></app-icon>
+                          <span class="ms-1">{{ "Created" }}</span>
+                        </div>
+                        <div
+                          *ngIf="
+                            rowData[col.field] !== 'Complete' &&
+                            rowData[col.field] !== 'Failed' &&
+                            rowData[col.field] !== 'Created'
+                          "
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon
+                            class="mt-1"
+                            [type]="'inProgress__circle'"
+                          ></app-icon>
+                          <span class="ms-1">{{ dictionary.Pending }}</span>
+                        </div>
+                      </div>
+                      <span
+                        *ngSwitchDefault
+                        [ngStyle]="col.customCss"
+                        [ngClass]="col.customClass"
+                        >{{ rowData[col.field] }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+              <tr>
+                <td
+                  class="text-center column-color"
+                  [attr.colspan]="columns.length"
+                >
+                  {{ "NoRecordsFound" }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel class="tabPanel" [header]="dictionary.PhysicalCards">
+      <div *ngIf="activeIndex == 1">
+        <app-page-list
+          [label]="dictionary.Sales"
+          [data]="orders"
+          [tagList]="tagList"
+          [hasNewButton]="false"
+          (advancedFilterClick)="openOrderFilter = true"
+          [advancedFilterPermission]="'BuyOrderRead'"
+          [exportPermission]="'BuyOrderRead'"
+          (refreshClick)="onRefreshClick()"
+          (exportClick)="onExcelExportClick()"
+          [hasCustomTableContent]="true"
+          [initialTemplate]="orderTable"
+          (pageChanged)="pageChanged($event)"
+          [page]="page"
+          [pageSize]="pageSize"
+          (inputSearch)="searchSales($event)"
+          class="align-right-amount"
+        />
+        <ng-template #orderTable>
+          <p-table
+            appPermission
+            inputAppPermission="BuyOrderRead"
+            [value]="orders"
+            [columns]="cols"
+            responsiveLayout="stack"
+            styleClass="p-datatable-gridlines"
+            breakpoint="840px"
+            [loading]="loading"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th class="column-color" *ngFor="let col of columns">
+                  {{ col.header }}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td class="py-0" *ngFor="let col of columns; let i = index">
+                  <div
+                    class="table__row"
+                    [class.amount_row]="
+                      col.field === 'salePrice' ||
+                      col.field === 'quantity' ||
+                      col.field === 'totalBuyAmount'
+                    "
+                    [ngSwitch]="col.field"
+                  >
+                    <span class="table__label__row me-2">{{ col.header }}</span>
+                    <div class="py-2">
+                      <span *ngSwitchCase="'buyOrderId'">
+                        <span
+                          class="link-row"
+                          (click)="showDetailModal(rowData)"
+                        >
+                          {{ rowData[col.field] }}
+                        </span>
+                      </span>
+                      <span *ngSwitchCase="'productName'">
+                        {{ rowData[col.field] }}
+                        {{ rowData["productCurrency"]["symbol"]
+                        }}{{ rowData["faceValue"] }}
+                      </span>
+                      <span *ngSwitchCase="'createdTime'">
+                        {{
+                          rowData[col.field]
+                            | convertLocalDateTime : "YYYY/MM/DD HH:mm"
+                        }}
+                      </span>
+                      <span *ngSwitchCase="'buyerMerchant'">
+                        {{ rowData[col.field].merchantName }}
+                      </span>
+                      <div
+                        class="d-flex align-items-center"
+                        *ngSwitchCase="'unitBuyAmount'"
+                      >
+                        <bdi>
+                          {{ rowData["productCurrency"]["symbol"]
+                          }}{{ rowData[col.field] }}
+                        </bdi>
+                      </div>
+                      <div
+                        class="d-flex align-items-center"
+                        *ngSwitchCase="'totalBuyAmount'"
+                      >
+                        <bdi>
+                          {{ rowData["productCurrency"]["symbol"]
+                          }}{{ rowData[col.field] | truncateDecimalsPipe }}
+                        </bdi>
+                      </div>
+                      <span *ngSwitchCase="'quantity'">
+                        {{ rowData[col.field] | truncateDecimalsPipe }}
+                      </span>
+                      <div
+                        class="d-flex align-items-center"
+                        *ngSwitchCase="'buyOrderState'"
+                      >
+                        <div
+                          *ngIf="rowData[col.field] === 'Complete'"
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon class="mt-1" [type]="'Complete'"></app-icon>
+                          <span class="ms-1">{{ dictionary.Complete }}</span>
+                        </div>
+
+                        <div
+                          *ngIf="rowData[col.field] === 'Failed'"
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon class="mt-1" [type]="'Failed'"></app-icon>
+                          <span class="ms-1">{{ dictionary.Failed }}</span>
+                        </div>
+                        <div
+                          *ngIf="rowData[col.field] === 'Created'"
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon class="mt-1" [type]="'Created'"></app-icon>
+                          <span class="ms-1">{{ "Created" }}</span>
+                        </div>
+                        <div
+                          *ngIf="
+                            rowData[col.field] !== 'Complete' &&
+                            rowData[col.field] !== 'Failed' &&
+                            rowData[col.field] !== 'Created'
+                          "
+                          class="d-flex align-items-center"
+                        >
+                          <app-icon
+                            class="mt-1"
+                            [type]="'inProgress__circle'"
+                          ></app-icon>
+                          <span class="ms-1">{{ dictionary.Pending }}</span>
+                        </div>
+                      </div>
+                      <span
+                        *ngSwitchDefault
+                        [ngStyle]="col.customCss"
+                        [ngClass]="col.customClass"
+                        >{{ rowData[col.field] }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+              <tr>
+                <td
+                  class="text-center column-color"
+                  [attr.colspan]="columns.length"
+                >
+                  {{ "NoRecordsFound" }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<app-sales-filter
+  *ngIf="openOrderFilter"
+  [isOpen]="openOrderFilter"
+  [data]="orderFilter"
+  [customerId]="customerId"
+  [customers]="customers"
+  (dismiss)="openOrderFilter = false"
+  (filterClick)="saveOrderFilter($event)"
+/>
+<app-sales-state-logs
+  [stateLogs]="stateLogs"
+  *ngIf="openOrderStateLogs"
+  [isOpen]="openOrderStateLogs"
+  (dismiss)="openOrderStateLogs = false"
+  [order]="order"
+/>

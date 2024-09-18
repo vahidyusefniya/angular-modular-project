@@ -1,0 +1,71 @@
+<ion-modal
+  class="currency__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.NewMerchant }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!newMerchantForm.form.valid"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #newMerchantForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-text
+                id="merchantName"
+                [Label]="dictionary.Name"
+                [(ngModel)]="merchant.merchantName"
+                name="merchantName"
+                [required]="true"
+                [autofocus]="true"
+                (keydown.enter)="newMerchantForm.form.valid ? submitForm() : ''"
+              ></app-text>
+            </ion-col>
+            <ion-col size="12">
+              <ion-input
+                #emailInput
+                labelPlacement="floating"
+                fill="outline"
+                [label]="dictionary.Email"
+                [(ngModel)]="merchant.email"
+                name="email"
+                id="email"
+                [required]="true"
+                pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})"
+                mode="md"
+                [email]="true"
+                (keydown.enter)="newMerchantForm.form.valid ? submitForm() : ''"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                id="description"
+                [Label]="dictionary.Description"
+                [(ngModel)]="merchant.description"
+                name="description"
+                (keydown.enter)="newMerchantForm.form.valid ? submitForm() : ''"
+              ></app-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

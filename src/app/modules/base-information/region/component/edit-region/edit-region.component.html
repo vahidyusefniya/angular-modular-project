@@ -1,0 +1,93 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.EditRegion }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!regionForm.form.valid"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Done }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #regionForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-text
+                id="region_name"
+                [Label]="dictionary.Name"
+                [(ngModel)]="model.name"
+                name="regionName"
+                [required]="true"
+                (keydown.enter)="regionForm.form.valid ? submitForm() : ''"
+              ></app-text>
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                id="region_code"
+                [Label]="dictionary.Code"
+                name="regionCode"
+                [(ngModel)]="model.code"
+                [required]="true"
+                [maxlength]="2"
+                (keydown.enter)="regionForm.form.valid ? submitForm() : ''"
+              ></app-text>
+            </ion-col>
+            <ion-col size="12">
+              <p-fileUpload
+                name="image"
+                [url]="uploadImageUrl"
+                (onUpload)="onUpload($event)"
+                [multiple]="false"
+                accept="image/*"
+                [maxFileSize]="1000000"
+                [auto]="true"
+                (onBeforeUpload)="onBeforeUpload()"
+              >
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">
+                      <div class="content">
+                        <img
+                          width="50"
+                          height="30"
+                          ngSrc="{{ imageUrl }}"
+                          alt="upload-file"
+                        />
+                        <ion-label class="mx-2">{{ file.name }}</ion-label>
+                      </div>
+                    </li>
+                  </ul>
+                  <ul *ngIf="uploadedFiles.length === 0" class="list-unStyled">
+                    <li>
+                      <div class="content">
+                        <img
+                          width="50"
+                          height="30"
+                          alt="upload-file"
+                          [lazyLoad]="!!imageUrl ? imageUrl : localImageSRC"
+                          [src]="localImageSRC"
+                        />
+                      </div>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,12 @@
+ion-item {
+  --background-color: transparent;
+  --background: transparent;
+
+  .value-label {
+    color: gray;
+  }
+}
+
+.edit__btn{
+  --color: var(--table-btn-color)
+}

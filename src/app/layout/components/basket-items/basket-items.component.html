@@ -1,0 +1,44 @@
+<p-sidebar [(visible)]="isOpen" position="right" (onHide)="onDismiss()">
+  <div class="d-flex justify-content-between align-items-center">
+    <h5>{{ dictionary.BasketItems }}</h5>
+  </div>
+  <hr class="dividar my-2"/>
+  <div *ngIf="products.length > 0;else elseBlock">
+    <div class="w-100" *ngFor="let item of products">
+      <div class=" d-flex align-items-center">
+        <img
+          class="img"
+          [lazyLoad]="item.imageUrl ? item.imageUrl : localImageSRC"
+          ngSrc="{{ localImageSRC }}"
+          height="65"
+          width="100"
+        />
+        <div class="d-flex flex-column justify-content-between ms-2" style="height: 65px;">
+          <span class="product-name">{{ item.productName }}</span>
+          <span class="currency">{{ item.currency.symbol }}{{ item.faceValue.start | truncateDecimalsPipe }}</span>
+          <span class="currency">{{ dictionary.Quantity }}: {{ item.quantity }}</span>
+        </div>
+      </div>
+      <hr class="dividar"/>
+    </div>
+  
+    <ion-button
+      expand="block"
+      (click)="showPlaceOrderModal = true"
+    >
+      {{ dictionary.Checkout }}
+    </ion-button>
+
+  </div>
+  <ng-template #elseBlock>
+    <span>{{ dictionary.NoProductsWereAddedToTheCart }}.</span>
+  </ng-template>
+</p-sidebar>
+
+<app-place-order 
+[isOpen]="showPlaceOrderModal"
+*ngIf="showPlaceOrderModal"
+(dismiss)="showPlaceOrderModal = false"
+[products]="products"
+(submit)="submitBasket()"
+/>

@@ -1,0 +1,28 @@
+@import "../../../../../../assets/scss/primeng.scss";
+
+.main {
+  width: 100%;
+  height: 95%;
+}
+
+.currency {
+  color: gray;
+  font-size: 12px;
+}
+
+.link-row {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--hyper-link-color);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media screen and (min-width: 840px) {
+  .align-right-amount .amount_row {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+}

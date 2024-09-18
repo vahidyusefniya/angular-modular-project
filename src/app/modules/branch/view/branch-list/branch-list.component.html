@@ -1,0 +1,43 @@
+<app-page-list
+  *ngIf="showPage"
+  [cols]="cols"
+  [data]="branchList"
+  [loading]="loading"
+  [label]="dictionary.Offices"
+  [hasNewButton]="false"
+  [newButtonPermission]="'BranchWrite'"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="true"
+  [showActionSheet]="false"
+  [page]="page"
+  [pageSize]="pageSize"
+  (newButtonClick)="openNewBranch = true"
+  [listPermission]="'BranchRead'"
+  [exportPermission]="'BranchRead'"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  (linkRowClick)="onlinkRowClick($event)"
+  (inputSearch)="initLocalBranchList(1, $event)"
+  (pageChanged)="initLocalBranchList($event.page, branchListSearch)"
+  [showPagination]="true"
+/>
+<app-new-branch
+  *ngIf="openNewBranch"
+  [isOpen]="openNewBranch"
+  (dismiss)="openNewBranch = false"
+  (createBranch)="createBranch($event)"
+/>
+
+<app-assign-price-list
+  *ngIf="openAssignPriceListModal"
+  [isOpen]="openAssignPriceListModal"
+  [priceLists]="priceLists"
+  [title]="assignPriceListModalTitle"
+  [assignedPriceListId]="assignedPriceListId"
+  (dismiss)="openAssignPriceListModal = false"
+  (assignPriceList)="assignPriceListInCustomer($event)"
+/>
+
+<div *ngIf="!showPage" class="loading">
+  <ion-spinner></ion-spinner>
+</div>

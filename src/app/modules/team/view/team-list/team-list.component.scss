@@ -1,0 +1,13 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+ion-text {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cursor_pointer {
+  cursor: pointer;
+}

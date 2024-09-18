@@ -1,0 +1,25 @@
+.create__product__modal {
+  // --max-height: 700px;
+  --height: 95vh;
+
+  li {
+    list-style: none;
+
+    .content {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+@media screen and (max-width: 840px) {
+  .create__product__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}
+@media screen and (min-width: 840px) {
+  .w-sm-auto {
+    width: auto !important;
+  }
+}

@@ -1,0 +1,75 @@
+<!-- {{ data?.productName }} -->
+
+
+<div class="product">
+  <div class="d-flex h-100 flex-column flex-sm-row">
+    <div class="product-img d-flex align-items-center justify-content-start">
+      <img [src]="data?.product?.imageUrl" *ngIf="data?.product?.imageUrl != null; else elseBlock"/>
+      <ng-template #elseBlock>
+        <img src="../../../../../assets/img/placeholder.jpg"/>
+      </ng-template>
+    </div>
+    <div class="product-body d-flex flex-column ps-0 ps-sm-2 h-100 mt-sm-0 mt-2 gap-2">
+      <div class="d-flex gap-2">
+        <ion-label class="label__color">{{
+          dictionary.ProductName
+        }}:</ion-label>
+        <ion-text color="dark">{{ data?.product?.productName }}</ion-text>
+      </div>
+      <div class="d-flex gap-2">
+        <ion-label class="label__color">{{
+          dictionary.UPC
+        }}:</ion-label>
+        <ion-text color="dark">{{ data?.product?.upc }}</ion-text>
+      </div>
+
+      <div class="d-flex gap-2">
+        <ion-label class="label__color">{{
+          dictionary.SerialNumber
+        }}:</ion-label>
+        <ion-text color="dark">{{ activateCode }}</ion-text>
+      </div>
+
+      <div class="d-flex gap-2">
+        <ion-label class="label__color">{{
+          dictionary.Status
+        }}:</ion-label>
+        <ion-text 
+        [color]="
+        data?.status === 'ReadyToActivate' ? 'dark' : '' ||
+        data?.status === 'Activated' ? 'success' : '' ||
+        data?.status === 'FailedToActivate' ? 'danger' : '' ||
+        data?.status === 'InProgress' ? 'warning' : ''
+        ">{{ data?.status }}</ion-text>
+      </div>
+
+    </div>
+  </div>
+  <div class="w-100 mb-4">
+    <hr class="divider" />
+    <p class="my-2 text-center">
+      * Please choose price.
+    </p>
+    <div class="product-buttons">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="row">
+          <div class="col-auto px-1" *ngFor="let item of faceValues">
+            <ion-button [fill]="activeFaceValue === item ? 'solid' : 'outline'" size="small" (click)="chooseFaceValue.emit(item)">
+              {{ item.start | truncateDecimalsPipe }}
+              <span *ngIf="item.end">
+                -
+                {{
+                  coreService$.isUnlimitedNumber(item.end)
+                    ? "ထ"
+                    : (item.end | truncateDecimalsPipe)
+                }}
+              </span>
+              <span class="gray__color ms-1">({{ productBuyPrice?.currency?.currencyName }})</span>
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-range-form [activeFaceValue]="activeFaceValue" *ngIf="activeFaceValue?.end != null" (setActiveFaceValue)="setActiveFaceValueStart($event)"/>
+  </div>
+</div>

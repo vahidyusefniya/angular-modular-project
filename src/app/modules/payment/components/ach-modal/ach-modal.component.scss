@@ -1,0 +1,23 @@
+.payment-method-card {
+  flex: 1;
+  align-content: center;
+  text-align: center;
+  max-width: 140px;
+  max-height: 140px;
+  background-color: #a6a6a6;
+}
+
+.pay-ach-icon {
+  height: 40px !important;
+  width: 40px !important;
+}
+
+ion-modal {
+  --height: 375px;
+}
+
+@media screen and (max-width: 840px) {
+  ion-modal {
+    --height: 100% !important;
+  }
+}

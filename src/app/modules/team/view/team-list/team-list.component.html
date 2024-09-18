@@ -1,0 +1,162 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<app-page-list
+  [data]="teamList"
+  [label]="dictionary.Team"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="teamTable"
+  [hasSearch]="false"
+  [page]="page"
+  [pageSize]="pageSize"
+  [data]="teamList"
+  class="align-right-amount"
+  [hasCustomTableHeader]="true"
+  [initialHeaderTemplate]="teamHeader"
+  (pageChanged)="pageChanged($event)"
+/>
+<ng-template #teamHeader>
+  <ion-button
+    appPermission
+    inputAppPermission="RoleWrite"
+    class="mx-1 lg__mode"
+    (click)="onNewMemberButtonClick()"
+  >
+    <i class="material-icons px-2">person_add</i>
+    {{ dictionary.NewMember }}
+  </ion-button>
+  <ion-button
+    appPermission
+    inputAppPermission="RoleWrite"
+    class="mx-1 lg__mode"
+    (click)="onNewBotButtonClick()"
+  >
+    <i class="material-icons px-2">smart_toy</i>
+    {{ dictionary.NewBot }}
+  </ion-button>
+  <ion-button class="mx-1 table__btn sm__mode" (click)="presentActionSheet()">
+    <i class="material-icons">more_vert</i>
+  </ion-button>
+  <ion-button
+    class="mx-1 table__btn lg__mode"
+    (click)="onRefreshClick()"
+    id="refresh-button"
+  >
+    <i class="material-icons">refresh</i>
+  </ion-button>
+  <ion-button
+    appPermission
+    inputAppPermission="RoleRead"
+    class="mx-1 table__btn lg__mode"
+    (click)="onExcelExportClick()"
+  >
+    <i class="material-icons">download</i>
+  </ion-button>
+</ng-template>
+<ng-template #teamTable>
+  <p-table
+    appPermission
+    inputAppPermission="RoleRead"
+    [value]="teamList"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1 py-2">
+              <span *ngSwitchCase="'botIcon'">
+                <i class="material-icons" *ngIf="rowData.user.isBot">
+                  smart_toy
+                </i>
+              </span>
+              <span *ngSwitchCase="'email'">
+                <ion-text color="primary" (click)="onEditMemberClick(rowData)">
+                  {{ rowData.user.email }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'exData'">
+                <ion-text color="primary" (click)="onPinClick(rowData)">
+                  {{
+                    rowData.user.exData
+                      ? dictionary.UpdatePin
+                      : dictionary.SetPin
+                  }}
+                </ion-text>
+              </span>
+              <span *ngSwitchCase="'role'">
+                {{ getConvertedRoleName(rowData.role) }}
+              </span>
+              <span *ngSwitchCase="'delete'">
+                <ion-icon
+                  name="trash-outline"
+                  [pTooltip]="dictionary.Delete"
+                  tooltipPosition="bottom"
+                  (click)="onDeleteButtonClick(rowData)"
+                  class="cursor_pointer"
+                ></ion-icon>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-new-member
+  *ngIf="showNewMemberModal"
+  [isOpen]="showNewMemberModal"
+  (dismiss)="showNewMemberModal = false"
+  [roles]="roles"
+  (newMemberEvent)="newMemberEvent($event)"
+/>
+
+<app-new-bot
+  *ngIf="showNewBotModal"
+  [isOpen]="showNewBotModal"
+  (dismiss)="showNewBotModal = false"
+  [roles]="roles"
+  (newBotEvent)="newBotEvent($event)"
+/>
+
+<app-edit-member
+  *ngIf="showEditMemberModal"
+  [isOpen]="showEditMemberModal"
+  (dismiss)="showEditMemberModal = false"
+  [roles]="roles"
+  [selectedRole]="selectedRole"
+  [selectedMemberName]="selectedMemberName"
+  (editMemberEvent)="editMemberEvent($event)"
+/>
+
+<app-pin-modal
+  *ngIf="showPinModal"
+  [isOpen]="showPinModal"
+  (dismiss)="showPinModal = false"
+  [title]="pinModalTitle"
+  (updatePin)="updatePin($event)"
+/>

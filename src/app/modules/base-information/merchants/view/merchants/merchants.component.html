@@ -1,0 +1,23 @@
+<app-page-list
+  [cols]="cols"
+  [data]="merchants"
+  [loading]="loading"
+  [label]="dictionary.Merchants"
+  [newButtonLabel]="dictionary.NewMerchant"
+  [newButtonPermission]="'MerchantWrite'"
+  [hasAdvancedFilter]="false"
+  [listPermission]="'MerchantRead'"
+  [hasSearch]="false"
+  [hasExport]="false"
+  [hasLocalPagination]="true"
+  (newButtonClick)="onNewMerchantClick()"
+  (refreshClick)="onRefreshClick()"
+/>
+
+<app-new-merchant
+  (dismiss)="openNewMerchantModal = false"
+  (submit)="submitNewMerchant($event)"
+  [isOpen]="openNewMerchantModal"
+  *ngIf="openNewMerchantModal"
+>
+</app-new-merchant>

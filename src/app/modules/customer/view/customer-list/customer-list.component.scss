@@ -1,0 +1,14 @@
+@import "../../../../../assets/scss/primeng.scss";
+.hyper-link {
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.header__content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

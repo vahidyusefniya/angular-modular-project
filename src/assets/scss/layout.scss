@@ -1,0 +1,38 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg__light);
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.row-label-value {
+  display: flex;
+  width: 100%;
+}
+
+.title-label {
+  margin-right: 4px !important;
+  color: var(--text-label-color) !important;
+  align-items: center;
+}
+
+.value-label {
+  flex: 1 !important;
+  color: var(--text-value-color) !important;
+}
+
+@media screen and (max-width: 600px) {
+  .value-label {
+    text-align: right;
+  }
+  .value-label-table {
+    flex: 1 !important;
+    color: var(--text-value-color) !important;
+    text-align: right;
+  }
+}

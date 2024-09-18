@@ -1,0 +1,36 @@
+<app-page-list
+  [cols]="cols"
+  [data]="banks"
+  [loading]="loading"
+  [label]="dictionary.Banks"
+  [newButtonLabel]="dictionary.NewBank"
+  [newButtonPermission]="'BankWrite'"
+  [listPermission]="'BankWrite'"
+  [hasAdvancedFilter]="false"
+  [hasSearch]="false"
+  [hasExport]="true"
+  [hasLocalPagination]="false"
+  (newButtonClick)="showNewBankForm()"
+  (linkRowClick)="onEditCurrencyClick($event)"
+  (exportClick)="onExcelExportClick()"
+  (refreshClick)="onRefreshClick()"
+  (pageChanged)="initBanks($event.page)"
+  [page]="page"
+  [pageSize]="pageSize"
+/>
+
+<app-add-bank
+  (dismiss)="showBankForm = false"
+  (submit)="submitCreate($event)"
+  [isOpen]="showBankForm"
+  [model]="bankForm"
+>
+</app-add-bank>
+
+<app-edit-bank
+  (dismiss)="showEditBankForm = false"
+  (submit)="submitUpdate($event)"
+  [isOpen]="showEditBankForm"
+  [model]="bankForm"
+>
+</app-edit-bank>

@@ -1,0 +1,229 @@
+<!--suppress JSUnresolvedReference -->
+<app-page-list
+  [label]="dictionary.WalletTransactions"
+  [data]="walletTransactions"
+  [tagList]="tagList"
+  [hasNewButton]="false"
+  (advancedFilterClick)="openWalletTransactionFilter = true"
+  [advancedFilterPermission]="'WalletTransactionRead'"
+  [exportPermission]="'WalletTransactionRead'"
+  (refreshClick)="refreshEvent()"
+  [hasSearch]="false"
+  (pageChanged)="pageChanged($event)"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="walletTransactionTable"
+  (exportClick)="onExcelExportClick()"
+  class="align-right-amount my-wallet-table"
+/>
+<ng-template #walletTransactionTable>
+  <p-table
+    appPermission
+    inputAppPermission="WalletTransactionRead"
+    [value]="walletTransactions"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th class="p-column-title column-color" *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr class="table-row">
+        <td
+          class="column-color m-0 py-0"
+          *ngFor="let col of columns; let i = index"
+        >
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'amount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div [class]="col.header !== dictionary.State ? 'p-2' : ''">
+              <span *ngSwitchCase="'referenceNumber'">
+                <span
+                  *ngIf="
+                    rowData['transferWalletType'] === dictionary.Buy;
+                    else showRefId
+                  "
+                >
+                  <span
+                    *ngIf="
+                      rowData['receiverMerchant'].merchantId === merchantId;
+                      else otherWise
+                    "
+                  >
+                    <a
+                      class="refrenceId-link"
+                      (click)="openDetailModal('sale', rowData[col.field])"
+                      >{{ rowData[col.field] }}</a
+                    >
+                  </span>
+                  <ng-template #otherWise>
+                    <a
+                      class="refrenceId-link"
+                      (click)="openDetailModal('buy', rowData[col.field])"
+                      >{{ rowData[col.field] }}</a
+                    >
+                  </ng-template>
+                </span>
+                <ng-template #showRefId>
+                  {{ rowData[col.field] }}
+                </ng-template>
+              </span>
+              <span *ngSwitchCase="'walletTransactionId'">
+                <span
+                  *ngIf="rowData['supplierMerchant'].merchantId !== merchantId"
+                >
+                  {{ rowData["supplierMerchant"].merchantName }}
+                  <span class="currency"> ({{ dictionary.Sender }}) </span>
+                </span>
+
+                <span
+                  *ngIf="rowData['receiverMerchant'].merchantId !== merchantId"
+                >
+                  {{ rowData["receiverMerchant"].merchantName }}
+                  <span class="currency"> ({{ dictionary.Receiver }}) </span>
+                </span>
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{ rowData[col.field].toISOString() | convertLocalDateTime }}
+              </span>
+              <span *ngSwitchCase="'transferWalletType'">
+                {{
+                  rowData[col.field] === transferWalletType.Settle
+                    ? dictionary.SettleCredit
+                    : rowData[col.field]
+                }}
+              </span>
+              <span *ngSwitchCase="'amount'">
+                <span
+                  [ngClass]="col.customClass"
+                  [ngStyle]="col.customCss"
+                  class="d-flex align-items-start gap-1"
+                >
+                  <ng-container
+                    *ngIf="
+                      rowData['receiverMerchant'].merchantId !== merchantId
+                    "
+                  >
+                    <span *ngIf="rowData[col.field] === 0"
+                      >{{ rowData.currency.symbol
+                      }}{{ rowData[col.field] }}</span
+                    >
+                    <bdi
+                      class="amount__danger__color d-flex align-items-center"
+                      *ngIf="rowData[col.field] !== 0"
+                    >
+                      {{ rowData.currency.symbol }}-{{
+                        rowData[col.field] | truncateDecimalsPipe
+                      }}
+                    </bdi>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="
+                      rowData['receiverMerchant'].merchantId === merchantId
+                    "
+                  >
+                    <bdi class="d-flex align-items-center">
+                      {{ rowData.currency.symbol
+                      }}{{ rowData[col.field] | truncateDecimalsPipe }}
+                    </bdi>
+                  </ng-container>
+                </span>
+              </span>
+              <span
+                class="d-flex align-items-center"
+                *ngSwitchCase="'transferWalletState'"
+              >
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Completed'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Completed'
+                      ? 'Complete'
+                      : 'inProgress__circle'
+                  "
+                />
+
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Created'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Created'
+                      ? rowData[col.field]
+                      : 'inProgress__circle'
+                  "
+                />
+
+                <app-icon
+                  *ngIf="rowData[col.field] === 'Failed'"
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Failed'
+                      ? rowData[col.field]
+                      : 'inProgress__circle'
+                  "
+                />
+
+                <app-icon
+                  *ngIf="
+                    rowData[col.field] === 'Pending' ||
+                    rowData[col.field] === 'Unverified'
+                  "
+                  class="mt-1"
+                  [type]="
+                    rowData[col.field] === 'Pending'
+                      ? rowData[col.field]
+                      : 'inProgress__circle'
+                  "
+                />
+                <span class="ms-1">{{ rowData[col.field] }}</span>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td class="text-center column-color" [attr.colspan]="columns.length">
+          {{ "NoRecordsFound" }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-wallet-transaction-filter
+  *ngIf="openWalletTransactionFilter"
+  [isOpen]="openWalletTransactionFilter"
+  [data]="walletTransactionFilter"
+  (dismiss)="openWalletTransactionFilter = false"
+  (filterClick)="saveWalletTransactionFilter($event)"
+  (showMerchantModal)="showMerchantModal()"
+  [customers]="customers"
+/>
+
+<app-customer-search
+  *ngIf="openMultiSelectCustomerModal"
+  [isOpen]="openMultiSelectCustomerModal"
+  (dismiss)="closeCustomerSearchModal()"
+  (select)="confirmMultiSelectProfilesModal($event)"
+  [customers]="customers"
+/>
+
+<app-order-detail-modal
+  *ngIf="openOrderLogs"
+  [isOpen]="openOrderLogs"
+  (dismiss)="openOrderLogs = false"
+  [order]="orderDetail"
+/>

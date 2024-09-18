@@ -1,0 +1,112 @@
+<ion-modal
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+  class="order__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  [handle]="false"
+>
+  <ng-template>
+    <ion-header mode="ios">
+      <ion-toolbar mode="ios">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid class="ion-no-padding ion-no-margin">
+        <ion-row class="d-flex justify-content-center">
+          <ion-col class="number__col" size="10">
+            <ion-button
+              (click)="onReduceProductClick()"
+              fill="clear"
+              color="warning"
+              [disabled]="productCount === 0"
+            >
+              <app-icon [type]="'remove-outline'" />
+            </ion-button>
+            <ion-label>{{ productCount }}</ion-label>
+            <ion-button
+              (click)="onAddProductClick()"
+              fill="clear"
+              color="warning"
+            >
+              <app-icon [type]="'add'" />
+            </ion-button>
+          </ion-col>
+          <ion-col size="11">
+            <form #checkoutForm="ngForm">
+              <div
+                *ngIf="product.faceValue.end"
+                [class]="priceRangeMessage != '' ? 'error-input' : ''"
+              >
+                <ion-input
+                  mode="md"
+                  placeholder="0"
+                  [(ngModel)]="amount"
+                  name="amount"
+                  labelPlacement="floating"
+                  fill="outline"
+                  [inputmode]="'numeric'"
+                  [maskito]="thousandSeparator"
+                  [maskitoElement]="maskPredicate"
+                  (ionInput)="onInput($event)"
+                  [required]="true"
+                />
+              </div>
+            </form>
+          </ion-col>
+          <ion-col *ngIf="product.faceValue.end" size="11">
+            <p class="product__amount__info">
+              {{ amountRangeLabel }}
+            </p>
+            <span class="text-danger">
+              {{ priceRangeMessage }}
+            </span>
+            <div class="hr"></div>
+          </ion-col>
+          <ion-col size="11">
+            <app-product-card
+              [color]="'dark'"
+              [id]="1"
+              [product]="product"
+              [showFavorite]="false"
+            ></app-product-card>
+          </ion-col>
+          <ion-col size="11">
+            <ion-button
+              (click)="openProductDescriptionModal = true"
+              class="description__button"
+              expand="block"
+            >
+              {{ dictionary.Description }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+    <ion-footer class="p-1">
+      <ion-button
+        (click)="onCheckoutClick()"
+        class="checkout"
+        expand="block"
+        [disabled]="checkoutForm.form.invalid || priceRangeMessage != ''"
+      >
+        {{ dictionary.Checkout }}
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
+<app-product-description-modal
+  [isOpen]="openProductDescriptionModal"
+  (dismiss)="openProductDescriptionModal = false"
+  [descriptions]="descriptions"
+/>
+<app-checkout
+  [isOpen]="openCheckoutModal"
+  [data]="checkoutData"
+  (dismiss)="openCheckoutModal = false"
+/>

@@ -1,0 +1,171 @@
+<ion-modal
+  #receiveModal
+  [initialBreakpoint]="0.99"
+  [breakpoints]="[0, 0.99]"
+  (willDismiss)="onDismiss()"
+  class="receive__modal"
+  [isOpen]="isOpen"
+  [handle]="false"
+>
+  <ng-template>
+    <ion-header mode="ios">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid>
+        <ion-row class="gx-5">
+          <ion-col size="12">
+            <ion-label
+              >You are checking out
+              <span class="title__var">{{ productName }}</span> with total price
+              of
+              <span class="title__var">${{ total | truncateDecimalsPipe }}</span
+              >.
+            </ion-label>
+          </ion-col>
+          <ion-col size="12">
+            <div *ngIf="type === 'WhatsApp' || type === 'Sms'">
+              <ng-container *ngIf="step === 1">
+                <ion-label>Please enter the phone number</ion-label>
+              </ng-container>
+              <ng-container *ngIf="step === 2">
+                <ion-label>Please re-enter the phone number</ion-label>
+              </ng-container>
+            </div>
+            <div *ngIf="type === 'Email'">
+              <ng-container *ngIf="step === 1">
+                <ion-label>Please enter the email</ion-label>
+              </ng-container>
+              <ng-container *ngIf="step === 2">
+                <div class="d-flex justify-content-between align-items-center step-2-titles">
+                  <ion-label>Please re-enter the email</ion-label>
+                  <ion-button
+                    fill="clear"
+                    (click)="previousStep()"
+                    *ngIf="step === 2"
+                    class="ion-no-padding ion-no-margin px-2 py-0"
+                  >
+                    {{ dictionary.EditEmail }}
+                  </ion-button>
+                </div>
+              </ng-container>
+            </div>
+          </ion-col>
+          <ion-col size="12">
+            <form #receiveForm="ngForm">
+              <div *ngIf="type === 'WhatsApp' || type === 'Sms'">
+                <div class="receive">
+                  <ng-container *ngIf="step === 1">
+                    <ion-input
+                      #receiveInput
+                      [(ngModel)]="receive"
+                      name="receive"
+                      type="number"
+                      [inputmode]="'numeric'"
+                      required
+                      mode="md"
+                      labelPlacement="floating"
+                      fill="outline"
+                    />
+                  </ng-container>
+                  <ng-container *ngIf="step === 2">
+                    <ion-input
+                      #receiveInput
+                      [(ngModel)]="confirmReceive"
+                      name="receive"
+                      type="number"
+                      [inputmode]="'numeric'"
+                      required
+                      mode="md"
+                      labelPlacement="floating"
+                      fill="outline"
+                    />
+                  </ng-container>
+                </div>
+              </div>
+              <div *ngIf="type === 'Email'">
+                <div class="receive">
+
+                  <ng-container *ngIf="step === 1">
+                    <ion-input
+                      mode="md"
+                      [(ngModel)]="receive"
+                      autofocus="true"
+                      name="receive"
+                      type="email"
+                      required
+                      labelPlacement="floating"
+                      pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})"
+                      fill="outline"
+                      auto
+                      #emailInput
+                    />
+                  </ng-container>
+                  <ng-container *ngIf="step === 2">
+                    <ion-input
+                      mode="md"
+                      [(ngModel)]="confirmReceive"
+                      name="receive"
+                      type="email"
+                      required
+                      labelPlacement="floating"
+                      pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})"
+                      fill="outline"
+                    />
+                  </ng-container>
+                </div>
+                <div class="py-2 validate-message" *ngIf="step === 2 && receive !== confirmReceive && confirmReceive !== ''">
+                  <span class="text-danger">
+                    {{ dictionary.NotMatchEmail }}
+                  </span>
+                </div>
+              </div>
+            </form>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+    <ion-footer class="p-1">
+      <ng-container *ngIf="step === 1">
+        <ion-button
+          [disabled]="receiveForm.form.invalid"
+          class="submit"
+          expand="block"
+          (click)="nextStep()"
+        >
+          {{ dictionary.Submit }}
+        </ion-button>
+      </ng-container>
+      <ng-container *ngIf="step === 2">
+        <ion-button
+          [disabled]="
+            receiveForm.form.invalid ||
+            (type === 'Email' && receive !== confirmReceive)
+          "
+          class="submit"
+          expand="block"
+          (click)="onReceiveClick()"
+        >
+          {{ dictionary.Confirm }}
+        </ion-button>
+      </ng-container>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
+
+<ion-alert
+  [isOpen]="showInsufficientErrorAlert"
+  [subHeader]="textInsufficientErrorAlert"
+  [buttons]="errorAlertButtons"
+/>
+<ion-alert
+  [isOpen]="showBuyPriceMismatchExceptionAlert"
+  [subHeader]="textBuyPriceMismatchExceptionAlert"
+  [buttons]="buyPriceMismatchExceptionButtons"
+/>

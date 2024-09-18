@@ -1,0 +1,201 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+.loading__content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header__content {
+  width: 100%;
+  height: 100&;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .sort_icon {
+    cursor: pointer;
+  }
+}
+
+ion-text {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  ion-text {
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .expand_content {
+    color: var(--ion-color-primary);
+    cursor: pointer;
+  }
+
+  .more-action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .currency {
+    color: gray;
+    font-size: 12px;
+  }
+
+  .priceValueMode {
+    color: gray;
+    font-size: 12px;
+  }
+
+  .currency {
+    color: gray;
+    font-size: 12px;
+  }
+
+  .tabPanel {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+}
+
+.product_badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.expand_content {
+  color: var(--ion-color-primary);
+  cursor: pointer;
+}
+
+.more-action {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.currency {
+  color: gray;
+  font-size: 12px;
+}
+
+.priceValueMode {
+  color: gray;
+  font-size: 12px;
+}
+
+.tabPanel {
+  width: 100%;
+  height: 100%;
+}
+
+.benefit__danger__color {
+  color: var(--ion-color-danger);
+}
+
+@media screen and (min-width: 840px) {
+  .align-right-amount {
+    .row-item {
+      width: 100%;
+
+      .amount_row {
+        display: flex !important;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+.prices-tab {
+  margin-bottom: 20px;
+}
+
+.rules-tab {
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .prices-tab {
+    margin-bottom: 25px;
+  }
+
+  .rules-tab {
+    margin-bottom: 25px;
+  }
+}
+
+.parent-row {
+  height: 65px;
+}
+
+@media screen and (min-width: 768px) {
+  .rowexpansion-table-container {
+    display: flex;
+    justify-content: center;
+    .rowexpansion-table-prices {
+      width: 100%;
+      padding-left: 300px;
+      padding-right: 120px;
+    }
+  }
+}
+
+.expanded-header {
+  visibility: collapse;
+}
+
+.hidden-visibility {
+  visibility: hidden;
+}
+
+.row-error {
+  width: 50px;
+}
+
+.row-edit-action {
+  width: 50px;
+}
+
+.row-delete-action {
+  width: 50px;
+}
+
+.row-productName {
+  width: 250px;
+}
+
+.region-lable {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 3px;
+  background-color: var(--text-label-color);
+  color: var(--card-header-row);
+  font-weight: 700;
+}
+
+.price-value-default {
+  font-size: 14px;
+  color: gray;
+}
+
+.product-type-lable {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 2px 6px 2px 6px;
+  background-color: var(--text-label-color);
+  color: var(--card-header-row);
+  font-weight: 700;
+}

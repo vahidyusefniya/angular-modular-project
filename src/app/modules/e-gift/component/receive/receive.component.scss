@@ -1,0 +1,38 @@
+.receive__modal {
+  --ion-background-color: var(--ion-color-step-100);
+  --ion-toolbar-background: var(--ion-color-step-100);
+  --ion-toolbar-border-color: var(--ion-color-step-100);
+
+  ion-content {
+    --overflow: hidden;
+
+    .title__var {
+      color: gray;
+      font-weight: bold;
+    }
+
+    .receive {
+      width: 100%;
+      font-size: 13px;
+      background: transparent !important;
+      border: 1px solid var(--table-btn-color);
+      border-radius: 5px;
+    }
+  }
+
+  .submit {
+    --background: #f2682a;
+    --background-hover: #f2682a;
+    --background-activated: #f2682a;
+    --background-focused: #f2682a;
+  }
+}
+.step-2-titles{
+  height: 24px;
+  ion-button{
+    font-size: 14px;
+  }
+}
+.validate-message{
+  font-size: 14px;
+}

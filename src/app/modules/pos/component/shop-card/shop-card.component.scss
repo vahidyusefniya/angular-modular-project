@@ -1,0 +1,140 @@
+ion-card {
+  width: 100%;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 4px;
+  background-color: transparent;
+  &.category {
+    min-height: 70px;
+    height: auto;
+
+    .img {
+      width: 100%;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      height: 100%;
+    }
+
+    ion-card-content {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      padding: 0.5rem 0;
+
+      .product-name {
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        overflow: hidden;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+
+        .information-circle-size {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+
+  &.product {
+    .product-img{
+      width: 100%;
+      height: 145px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      margin: 0 auto;
+      max-width: 222px;
+      .img {
+        width: 100%;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        height: auto;
+      }
+    }
+
+    ion-card-content {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      padding: 0.5rem 0;
+      height: 155px;
+
+      .product-name {
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        overflow: hidden;
+      }
+
+      .product-price {
+        position: absolute;
+        bottom: 46px;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+
+        .information-circle-size {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+}
+
+ion-card .phone {
+  margin: 0.8rem 0;
+  max-height: 100px;
+
+  .info {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+.product__name {
+  font-weight: bold;
+  font-size: 14px;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  height: 81px;
+
+  .currency {
+    font-size: 13px;
+  }
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.gray__color {
+  font-size: 13px;
+}
+
+.light__color {
+  background-color: white !important;
+}

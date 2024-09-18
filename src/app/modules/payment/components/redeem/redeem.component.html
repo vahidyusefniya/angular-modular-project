@@ -1,0 +1,55 @@
+<ion-modal (willDismiss)="onDismiss()" [isOpen]="isOpen" class="charge__modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.PaymentInformation }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!form.form.valid"
+            (click)="submitForm()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #form="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <div class="d-flex py-3">
+                <ion-card class="payment-method-card my-0">
+                  <ion-card-content>
+                    <app-icon type="PaymentCreditCard"></app-icon>
+                  </ion-card-content>
+                </ion-card>
+
+                <div class="d-flex flex-column">
+                  <span class="fw-bold">Redeem gift card</span>
+                  <span>Please Enter your your EZPIN gift card code.</span>
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="12">
+              <app-text
+                id="pin"
+                name="pin"
+                [Label]="dictionary.Pin"
+                [(ngModel)]="pin"
+                [required]="true"
+                (keydown.enter)="form.form.valid ? submitForm() : ''"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

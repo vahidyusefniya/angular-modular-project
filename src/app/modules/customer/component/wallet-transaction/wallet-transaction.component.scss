@@ -1,0 +1,28 @@
+.table__row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table__label__row {
+  display: none;
+  color: var(--text-label-color);
+}
+
+@media screen and (max-width: 840px) {
+  .table__label__row {
+    display: block;
+  }
+}
+.currency {
+  color: gray;
+  font-size: 12px;
+}
+
+@media screen and (min-width: 840px) {
+  .customer-wallet-transactions .amount_row {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+}

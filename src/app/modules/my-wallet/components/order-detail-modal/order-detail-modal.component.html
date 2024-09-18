@@ -1,0 +1,96 @@
+<!--suppress JSUnresolvedReference -->
+<ion-modal
+  class="order__detail__logs__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.OrderDetail }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-card class="ion-no-margin mt-1">
+        <ion-card-content>
+          <div class="d-flex mb-1">
+            <ion-label class="label">{{ dictionary.Item }}:</ion-label>
+            <span class="ms-2 result-text"
+              >{{ order?.productName }}
+              <span>
+                {{ order?.productCurrency?.symbol }}{{ order?.faceValue }}
+              </span></span
+            >
+          </div>
+          <div class="d-flex mb-1">
+            <ion-label class="label">{{ dictionary.UnitBuyPrice }}:</ion-label>
+            <span class="ms-2 result-text"
+              >{{ order?.buyCurrency?.symbol }}{{ order?.unitBuyAmount }}</span
+            >
+          </div>
+          <div class="d-flex mb-1">
+            <ion-label class="label">{{ dictionary.Quantity }}:</ion-label>
+            <span class="ms-2 result-text">{{ order?.quantity }}</span>
+          </div>
+          <div class="d-flex mb-1">
+            <ion-label class="label">{{ dictionary.TotalBuyPrice }}:</ion-label>
+            <span class="ms-2 result-text"
+              >{{ order?.buyCurrency?.symbol }}{{ order?.totalBuyAmount }}</span
+            >
+          </div>
+          <div class="d-flex mb-1">
+            <ion-label class="label">{{ dictionary.CreatedTime }}:</ion-label>
+            <span class="ms-2 result-text">{{
+              order?.createdTime?.toString()!
+                | convertLocalDateTime : "YYYY/MM/DD HH:mm"
+            }}</span>
+          </div>
+          <div class="d-flex align-items-center mb-1">
+            <ion-label class="label">{{ dictionary.State }}:</ion-label>
+            <span class="ms-2 result-text">
+              <div
+                *ngIf="order?.buyOrderState === 'Complete'"
+                class="d-flex align-items-center"
+              >
+                <app-icon class="mt-1" [type]="'Complete'"></app-icon>
+                <span class="ms-1">{{ dictionary.Complete }}</span>
+              </div>
+
+              <div
+                *ngIf="order?.buyOrderState === 'Failed'"
+                class="d-flex align-items-center"
+              >
+                <app-icon class="mt-1" [type]="'Failed'"></app-icon>
+                <span class="ms-1">{{ dictionary.Failed }}</span>
+              </div>
+
+              <div
+                *ngIf="order?.buyOrderState === 'Created'"
+                class="d-flex align-items-center"
+              >
+                <app-icon class="mt-1" [type]="'Created'"></app-icon>
+                <span class="ms-1">{{ "Created" }}</span>
+              </div>
+              <div
+                *ngIf="
+                  order?.buyOrderState !== 'Complete' &&
+                  order?.buyOrderState !== 'Failed' &&
+                  order?.buyOrderState !== 'Created'
+                "
+                class="d-flex align-items-center"
+              >
+                <app-icon class="mt-1" [type]="'inProgress__circle'"></app-icon>
+                <span class="ms-1">{{ dictionary.Pending }}</span>
+              </div>
+            </span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+  </ng-template>
+</ion-modal>

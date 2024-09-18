@@ -1,0 +1,92 @@
+<!--suppress JSUnresolvedReference, JSUnresolvedReference -->
+<app-page-list
+  [data]="inventories"
+  [label]="dictionary.AvailableItems"
+  [hasAdvancedFilter]="true"
+  [hasNewButton]="false"
+  [tagList]="tagList"
+  [hasRefresh]="true"
+  [hasExport]="true"
+  [showPagination]="true"
+  [hasLocalPagination]="false"
+  (pageChanged)="pageChanged($event)"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick()"
+  (advancedFilterClick)="onAdvancedFilterClick()"
+  (newButtonClick)="openAddItemModal = true"
+  [hasCustomTableContent]="true"
+  [advancedFilterPermission]="'StockAvailableItems'"
+  [exportPermission]="'StockAvailableItems'"
+  [initialTemplate]="availableTable"
+  [hasSearch]="false"
+  [page]="page"
+  [pageSize]="pageSize"
+  class="align-right-amount"
+/>
+<ng-template #availableTable>
+  <p-table
+    appPermission
+    inputAppPermission="StockAvailableItems"
+    [value]="inventories"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr class="row-table">
+        <td class="py-1 my-1" *ngFor="let col of columns; let i = index">
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'availableCount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-1">
+              <span *ngSwitchCase="'productNameFaceValueCurrencyName'">
+                {{ rowData["productName"] }}
+                {{ rowData["currency"]["symbol"]
+                }}{{ rowData["faceValue"] | truncateDecimalsPipe }}
+              </span>
+              <span *ngSwitchCase="'availableCount'">
+                {{ rowData[col.field].toLocaleString() }}
+              </span>
+              <span
+                *ngSwitchDefault
+                [ngStyle]="col.customCss"
+                [ngClass]="col.customClass"
+                >{{ rowData[col.field] }}
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" [attr.colspan]="cols.length">
+          {{ dictionary.NoRecordsFound }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-available-items-filter
+  *ngIf="openAvailableItemsFilter"
+  [isOpen]="openAvailableItemsFilter"
+  [data]="availableItemsFilter"
+  (dismiss)="openAvailableItemsFilter = false"
+  (filterClick)="saveProductItemOrderFilter($event)"
+  [products]="products"
+  (searchEvent)="searchProduct($event)"
+  [productName]="productName"
+/>

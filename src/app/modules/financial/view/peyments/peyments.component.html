@@ -1,0 +1,176 @@
+<app-page-list
+  [data]="paymentOrders"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasNewButton]="true"
+  [hasAdvancedFilter]="true"
+  [advancedFilterPermission]="'PaymentOrderRead'"
+  [exportPermission]="'PaymentOrderRead'"
+  [newButtonPermission]="'PaymentOrderWrite'"
+  [newButtonLabel]="dictionary.CreatePayment"
+  [hasSearch]="true"
+  (inputSearch)="onInputSearch($event)"
+  (refreshClick)="onRefreshClick()"
+  (exportClick)="onExcelExportClick(paymentOrderFilter)"
+  (pageChanged)="pageChanged($event)"
+  [hasCustomTableContent]="true"
+  [initialTemplate]="paymentOrderTable"
+  (advancedFilterClick)="onAdvancedFilterClick()"
+  [tagList]="tagList"
+  [label]="dictionary.Payments"
+  (newButtonClick)="redirectToPaymentPage()"
+  class="align-right-amount"
+  [hasSearch]="true"
+/>
+<ng-template #paymentOrderTable>
+  <p-table
+    appPermission
+    inputAppPermission="PaymentOrderRead"
+    [value]="paymentOrders"
+    [columns]="cols"
+    responsiveLayout="stack"
+    styleClass="p-datatable-gridlines"
+    breakpoint="840px"
+    [loading]="loading"
+  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th class="column-color" *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
+        <td
+          class="column-color m-0 py-0"
+          *ngFor="let col of columns; let i = index"
+        >
+          <div
+            class="table__row"
+            [class]="{ amount_row: col.field === 'amount' }"
+            [ngSwitch]="col.field"
+          >
+            <span class="table__label__row me-2">{{ col.header }}</span>
+            <div class="p-2">
+              <span *ngSwitchCase="'paymentOrderId'">
+                <a
+                  href="#"
+                  (click)="paymentOrderDetailClick($event, rowData)"
+                  class="link-row"
+                >
+                  {{ rowData[col.field] }}
+                </a>
+              </span>
+              <span *ngSwitchCase="'amount'">
+                {{ rowData.currency.symbol
+                }}{{ rowData.amount | truncateDecimalsPipe }}
+              </span>
+              <span *ngSwitchCase="'createdTime'">
+                {{
+                  rowData.createdTime.toISOString()
+                    | convertLocalDateTime : "YYYY/MM/DD HH:mm"
+                }}
+              </span>
+              <span *ngSwitchCase="'autoPayment'">
+                <ion-icon
+                *ngIf="rowData[col.field]"
+                name="checkmark-outline"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="!rowData[col.field]"
+                name="remove-outline"
+              ></ion-icon>
+              </span>
+              <span *ngSwitchCase="'type'">
+                {{ convertMapType(rowData[col.field]) }}
+              </span>
+              <span *ngSwitchCase="'paymentOrderState'">
+                <span *ngIf="generatePaymentOrderStateName(rowData) === dictionary.Pending">
+                  <div class="d-flex">
+                    <app-icon
+                      [type]="generatePaymentOrderStateName(rowData)"
+                    ></app-icon>
+                    <span class="ms-1">
+                      {{ generatePaymentOrderStateName(rowData) }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === dictionary.Charged">
+                  <div class="d-flex">
+                    <app-icon [type]="rowData.paymentOrderState" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ dictionary.Charged }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === dictionary.Discharged">
+                  <div class="d-flex">
+                    <app-icon [type]="rowData.paymentOrderState" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ dictionary.Discharged }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === dictionary.Failed">
+                  <div class="d-flex">
+                    <app-icon [type]="rowData.paymentOrderState" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ dictionary.Failed }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === 'Captured'">
+                  <div class="d-flex">
+                    <app-icon [type]="'Complete'" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ rowData.paymentOrderState }}
+                    </span>
+                  </div>
+                </span>
+                <span *ngIf="rowData.paymentOrderState === 'Disputed'">
+                  <div class="d-flex">
+                    <app-icon [type]="'Discharged'" class="d-flex"></app-icon>
+                    <span class="ms-1">
+                      {{ rowData.paymentOrderState }}
+                    </span>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td class="text-center column-color" [attr.colspan]="columns.length">
+          {{ "NoRecordsFound" }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<app-payment-order-detail-modal
+  *ngIf="openPaymentOrderDetailModal"
+  [isOpen]="openPaymentOrderDetailModal"
+  [paymentOrder]="paymentOrder"
+  (dismiss)="openPaymentOrderDetailModal = false"
+  [stateLogs]="stateLogs"
+/>
+
+<app-payment-filter
+  *ngIf="openPaymentModalFilter"
+  [isOpen]="openPaymentModalFilter"
+  [data]="paymentOrderFilter"
+  (dismiss)="openPaymentModalFilter = false"
+  (filterClick)="savePaymentFilter($event)"
+/>
+
+<app-create-payment
+  *ngIf="showCreatePaymentModal"
+  [isOpen]="showCreatePaymentModal"
+  (dismiss)="showCreatePaymentModal = false"
+  (createPaymentOrder)="createPaymentOrder($event)"
+/>

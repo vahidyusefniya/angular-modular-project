@@ -1,0 +1,101 @@
+<ion-modal
+  [backdropDismiss]="false"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  class="charge__modal"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title
+          >{{ dictionary.Charge }}
+          <span class="fs-5 fw-bold">{{ variableTitle }}</span>
+        </ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!chargeForm.form.valid"
+            (click)="onClickSave()"
+          >
+            {{ dictionary.Charge }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #chargeForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <app-currency-combobox
+                name="CurrencyId"
+                [(ngModel)]="charge.currencyId"
+                [required]="true"
+                (selectionChange)="checkIsForTest($event)"
+              />
+            </ion-col>
+            <ion-col size="7">
+              <app-text
+                [Label]="dictionary.Amount"
+                [(ngModel)]="charge.amount"
+                name="amount"
+                id="amount"
+                [required]="true"
+                [inputmode]="'numeric'"
+                [mask]="thousandSeparator"
+                [isPreventNavigateNumber]="true"
+                (keydown.enter)="chargeForm.form.valid ? onClickSave() : ''"
+                minValue
+                [minValueNumber]="0"
+                (ionInput)="onInputAmount($event)"
+              />
+              <span class="text-danger text-error">{{
+                errorTextAmountInput
+              }}</span>
+            </ion-col>
+            <ion-col size="12">
+              <app-combobox
+                [autofocus]="true"
+                id="bank"
+                name="bank"
+                [Label]="dictionary.Bank"
+                [(ngModel)]="charge.bankId"
+                [data]="banks"
+                [textField]="'bankName'"
+                [valueField]="'bankId'"
+                [required]="false"
+                [disabled]="banks.length === 0"
+              />
+            </ion-col>
+            <ion-col size="12">
+              <ion-input
+                labelPlacement="floating"
+                fill="outline"
+                [label]="dictionary.Description"
+                [(ngModel)]="charge.description"
+                name="referenceNumber"
+                [required]="true"
+                mode="md"
+                [id]="'referenceId'"
+                (keydown.enter)="chargeForm.form.valid ? onClickSave() : ''"
+              />
+            </ion-col>
+            <ion-col size="12" *ngIf="showDescriptionAlert">
+              <p class="financial-activities-alert">*{{ dictionary.CreatingFinancialActivityAlert }}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+<ion-alert
+  [isOpen]="showDiscardAlert"
+  [header]="dictionary.DiscardChanges"
+  [buttons]="alertButtons"
+/>

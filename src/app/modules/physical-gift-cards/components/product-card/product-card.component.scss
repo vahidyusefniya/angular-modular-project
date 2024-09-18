@@ -1,0 +1,24 @@
+.product{
+  width: 100%;
+  height: auto;
+  &-img {
+    width: 250px;
+    height: 140px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  &-buttons {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .product{
+    &-img {
+      width: 100%;
+      height: auto;
+    }
+  }
+}

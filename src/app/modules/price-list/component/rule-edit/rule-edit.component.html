@@ -1,0 +1,148 @@
+<ion-modal
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  class="exception-modal"
+  [backdropDismiss]="true"
+  [class]="{ 'edit-price-modal': !showRangeStartAndEndInRuleModal }"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title *ngIf="showRangeStartAndEndInRuleModal">
+          {{ dictionary.EditException }}
+        </ion-title>
+        <ion-title *ngIf="!showRangeStartAndEndInRuleModal" class="fs-6">
+          {{ dictionary.Set }}
+          <span>{{ showPriceValueMode(rule.priceValueMode) }}(%)</span> for "{{
+            productName
+          }}"
+          <!-- <span class="region-lable" *ngIf="regionName">{{ regionName }}</span> -->
+        </ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="RuleForm.form.invalid"
+            (click)="onSaveClick()"
+          >
+            {{ dictionary.Done }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content
+      [class]="expandedStatus === undefined ? 'rule-edit-form-content' : ''"
+      [appDirtyPage]="RuleForm.dirty ? true : false"
+    >
+      <form #RuleForm="ngForm">
+        <ion-grid>
+          <ion-row *ngIf="showRangeStartAndEndInRuleModal">
+            <ion-col size="12" class="mt-1 mb-2">
+              <ion-checkbox
+                justify="end"
+                [(ngModel)]="isPriceRange"
+                name="isPriceRange"
+              >
+                {{ dictionary.Range }}
+              </ion-checkbox>
+            </ion-col>
+            <ion-col [size]="isPriceRange ? 6 : 12">
+              <app-text
+                id="start"
+                name="start"
+                [Label]="isPriceRange ? dictionary.StartFace : dictionary.Face"
+                [(ngModel)]="rule.faceValue.start"
+                [required]="true"
+                [mask]="thousandSeparator"
+                [inputmode]="'numeric'"
+                (keydown.enter)="RuleForm.form.valid ? onSaveClick() : ''"
+                minValue
+                [minValueNumber]="minEndValue!"
+                (ionInput)="onInputStart($event)"
+              />
+              <span class="text-danger">{{ errorTextStartValue }}</span>
+            </ion-col>
+            <ion-col size="6" *ngIf="isPriceRange">
+              <app-text
+                id="end"
+                name="end"
+                [Label]="dictionary.EndFace"
+                [(ngModel)]="rule.faceValue.end"
+                [required]="true"
+                [mask]="thousandSeparator"
+                [inputmode]="'numeric'"
+                (keydown.enter)="RuleForm.form.valid ? onSaveClick() : ''"
+                *ngIf="ruleData!.faceValue.end == !null || isPriceRange"
+                maxValue
+                [maxValueNumber]="maxEndValue ? maxEndValue! : 999999999999"
+                (ionInput)="onInputEnd($event)"
+                [isPreventNavigateNumber]="true"
+              />
+              <span class="text-danger">{{ errorTextEndValue }}</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col
+              [size]="
+                branch?.canSetFaceValue && branch?.canSetBuyValue ? 6 : 12
+              "
+              *ngIf="branch?.canSetFaceValue && branch?.canSetBuyValue"
+            >
+              <app-combobox
+                name="priceValueMode"
+                id="priceValueMode"
+                [Label]="dictionary.PriceValueMode"
+                [(ngModel)]="rule.priceValueMode"
+                [data]="priceValueModes"
+                [textField]="'name'"
+                [valueField]="'id'"
+                [required]="true"
+                *ngIf="branch?.canSetFaceValue && branch?.canSetBuyValue"
+                (selectionChange)="priceValue = ''"
+              ></app-combobox>
+            </ion-col>
+            <ion-col
+              [size]="
+                branch?.canSetFaceValue && branch?.canSetBuyValue ? 6 : 12
+              "
+            >
+              <app-text
+                id="priceValue"
+                name="priceValue"
+                [Label]="
+                  rule.priceValueMode === 1
+                    ? dictionary.Margin + ' (%)'
+                    : dictionary.Discount + ' (%)'
+                "
+                [(ngModel)]="priceValue"
+                [mask]="thousandSeparator"
+                [inputmode]="'numeric'"
+                [isPreventNavigateNumber]="rule.priceValueMode === 1"
+                (keydown.enter)="RuleForm.form.valid ? onSaveClick() : ''"
+                [required]="true"
+              />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <app-combobox
+                id="isActive"
+                [Label]="dictionary.Status"
+                [(ngModel)]="isActive"
+                name="isActive"
+                [data]="activeList"
+                [textField]="'name'"
+                [valueField]="'value'"
+                [required]="true"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,160 @@
+<ion-modal
+  class="assign__price__list__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ title }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!branchForm.form.valid"
+            (click)="onEditProfileClick()"
+          >
+            {{ dictionary.Done }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #branchForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <h6>{{ dictionary.CompanyInfo }}</h6>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="CompanyShop"
+                [Label]="dictionary.CompanyShop"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-number id="upc" [Label]="dictionary.Code"></app-number>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="Email"
+                [Label]="dictionary.Email"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="Office"
+                [Label]="dictionary.Office"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-combobox
+                [id]="'TimeZone'"
+                [Label]="dictionary.TimeZone"
+                [filterable]="false"
+                [valueField]="'currencyId'"
+                [textField]="'currencyName'"
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="PostalCode"
+                [Label]="dictionary.ZIPPostalCode"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="VatTaxId"
+                [Label]="dictionary.VatTaxId"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="Phone"
+                [Label]="dictionary.Phone"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="WhatsApp"
+                [Label]="dictionary.WhatsApp"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+            <ion-col size="12" class="pt-3">
+              <h6>{{ dictionary.Address }}</h6>
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-combobox
+                [id]="'Country'"
+                [Label]="dictionary.Country"
+                [filterable]="false"
+                [valueField]="'currencyId'"
+                [textField]="'currencyName'"
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-combobox
+                [id]="'State'"
+                [Label]="dictionary.State"
+                [filterable]="false"
+                [valueField]="'currencyId'"
+                [textField]="'currencyName'"
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-combobox
+                [id]="'City'"
+                [Label]="dictionary.City"
+                [filterable]="false"
+                [valueField]="'currencyId'"
+                [textField]="'currencyName'"
+              />
+            </ion-col>
+            <ion-col size="12" size-sm="6">
+              <app-text
+                [autofocus]="true"
+                id="Address"
+                [Label]="dictionary.Address"
+                (keydown.enter)="
+                  branchForm.form.valid ? onEditProfileClick() : ''
+                "
+              ></app-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

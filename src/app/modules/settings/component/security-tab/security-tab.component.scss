@@ -1,0 +1,13 @@
+.loading-qr-code {
+  width: 150px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reset-2fa-btn{
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,338 @@
+<ion-modal [class]="
+receiveType === dictionary.Download ||
+receiveType === '' ?
+'order__modal__with__SMS' : 'order__modal'" (willDismiss)="onDismiss()" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #receiveForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col class="ion-padding" size="12" sizeSm="5">
+              <div class="w-100 d-flex justify-content-center">
+                <img
+                  [lazyLoad]="
+                    product.imageUrl ? product.imageUrl : localImageSRC
+                  "
+                  ngSrc="{{ localImageSRC }}"
+                  width="181"
+                  height="118"
+                  alt="product"
+                  class="ion-margin"
+                />
+              </div>
+            </ion-col>
+            <ion-col
+              *ngIf="product.faceValue.end; else productTemp"
+              size="12"
+              sizeSm="7"
+            >
+              <ion-row>
+                <ion-col size="12">
+                  {{ product.productName }}
+                </ion-col>
+                <ion-col class="my-3" size="12">
+                  <ion-input
+                    labelPlacement="floating"
+                    fill="outline"
+                    [label]="dictionary.CustomPrice"
+                    [(ngModel)]="faceValuePrice"
+                    name="amount"
+                    id="amount"
+                    [required]="true"
+                    [maskito]="thousandSeparator"
+                    [maskitoElement]="maskPredicate"
+                    (ionInput)="onInput($event)"
+                    [class]="priceRangeMessage != '' ? 'error-input' : ''"
+                    [autofocus]="true"
+                    [inputmode]="'numeric'"
+                    mode="md"
+                    #customPrice
+                    [appPreventNavigateNumber]="true"
+                    (keyup.enter)="onContinueClick()"
+                  />
+                  <span
+                    class="amount-range-label"
+                    [innerHTML]="amountRangeLabel"
+                  ></span>
+                </ion-col>
+                <ion-col class="number__col" size="12">
+                  <ion-button
+                    (click)="onReduceProductClick()"
+                    fill="clear"
+                    color="dark"
+                    [disabled]="checkDisabledReduceButton()"
+                  >
+                    <app-icon [type]="'remove-outline'" />
+                  </ion-button>
+                  <app-text
+                    id="productCount"
+                    name="productCount"
+                    [Label]="dictionary.Count"
+                    [(ngModel)]="productCount"
+                    [required]="true"
+                    [mask]="thousandSeparator"
+                    [inputmode]="'numeric'"
+                    [isPreventNavigateNumber]="true"
+                  />
+                  <ion-button
+                    (click)="onAddProductClick()"
+                    fill="clear"
+                    color="dark"
+                  >
+                    <app-icon [type]="'add'" />
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <ng-template #productTemp>
+              <ion-col size="12" sizeSm="7">
+                <ion-row>
+                  <ion-col size="12" class="ion-no-padding">
+                    <ion-label class="mx-3">
+                      {{ product.productName }}
+                      {{ product.currency.symbol }}
+                      {{ product.faceValue.start | truncateDecimalsPipe }}
+                    </ion-label>
+                  </ion-col>
+                  <ion-col class="number__col mt-4 ion-no-padding" size="12">
+                    <ion-button
+                      (click)="onReduceProductClick()"
+                      fill="clear"
+                      color="dark"
+                      [disabled]="checkDisabledReduceButton()"
+                    >
+                      <app-icon [type]="'remove-outline'" />
+                    </ion-button>
+                    <app-text
+                      id="productCount"
+                      name="productCount"
+                      [Label]="dictionary.Count"
+                      [(ngModel)]="productCount"
+                      [required]="true"
+                      [mask]="thousandSeparator"
+                      [inputmode]="'numeric'"
+                      [isPreventNavigateNumber]="true"
+                    />
+                    <ion-button
+                      (click)="onAddProductClick()"
+                      fill="clear"
+                      color="dark"
+                    >
+                      <app-icon [type]="'add'" />
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ng-template>
+            <ion-col size="12" class="d-flex justify-content-center">
+              <span class="text-danger">
+                {{ priceRangeMessage }}
+              </span>
+            </ion-col>
+            <ion-col
+              *ngIf="width > 500; else smallSize"
+              class="d-flex justify-content-center"
+              size="12"
+            >
+              <ion-radio-group>
+                <ion-radio
+                  (click)="onRedioClick(dictionary.WhatsApp)"
+                  class="mx-3"
+                  labelPlacement="end"
+                  value="WhatsApp"
+                >
+                  {{ dictionary.WhatsApp }}
+                </ion-radio>
+                <ion-radio
+                  (click)="onRedioClick(dictionary.SMS)"
+                  class="mx-3"
+                  labelPlacement="end"
+                  value="Sms"
+                >
+                  {{ dictionary.SMS }}
+                </ion-radio>
+                <ion-radio
+                  (click)="receiveType = dictionary.Download"
+                  class="mx-3"
+                  labelPlacement="end"
+                  value="download"
+                >
+                  {{ dictionary.Download }}
+                </ion-radio>
+                <ion-radio
+                  (click)="onRedioClick(buyOrderDeliveryType.Email)"
+                  class="mx-3"
+                  labelPlacement="end"
+                  value="Email"
+                >
+                  {{ dictionary.Email }}
+                </ion-radio>
+              </ion-radio-group>
+            </ion-col>
+            <ion-col class="d-flex justify-content-center" size="12">
+              <div class="input">
+                <ion-input
+                  *ngIf="
+                    receiveType === dictionary.WhatsApp ||
+                    receiveType === dictionary.SMS
+                  "
+                  labelPlacement="floating"
+                  fill="outline"
+                  [label]="
+                    receiveType === 'WhatsApp'
+                      ? dictionary.WhatsappNumber
+                      : dictionary.PhoneNumber
+                  "
+                  [(ngModel)]="phoneNumber"
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  #phoneNumberInput
+                  [inputmode]="'numeric'"
+                  type="number"
+                  [required]="true"
+                  mode="md"
+                />
+
+                <ion-input
+                  *ngIf="receiveType === buyOrderDeliveryType.Email"
+                  labelPlacement="floating"
+                  fill="outline"
+                  [label]="dictionary.Email"
+                  [(ngModel)]="email"
+                  name="email"
+                  #emailInput
+                  id="email"
+                  [required]="true"
+                  mode="md"
+                  [email]="true"
+                />
+
+                <ion-input
+                  *ngIf="
+                    receiveType === dictionary.WhatsApp ||
+                    receiveType === dictionary.SMS
+                  "
+                  labelPlacement="floating"
+                  fill="outline"
+                  [label]="dictionary.VerifyPhoneNumber"
+                  [label]="
+                    receiveType === 'WhatsApp'
+                      ? dictionary.VerifyWhatsAppNumber
+                      : dictionary.VerifyPhoneNumber
+                  "
+                  [(ngModel)]="confirmPhoneNumber"
+                  name="confirmPhoneNumber"
+                  id="confirmPhoneNumber"
+                  #phoneNumberInput
+                  [inputmode]="'numeric'"
+                  type="number"
+                  [required]="true"
+                  mode="md"
+                  (keyup.enter)="onContinueClick()"
+                  class="mt-3"
+                />
+
+                <ion-input
+                  *ngIf="receiveType === buyOrderDeliveryType.Email"
+                  labelPlacement="floating"
+                  fill="outline"
+                  [label]="dictionary.VerifyEmail"
+                  [(ngModel)]="confirmEmail"
+                  name="confirmEmail"
+                  #emailInput
+                  id="confirmEmail"
+                  [required]="true"
+                  mode="md"
+                  [email]="true"
+                  (keyup.enter)="onContinueClick()"
+                  class="mt-3"
+                />
+
+                <div class="py-2 validate-message" *ngIf="receiveType === dictionary.Email && email !== confirmEmail && confirmEmail !== ''">
+                  <span class="text-danger">
+                    {{ dictionary.NotMatchEmail }}
+                  </span>
+                </div>
+                <div class="py-2 validate-message" *ngIf="(receiveType === dictionary.WhatsApp || receiveType === dictionary.SMS) && phoneNumber !== confirmPhoneNumber && confirmPhoneNumber !== ''">
+                  <span class="text-danger">
+                    {{ dictionary.NotMatchPhoneNumber }}
+                  </span>
+                </div>
+              </div>
+            </ion-col>
+            <ng-template #smallSize>
+              <ion-col class="d-flex justify-content-start" size="12">
+                <ion-radio-group>
+                  <ion-radio
+                    (click)="onRedioClick(dictionary.WhatsApp)"
+                    class="mx-3 py-1"
+                    labelPlacement="end"
+                    value="WhatsApp"
+                    mode="md"
+                  >
+                    {{ dictionary.WhatsApp }}
+                  </ion-radio>
+                  <br />
+                  <ion-radio
+                    (click)="onRedioClick(dictionary.SMS)"
+                    class="mx-3 py-1"
+                    labelPlacement="end"
+                    value="Sms"
+                    mode="md"
+                  >
+                    {{ dictionary.SMS }}
+                  </ion-radio>
+                  <br />
+                  <ion-radio
+                    (click)="onRedioClick(buyOrderDeliveryType.Email)"
+                    class="mx-3 py-1"
+                    labelPlacement="end"
+                    value="Email"
+                    mode="md"
+                  >
+                    {{ dictionary.Email }}
+                  </ion-radio>
+                  <br />
+                  <ion-radio
+                    (click)="receiveType = dictionary.Download"
+                    class="mx-3 py-1"
+                    labelPlacement="end"
+                    value="download"
+                    mode="md"
+                  >
+                    {{ dictionary.Download }}
+                  </ion-radio>
+                </ion-radio-group>
+              </ion-col>
+            </ng-template>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+    <ion-footer class="p-1">
+      <ion-button
+        (click)="onContinueClick()"
+        expand="block"
+        [disabled]="
+          receiveForm.form.invalid ||
+          priceRangeMessage != '' ||
+          receiveType === '' ||
+          email !== confirmEmail ||
+          phoneNumber !== confirmPhoneNumber
+        "
+        id="continue-btn"
+      >
+        {{ dictionary.Continue }}
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>

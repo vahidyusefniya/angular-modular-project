@@ -1,0 +1,110 @@
+@import "../../../../../assets/scss/primeng.scss";
+.hyper-link{
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+#content {
+  font-family: Arial, sans-serif;
+  height: 1500px;
+  .date-table{
+    width: 100%;
+    tr{
+      th{
+        background-color: #F2672A;
+        color: white;
+        text-align: center;
+        &:first-child {
+          border-radius: 5px 0 0px 5px;
+          width: 50%;
+        }
+        &:last-child {
+          border-radius: 0px 5px 5px 0px;
+          border-left: 1px solid white;
+          width: 50%;
+        }
+      }
+      td{
+        text-align: center;
+        &:first-child {
+          border-radius: 5px 0 0px 5px;
+        }
+        &:last-child{
+          border-left: 1px solid #000;
+          border-radius: 0px 5px 5px 0px;
+        }
+      }
+    }
+  }
+  .bill-to{
+    width: 20px;
+    background-color: #F2672A;
+    border-radius: 5px;
+    height: 110px;
+    position: relative;
+    &-text{
+      color: white;
+      width: 110px;
+      position: absolute;
+      transform: rotate(-90deg);
+      left: -45px;
+      top: 40px;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+  .items-table{
+    width: 100%;
+    tr{
+      border-bottom: 1px solid #000;
+      &:last-child {
+        border-bottom: 0;
+      }
+      th{
+        border-right: 1px solid #F2672A;
+        text-align: center;
+        height: 50px;
+        &:first-child {
+          width: 60px;
+        }
+        &:last-child {
+          border-right: 0px;
+        }
+      }
+      td {
+        text-align: center;
+        height: 40px;
+      }
+    }
+  }
+  .invoice-total{
+    border-top: 2px solid #DFDFDF;
+  }
+  .text-orange{
+    color: #F2672A; 
+  }
+  .invoice-footer{
+    height: 140px;
+    background-image: url('../../../../../assets/img/bg-pattern.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 230px;
+    .badge-orange{
+      background-color: #F2672A;
+      padding: 2px 8px;
+      border-radius: 5px;
+      color: white;
+      margin: 6px;
+      font-weight: bold;
+    }
+  }
+}
+.bg-gray{
+  background-color: #DFDFDF;
+}

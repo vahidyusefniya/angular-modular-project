@@ -1,0 +1,59 @@
+<ion-modal [isOpen]="isOpen" (willDismiss)="cancel()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button color="primary" (click)="cancel()">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title
+          >{{ selectedSaleManagerId ? "Change" : dictionary.Assign }}
+          {{ branch?.merchantName }}
+          {{ selectedSaleManagerId ? "" : "to" }} sale manager</ion-title
+        >
+        <ion-buttons slot="end">
+          <ion-button
+            [disabled]="!selectedSaleManger"
+            color="primary"
+            (click)="onClickSave()"
+          >
+            ّ{{ dictionary.Save }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <app-text
+        [autofocus]="true"
+        id="branchName"
+        [Label]="dictionary.SaleManger"
+        [(ngModel)]="saleManagerName"
+        (inputChange)="searchName($event)"
+        name="branchName"
+      />
+
+      <ng-container *ngIf="!loading">
+        <div *ngIf="saleManagerList.length !== 0; else empty_content">
+          <ion-radio-group
+            allow-empty-selection="true"
+            (ionChange)="handleChange($event)"
+            [value]="selectedSaleManagerId"
+          >
+            <ion-item class="mt-2" *ngFor="let saleManager of saleManagerList">
+              <ion-radio
+                [value]="saleManager.saleManagerId"
+                justify="space-between"
+              >
+                {{ saleManager.name }}
+              </ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </div>
+        <ng-template #empty_content>
+          <span class="empty_content">No sale manager can be assigned.</span>
+        </ng-template>
+      </ng-container>
+    </ion-content>
+  </ng-template>
+</ion-modal>

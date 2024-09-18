@@ -1,0 +1,109 @@
+<!--suppress JSUnresolvedReference -->
+<ion-modal
+  class="checkout__modal"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  (keyup.enter)="onCheckoutClick()"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Close }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title
+          >{{ dictionary.Active }}:
+          <ion-label color="medium">{{ product?.product?.productName }}</ion-label></ion-title
+        >
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div class="mb-3">
+        <ion-label>
+          Are you sure to activate the card with the following specifications?
+        </ion-label>
+      </div>
+      <p-table
+        responsiveLayout="stack"
+        [value]="products"
+        styleClass="p-datatable-gridlines"
+        breakpoint="840px"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of cols">{{ col.header }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td class="py-1 my-1" *ngFor="let col of cols; let i = index">
+              <div
+                class="table__row"
+                [class]="{ amount_row: col.field === 'availableCount' }"
+                [ngSwitch]="col.field"
+              >
+                <span class="table__label__row me-2">{{ col.header }}</span>
+                <div class="p-1">
+                  <span *ngSwitchCase="'imageUrl'">
+                    <img
+                      width="90"
+                      height="60"
+                      ngSrc="{{
+                        product.imageUrl ? product.imageUrl : localImageSRC
+                      }}"
+                      alt="product-image"
+                    />
+                  </span>
+                  <span *ngSwitchCase="'productName'">
+                    {{ product.productName }}
+                  </span>
+                  <span *ngSwitchCase="'unitFaceValuePrice'">
+                    {{
+                      product.unitFaceValuePrice.toLocaleString("en-US", {
+                        maximumFractionDigits: 5,
+                        minimumFractionDigits: 0
+                      })
+                    }}
+                    <span class="currency">
+                      ({{ product.currency.currencyName }})
+                    </span>
+                  </span>
+                  <span *ngSwitchCase="'unitBuyPrice'">
+                    {{
+                      product.unitBuyPrice.toLocaleString("en-US", {
+                        maximumFractionDigits: 5,
+                        minimumFractionDigits: 0
+                      })
+                    }}
+                    <span class="currency">
+                      ({{ product.currency.currencyName }})
+                    </span>
+                  </span>
+                  <span *ngSwitchDefault>
+                    {{ product[col.field] }}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ion-content>
+    <ion-footer
+      appPermission
+      inputAppPermission="PlaceOrder"
+      class="d-flex justify-content-end ion-padding"
+    >
+      <ion-button
+        (click)="onCheckoutClick()"
+        color="primary"
+        class="checkout-btn"
+        id="checkout-btn-id"
+      >
+        {{ dictionary.Confirm }}
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>

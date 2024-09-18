@@ -1,0 +1,35 @@
+<app-page-list
+  [cols]="cols"
+  [loading]="loading"
+  [data]="returnOrders"
+  [tagList]="tagList"
+  [page]="page"
+  [pageSize]="pageSize"
+  [hasAdvancedFilter]="true"
+  [hasNewButton]="true"
+  [hasSearch]="true"
+  [hasExport]="true"
+  [newButtonLabel]="dictionary.ReturnOrder"
+  (newButtonClick)="openReturnOrderModal = true"
+  [newButtonPermission]="'ProductRead'"
+  (refreshClick)="onRefreshClick()"
+  (inputSearch)="searchOrderIdList(1, $event)"
+  (advancedFilterClick)="onFilterClick()"
+  [label]="dictionary.ReturnOrders"
+  (exportClick)="onExcelExportClick()"
+/>
+
+<app-return-order-modal
+  *ngIf="openReturnOrderModal"
+  [isOpen]="openReturnOrderModal"
+  (dismiss)="openReturnOrderModal = false"
+>
+</app-return-order-modal>
+
+<app-return-order-filter
+  *ngIf="openReturnOrderFilter"
+  [isOpen]="openReturnOrderFilter"
+  (dismiss)="openReturnOrderFilter = false"
+  (reportFilterClick)="saveReportFilter($event)"
+  [data]="returnOrderFilter"
+/>

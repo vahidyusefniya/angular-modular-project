@@ -1,0 +1,34 @@
+@import "../../../../../assets/scss/primeng.scss";
+
+.checkout__modal {
+  --height: 330px;
+  --width: 800px;
+
+  ion-content {
+    --overflow: hidden;
+  }
+}
+
+
+.checkout-btn{
+  width: auto;
+}
+@media screen and (max-width: 840px) {
+  .checkout__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+    --width: 100% !important;
+  }
+  .checkout-btn{
+    width: 100%
+  }
+}
+
+.p-datatable {
+  height: auto !important;
+}
+
+.currency {
+  color: gray;
+  font-size: 12px;
+}

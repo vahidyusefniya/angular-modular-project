@@ -1,0 +1,10 @@
+.order__filter__modal {
+  --height: 200px;
+}
+
+@media screen and (max-width: 840px) {
+  .order__filter__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+  }
+}

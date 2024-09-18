@@ -1,0 +1,84 @@
+<div class="orders">
+  <app-phone-header-layout
+    [searchBarPlaceholder]="'Search order'"
+    [showSearchBar]="true"
+    [title]="dictionary.Orders"
+    [dismiss]="willDismiss"
+    (search)="onSearchInput($event)"
+  />
+  <ion-content>
+    <ion-toolbar *ngIf="tagList.length !== 0">
+      <app-table-filter-tag [tagList]="tagList"></app-table-filter-tag>
+    </ion-toolbar>
+    <p-tabView [(activeIndex)]="activeIndex" (onChange)="onTabChange()">
+      <p-tabPanel [header]="dictionary.Digital" [selected]="true">
+        <ion-content
+          *ngIf="orders.length > 0"
+          [ngClass]="tagList.length === 0 ? 'height' : 'height__after__filter'"
+          class="order__items"
+        >
+          <app-order-card
+            *ngFor="let order of orders"
+            [order]="order"
+          />
+          <ion-infinite-scroll (ionInfinite)="onScroll($event)">
+            <div class="infinite-scroll-content">
+              <ion-spinner
+                *ngIf="loading"
+                color="dark"
+              ></ion-spinner>
+            </div>
+          </ion-infinite-scroll>
+          
+        </ion-content>
+        <div *ngIf="orders.length === 0 && !pageLoading">
+          <h5 class="row justify-content-center mt-2">No Records</h5>
+        </div>
+        <div
+          *ngIf="pageLoading"
+          [ngClass]="tagList.length === 0 ? 'height' : 'height__after__filter'"
+          class="loading__content"
+        >
+          <ion-spinner color="dark"></ion-spinner>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="dictionary.Physical">
+        <ion-content
+          *ngIf="orders.length > 0"
+          [ngClass]="tagList.length === 0 ? 'height' : 'height__after__filter'"
+          class="order__items"
+        >
+          <app-order-card
+            *ngFor="let order of orders"
+            [order]="order"
+          />
+          <ion-infinite-scroll (ionInfinite)="onScroll($event)">
+            <div class="infinite-scroll-content">
+              <ion-spinner
+                *ngIf="currentSize && currentSize > 0 && loading"
+                color="dark"
+              ></ion-spinner>
+            </div>
+          </ion-infinite-scroll>
+          
+        </ion-content>
+        <div *ngIf="orders.length === 0 && !pageLoading">
+          <h5 class="row justify-content-center mt-2">No Records</h5>
+        </div>
+        <div
+          *ngIf="pageLoading"
+          [ngClass]="tagList.length === 0 ? 'height' : 'height__after__filter'"
+          class="loading__content"
+        >
+          <ion-spinner color="dark"></ion-spinner>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </ion-content>
+</div>
+<!-- <ion-action-sheet
+  [isOpen]="showActionSheetButtons"
+  [header]="dictionary.ResendTo"
+  [buttons]="actionSheetButtons"
+>
+</ion-action-sheet> -->

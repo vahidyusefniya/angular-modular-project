@@ -1,0 +1,13 @@
+<div class="tag__list">
+  <ion-chip class="tag-item" *ngFor="let tag of tagList">
+    <ion-label>
+      <span class="tag__key">{{ tag.key }}:</span>
+      <span class="tag__value"> {{ tag.value! | truncate: 50 }}</span>
+    </ion-label>
+    <ion-icon
+      *ngIf="tag.clearable"
+      name="close-circle"
+      (click)="clearTag(tag)"
+    />
+  </ion-chip>
+</div>

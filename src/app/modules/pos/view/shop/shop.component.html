@@ -1,0 +1,29 @@
+<ion-content
+  class="ion-no-padding"
+  [fullscreen]="true"
+>
+  <ion-card class="ion-no-margin">
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          *ngFor="let item of poses"
+          size="12"
+          sizeSm="6"
+          sizeMd="4"
+          sizeLg="3"
+          sizeXl="2"
+        >
+          <app-shop-card (showDetail)="onShowProductDetail($event)" [pos]="item"/>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>
+
+<app-shop-card-buy 
+[isOpen]="showProductDetail"
+*ngIf="showProductDetail"
+(dismiss)="showProductDetail = false"
+(buy)="onBuyClick($event)"
+[pos]="pos"
+/>

@@ -1,0 +1,47 @@
+<ion-content [fullscreen]="true">
+  <ion-grid class="m-md-5" *ngIf="!openChooseBranchModal">
+    <ion-row
+    [ngClass]="{'d-flex align-items-center justify-content-center':showConfirm}"
+    >
+      <ion-col
+        sizeLg="7"
+        class="d-none d-lg-flex p-0 align-items-center"
+        *ngIf="!showConfirm"
+      >
+        <div class="signin-wrapper d-flex justify-content-center flex-column">
+          <img src="./assets/img/ezpin.png" class="mx-auto mx-sm-0 logo" />
+          <h5 class="fw-bold mt-5 text-start px-2 px-sm-0 text-white">
+            EZ Pin Digital and Physical Gift Card Management Platform
+          </h5>
+          <p class="text-start mb-3 px-2 px-sm-0 text-white">
+            EZ Pin provides all in one solution to launch and manage your gift
+            card distribution business successfully and securely. Our solution
+            enables your business to implement effective strategies to manage
+            and acquire new customers while providing your customers with tools
+            to grow their business.
+          </p>
+        </div>
+      </ion-col>
+      <ion-col
+        sizeLg="5"
+        class="p-24-lg px-16-sm align-items-center text-align-webkit-center b-r-10 d-flex justify-content-center flex-column"
+      >
+        <router-outlet />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<app-choose-branch
+  *ngIf="openChooseBranchModal"
+  [isOpen]="openChooseBranchModal"
+  (dismiss)="openChooseBranchModal = false"
+  (branchSelectionChange)="branchSelectionChange($event)"
+  [branches]="branches"
+  [state]="'init'"
+/>
+<ion-loading
+  [backdropDismiss]="false"
+  [isOpen]="loading"
+  [message]="dictionary.Loading"
+/>
+<app-auth-error-modal [isOpen]="opwnAuthErrorModal" />

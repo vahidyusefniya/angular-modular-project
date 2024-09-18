@@ -1,0 +1,33 @@
+<ion-modal
+  #popoverWheelDatetime
+  [keepContentsMounted]="true"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button (click)="saveDate()" color="primary">
+            {{ dictionary.Download }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content
+      class="ion-no-padding ion-no-margin date-picker-content"
+      style="border: none !important"
+    >
+      <ion-datetime
+        presentation="date"
+        [preferWheel]="true"
+        (ionChange)="handleChange($event)"
+      ></ion-datetime>
+    </ion-content>
+  </ng-template>
+</ion-modal>

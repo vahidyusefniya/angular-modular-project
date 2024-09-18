@@ -1,0 +1,16 @@
+@import "../../../../../../assets/scss/primeng.scss";
+
+.order__state__logs__modal {
+  --max-height: 500px;
+  --height: 500px;
+  --width: 750px;
+  --max-width: 750px;
+}
+
+@media screen and (max-width: 840px) {
+  .order__state__logs__modal {
+    --height: 100% !important;
+    --max-height: 100% !important;
+    --width: 100%;
+  }
+}

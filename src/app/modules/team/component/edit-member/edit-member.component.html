@@ -1,0 +1,50 @@
+<ion-modal
+  [backdropDismiss]="true"
+  (willDismiss)="onDismiss()"
+  [isOpen]="isOpen"
+  class="charge__modal"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar class="px-3">
+        <ion-buttons slot="start">
+          <ion-button (click)="onDismiss()" color="primary">
+            {{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title
+          >{{ dictionary.EditMember }} {{ selectedMemberName }}</ion-title
+        >
+        <ion-buttons slot="end">
+          <ion-button
+            color="primary"
+            [disabled]="!editMemberForm.form.valid"
+            (click)="onClickSave()"
+          >
+            {{ dictionary.Save }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form #editMemberForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <app-combobox
+                id="currency"
+                [Label]="dictionary.Roles"
+                [(ngModel)]="roleId"
+                name="currency"
+                [data]="roles"
+                [textField]="'roleName'"
+                [valueField]="'roleId'"
+                [required]="true"
+              />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,64 @@
+<ion-modal (willDismiss)="onDismiss()" class="history__modal" [isOpen]="isOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="light">
+        <ion-buttons slot="start">
+          <ion-button class="modal_btn" (click)="onDismiss()" color="primary"
+            >{{ dictionary.Cancel }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ dictionary.Filter }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            id="save__btn"
+            class="modal_btn"
+            (click)="onFilterClick()"
+            [strong]="true"
+            color="primary"
+            >{{ dictionary.Done }}</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <app-currency-combobox name="CurrencyId" [(ngModel)]="currencyId" />
+          </ion-col>
+          <ion-col size="12">
+            <app-combobox
+              [id]="'productTypeId'"
+              name="productTypeId"
+              [valueField]="'productTypeName'"
+              [textField]="'productTypeName'"
+              [Label]="dictionary.ProductType"
+              [data]="productTypes"
+              [filterable]="false"
+              [(ngModel)]="productTypeId"
+              (selectionChange)="productTypeChange($event)"
+              [includeClear]="true"
+            ></app-combobox>
+          </ion-col>
+          <ion-col size="12">
+
+            <app-category-modal
+              [id]="'categoryName'"
+              [label]="dictionary.Category"
+              [categoryId]="categoryId"
+              (chooseCategory)="chooseCategory($event)"
+              (removeCat)="removeCategory()"
+            />
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- <app-search-tree-category-modal
+  [isOpen]="openSelectCategoryModal"
+  (dismiss)="openSelectCategoryModal = false"
+  (chooseCategory)="chooseCategory($event)"
+  *ngIf="openSelectCategoryModal"
+/> -->

@@ -1,0 +1,11 @@
+ion-modal {
+  --width: 350px;
+  --height: 300px;
+  --overflow: hidden;
+
+  ion-datetime {
+    --background: transparent;
+    --wheel-highlight-border-radius: 48px;
+    --wheel-highlight-background: rgb(30, 60, 82);
+  }
+}
